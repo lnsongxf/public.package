@@ -1,8 +1,5 @@
 #!/usr/bin/env python
-''' Example of a waf script, that executes the unit tests defined in the tests
-    directory. 
-    
-'''
+# wscript
 
 # standard library
 import os
@@ -10,35 +7,38 @@ import shutil
 import sys
 import fnmatch
 
-# edit pythonpath
+# project library
 project_root = os.getcwd()
 sys.path.insert(0, os.path.join(project_root, 'dev/py'))
 
-# directories
+# build directories
 top = '.'
 out = '.bld'
 
 def configure(conf):
-    ''' Configuration.
-    '''
-    conf.env.project_paths = {}
-    
-    conf.env.project_paths['GRM_TOOLBOX'] = os.getcwd()
 
-    tools_dir = conf.env.project_paths['GRM_TOOLBOX'] + '/tools'
+    conf.env.project_paths = {}
+
+    conf.env.project_paths['MAIN'] = os.getcwd()
+    
+    conf.env.project_paths['GRM_ESTIMATOR'] = '.'
+
+    tools_dir = conf.env.project_paths['GRM_ESTIMATOR'] + '/tools'
 
     conf.load('runPyScript', tooldir = tools_dir)
 
 def build(bld):
-    ''' Build.
-    '''
-    bld.env.PROJECT_PATHS = set_project_paths(bld)
     
-    bld.recurse('tests')
+    bld.env.PROJECT_PATHS = set_project_paths(bld)
+
+    bld.add_group() 
+
+    bld.recurse('tests')    
 
 def distclean(ctx):
-    ''' Clean.
-    '''
+    
+    #/* manual clean    */
+
     remove_filetypes_distclean('.')
     
     remove_for_distclean('.waf-1.6.4-8c7ad4bb8e1ca65b04e5d8dd9d0dac54')
@@ -51,8 +51,10 @@ def distclean(ctx):
 def remove_for_distclean(path):
     ''' Remove path, where path can be either a directory or a file. The
         appropriate function is selected. Note, however, that if an 
-        OSError occurs, the function will just pass.
+        OSError occurs, the function will just path.
+
     '''
+
     if os.path.isdir(path):
 
         shutil.rmtree(path)
@@ -63,27 +65,32 @@ def remove_for_distclean(path):
 
 def remove_filetypes_distclean(path):
     ''' Remove nuisance files from the directory tree.
+
     '''
+
     matches = []
 
     for root, _, filenames in os.walk('.'):
 
-        for filetypes in ['*.aux','*.out','*.log','*.pyc', '*~', \
-            '.waf*', '*lock*', '*.mod', '*.a', '*.txt', '*.json', '*.dat']:
+        for filetypes in ['*.aux','*.out','*.log','*.pyc', '*.so', '*~', '*tar', '*.zip', '.waf*', '*lock*', '*.mod', '*.a']:
 
                 for filename in fnmatch.filter(filenames, filetypes):
                     
                     matches.append(os.path.join(root, filename))
 
+    matches.append('.lock-wafbuild')
+
     for files in matches:
 
         remove_for_distclean(files)
-        
+
 def set_project_paths(ctx):
     ''' Return a dictionary with project paths represented by Waf nodes. This is
         required such that the run_py_script works as the whole PROJECT_ROOT is
         added to the Python path during execution.
+
     ''' 
+
     pp = {}
 
     pp['PROJECT_ROOT'] = '.'
@@ -93,3 +100,4 @@ def set_project_paths(ctx):
         pp[key] = ctx.path.make_node(val)
    
     return pp
+

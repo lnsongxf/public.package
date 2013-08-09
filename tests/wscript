@@ -1,13 +1,10 @@
 #!/usr/bin/env python
-''' Waf script for the execution of unit tests.
-'''
 
 # standard library
 import os
 
 def build(bld):
 
-    os.chdir(bld.env.project_paths['GRM_TOOLBOX'] + '/tests')
+    os.chdir(bld.env.project_paths['GRM_ESTIMATOR'] + '/tests')
 
-    bld(features = 'run_py_script', source = 'testToolbox.py', target = "",  version = 2)
-
+    bld(features = 'run_py_script', source = 'testEstRuns.py', target = '',  version = 2)
