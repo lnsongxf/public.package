@@ -8,259 +8,153 @@
 import os
 import sys
 
-import  pickle      as pkl
-import  numpy       as np
+import cPickle as pkl
 
-from    nose.core   import *
-from    nose.tools  import *
+from nose.core   import *
+from nose.tools  import *
 
 # set working directory
 dir_ = os.path.abspath(os.path.split(sys.argv[0])[0])
 os.chdir(dir_)
 
-# edit system path
-sys.path.insert(0, dir_.replace('/tests', ''))
-
-# project library
-import grmToolbox
-
-''' Auxiliary functions.
-
+''' Test class.
 '''
 class testEstimationRuns(object):
-    ''' Testing full estimation runs for a variety of data specifications. All 
-        runs are repeated with a different processor counts to ensure that
-        the results are unaffected by the number of processors employed.
-    
+    ''' Testing full estimation runs for a variety of data specifications.
     '''
     def testEstRunOne(self):
         ''' Basic estimation run.
         '''
         
-        Ypos = 0; Dpos = 1
+        # Run command.
+        initFile = '../dat/testCase_First.ini'
         
-        Bpos = [2, 3]; Mpos = [4]
-        Cpos = [5]
+        os.system('../bin/grmToolbox-estimation -init ' + initFile)
         
-        info    =  np.array([False, True])
+        # Assessment of results.
+        rsltObj = pkl.load(open('rsltObj.grm.pkl', 'r'))
         
-        dataset = np.genfromtxt('../dat/testDataOne.dat')
+        maxRslt = rsltObj.getAttr('maxRslt')
         
-        ''' Construct user request.
-        '''
-        userRequest = grmToolbox.userRequest()
-        
-        userRequest.setAttr('data', dataset)
-        
-        userRequest.setAttr('Ypos', Ypos)
-        
-        userRequest.setAttr('Dpos', Dpos)
-        
-        userRequest.setAttr('Bpos', Bpos)
-        
-        userRequest.setAttr('Mpos', Mpos)
-        
-        userRequest.setAttr('Cpos', Cpos)
-        
-        userRequest.setAttr('info', info)
-        
-        userRequest.setAttr('maxiter', 1)
+        # Assertions.
+        assert_equal(maxRslt['fun'], 1.643038068973831)
 
-        userRequest.setAttr('numDraws', 1000)
+        # Cleanup.
+        os.system('../bin/grmToolbox-cleanup')
         
-        userRequest.setAttr('isDebug', True)
-                
-        userRequest.lock()
-        
-        # Maximization routine.
-        rslt = grmToolbox.maximize(userRequest)
-        
-        # Checks.
-        assert_equal(rslt.getAttr('fun'), 1.8316796198013277)
-
     def testEstRunTwo(self):
         ''' Basic estimation run.
         '''
         
-        Ypos = 0; Dpos = 1
+        # Run command.
+        initFile = '../dat/testCase_Second.ini'
         
-        Bpos = None; Mpos = [2, 3, 4]
-        Cpos = [5]
+        os.system('../bin/grmToolbox-estimation -init ' + initFile)
         
-        info    =  None
+        # Assessment of results.
+        rsltObj = pkl.load(open('rsltObj.grm.pkl', 'r'))
         
-        dataset = np.genfromtxt('../dat/testDataOne.dat')
+        maxRslt = rsltObj.getAttr('maxRslt')
         
-        ''' Construct user request.
-        '''
-        userRequest = grmToolbox.userRequest()
+        # Assertions.
+        assert_equal(maxRslt['fun'], 1.6569859824560313)  
         
-        userRequest.setAttr('data', dataset)
-        
-        userRequest.setAttr('Ypos', Ypos)
-        
-        userRequest.setAttr('Dpos', Dpos)
-        
-        userRequest.setAttr('Bpos', Bpos)
-        
-        userRequest.setAttr('Mpos', Mpos)
-        
-        userRequest.setAttr('Cpos', Cpos)
-        
-        userRequest.setAttr('info', info)
-        
-        userRequest.setAttr('maxiter', 1)
+        assert_almost_equal(rsltObj.getAttr('bmteExPost')['estimate'][50],       -0.10666298513882175)
+        assert_almost_equal(rsltObj.getAttr('bmteExPost')['confi']['upper'][50], -0.07799826634461817)   
+        assert_almost_equal(rsltObj.getAttr('bmteExPost')['confi']['lower'][50], -0.13482394691373967)   
 
-        userRequest.setAttr('numDraws', 1000)
-
-        userRequest.setAttr('isDebug', True)
-
-        userRequest.lock()
-        
-        # Maximization routine.
-        rslt = grmToolbox.maximize(userRequest)
-            
-        # Checks.
-        assert_equal(rslt.getAttr('fun'), 1.7879213046750069)  
-        
-        assert_almost_equal(rslt.getAttr('bmteExPost')['estimate'][50],        0.025258916692701295)
-        assert_almost_equal(rslt.getAttr('bmteExPost')['confi']['upper'][50],  0.053722025588227758)   
-        assert_almost_equal(rslt.getAttr('bmteExPost')['confi']['lower'][50], -0.002952890517264570)   
-        
-        
-        os.unlink('rslt.pkl')
+        # Cleanup.
+        os.system('../bin/grmToolbox-cleanup')
 
     def testEstRunThree(self):
         ''' Basic estimation run.
         '''
         
-        Ypos = 0; Dpos = 1
+        # Run command.
+        initFile = '../dat/testCase_Third.ini'
         
-        Bpos = [2, 3]
-        info = np.array([True, True])
-        Mpos = [4]
-        Cpos = [5]
-     
+        os.system('../bin/grmToolbox-estimation -init ' + initFile)
         
-        dataset = np.genfromtxt('../dat/testDataOne.dat')
+        # Assessment of results.
+        rsltObj = pkl.load(open('rsltObj.grm.pkl', 'r'))
         
-        ''' Construct user request.
-        '''
-        userRequest = grmToolbox.userRequest()
+        maxRslt = rsltObj.getAttr('maxRslt')
         
-        userRequest.setAttr('data', dataset)
+        # Assertions.
+        assert_equal(maxRslt['fun'], 1.6281817748415393)  
         
-        userRequest.setAttr('Ypos', Ypos)
-        
-        userRequest.setAttr('Dpos', Dpos)
-        
-        userRequest.setAttr('Bpos', Bpos)
-        
-        userRequest.setAttr('Mpos', Mpos)
-        
-        userRequest.setAttr('Cpos', Cpos)
-        
-        userRequest.setAttr('info', info)
-        
-        userRequest.setAttr('maxiter', 1)
-
-        userRequest.setAttr('numDraws', 1000)
-
-        userRequest.setAttr('isDebug', True)
-
-        userRequest.lock()
-        
-        # Maximization routine.
-        rslt = grmToolbox.maximize(userRequest)
-            
-        # Checks.
-        assert_equal(rslt.getAttr('fun'), 1.8083935923475638)  
-        
-        assert_almost_equal(rslt.getAttr('bmteExPost')['estimate'][50],        0.024626870566593968)
-        assert_almost_equal(rslt.getAttr('bmteExPost')['confi']['upper'][50],  0.050170067455248921)   
-        assert_almost_equal(rslt.getAttr('bmteExPost')['confi']['lower'][50], -0.001505978635197130)   
+        assert_almost_equal(rsltObj.getAttr('bmteExPost')['estimate'][50],       -0.10666298513882175)
+        assert_almost_equal(rsltObj.getAttr('bmteExPost')['confi']['upper'][50], -0.08054064280753470)   
+        assert_almost_equal(rsltObj.getAttr('bmteExPost')['confi']['lower'][50], -0.13243970064779459)   
    
-        assert_almost_equal(rslt.getAttr('smteExAnte')['estimate'][50],       -0.048225377608784627)
-        assert_almost_equal(rslt.getAttr('smteExAnte')['confi']['upper'][50], -0.014838924923621277)   
-        assert_almost_equal(rslt.getAttr('smteExAnte')['confi']['lower'][50], -0.08273402196467225)   
+        assert_almost_equal(rsltObj.getAttr('smteExAnte')['estimate'][50],       -0.13443440314930999)
+        assert_almost_equal(rsltObj.getAttr('smteExAnte')['confi']['upper'][50], -0.10006386091593558)   
+        assert_almost_equal(rsltObj.getAttr('smteExAnte')['confi']['lower'][50], -0.16483455296419108)   
    
         #Assert relationship between parameters. 
         for i in range(99):
             
-            cmteExAnte = rslt.getAttr('cmteExAnte')['estimate'][i]
-            smteExAnte = rslt.getAttr('smteExAnte')['estimate'][i]
-            bmteExPost = rslt.getAttr('bmteExPost')['estimate'][i]
+            cmteExAnte = rsltObj.getAttr('cmteExAnte')['estimate'][i]
+            smteExAnte = rsltObj.getAttr('smteExAnte')['estimate'][i]
+            bmteExPost = rsltObj.getAttr('bmteExPost')['estimate'][i]
             
             assert_almost_equal(smteExAnte, bmteExPost - cmteExAnte)
    
-        os.unlink('rslt.pkl')
-   
+        # Cleanup.
+        os.system('../bin/grmToolbox-cleanup')
+  
     def testEstRunFour(self):
         ''' Basic estimation run.
         '''
+   
+        # Run command.
+        initFile = '../dat/testCase_Fourth.ini'
         
-        Ypos = 0; Dpos = 1
+        os.system('../bin/grmToolbox-estimation -init ' + initFile)
         
-        Bpos = [2, 3]
-        info = np.array([True, True])
-        Mpos = [4]
-        Cpos = [5]
-     
-        
-        dataset = np.genfromtxt('../dat/testDataOne.dat')
-        
-        ''' Construct user request.
+        # Assessment of results.
+        rsltObj = pkl.load(open('rsltObj.grm.pkl', 'r'))
+
+        # Assertions.
+        assert_almost_equal(rsltObj.getAttr('bteExPost')['average']['estimate'],    -0.14337500688760152)
+        assert_almost_equal(rsltObj.getAttr('bteExPost')['treated']['estimate'],     0.06553651561690533)
+        assert_almost_equal(rsltObj.getAttr('bteExPost')['untreated']['estimate'],  -0.30751977456971408)
+
+        assert_almost_equal(rsltObj.getAttr('bteExAnte')['average']['estimate'],    -0.14337500688760152)
+        assert_almost_equal(rsltObj.getAttr('bteExAnte')['treated']['estimate'],     0.06553651561690533)
+        assert_almost_equal(rsltObj.getAttr('bteExAnte')['untreated']['estimate'],  -0.30751977456971408)
+
+        assert_almost_equal(rsltObj.getAttr('cte')['average']['estimate'],    0.0786721631745564)
+        assert_almost_equal(rsltObj.getAttr('cte')['treated']['estimate'],   -0.7216392651098148)
+        assert_almost_equal(rsltObj.getAttr('cte')['untreated']['estimate'],  0.7074882853979908)
+
+        assert_almost_equal(rsltObj.getAttr('ste')['average']['estimate'],   -0.2220471700621577)
+        assert_almost_equal(rsltObj.getAttr('ste')['treated']['estimate'],    0.7871757807267197)
+        assert_almost_equal(rsltObj.getAttr('ste')['untreated']['estimate'], -1.0150080599677049)
+
+        # Cleanup.
+        os.system('../bin/grmToolbox-cleanup')
+
+    def testEstRunFive(self):
+        ''' Basic estimation run.
         '''
-        userRequest = grmToolbox.userRequest()
         
-        userRequest.setAttr('data', dataset)
+        # Run command.
+        initFile = '../dat/testCase_Fifth.ini'
         
-        userRequest.setAttr('Ypos', Ypos)
+        os.system('../bin/grmToolbox-estimation -init ' + initFile)
         
-        userRequest.setAttr('Dpos', Dpos)
+        # Assessment of results.
+        rsltObj = pkl.load(open('rsltObj.grm.pkl', 'r'))
         
-        userRequest.setAttr('Bpos', Bpos)
+        sdV     = rsltObj.getAttr('parasObj').getParameters('sd', 'V', isObj = False) 
         
-        userRequest.setAttr('Mpos', Mpos)
+        # Assertions.
+        assert_almost_equal(sdV, 0.22673338826690217)
         
-        userRequest.setAttr('Cpos', Cpos)
+        # Cleanup.
+        os.system('../bin/grmToolbox-cleanup')
         
-        userRequest.setAttr('info', info)
-        
-        userRequest.setAttr('maxiter', 1)
-
-        userRequest.setAttr('numDraws', 100)
-
-        userRequest.setAttr('isDebug', True)
-
-        userRequest.setAttr('numSims', 100)
-        
-        userRequest.setAttr('withAverageEffects', True)
-                
-        userRequest.lock()
-        
-        # Maximization routine.
-        rslt = grmToolbox.maximize(userRequest)
-            
-        # Checks.
-        assert_almost_equal(rslt.getAttr('bteExPost')['average']['estimate'], 0.064544458629204854)
-        assert_almost_equal(rslt.getAttr('bteExPost')['treated']['estimate'], 0.13096680159900997)
-        assert_almost_equal(rslt.getAttr('bteExPost')['untreated']['estimate'], 0.00072691342292147674)
-
-        assert_almost_equal(rslt.getAttr('bteExAnte')['average']['estimate'], 0.064544458629204854)
-        assert_almost_equal(rslt.getAttr('bteExAnte')['treated']['estimate'], 0.13096680159900997)
-        assert_almost_equal(rslt.getAttr('bteExAnte')['untreated']['estimate'], 0.00072691342292147674)
-
-        assert_almost_equal(rslt.getAttr('cte')['average']['estimate'],   0.319393069747761)
-        assert_almost_equal(rslt.getAttr('cte')['treated']['estimate'],  -1.948504047426586)
-        assert_almost_equal(rslt.getAttr('cte')['untreated']['estimate'], 2.498353045072135)
-
-        assert_almost_equal(rslt.getAttr('ste')['average']['estimate'],  -0.25484861111855711)
-        assert_almost_equal(rslt.getAttr('ste')['treated']['estimate'],   2.0794708490255962)
-        assert_almost_equal(rslt.getAttr('ste')['untreated']['estimate'],-2.4976261316492132)
-
-        os.unlink('rslt.pkl')
-        
-if __name__ == '__main__':
+if __name__ == '__main__': 
     
     runmodule()   

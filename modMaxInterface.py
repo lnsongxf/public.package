@@ -2,192 +2,99 @@
     grmEstimatorToolbox.
 '''
 # standard library
-import  sys
-
 import  numpy           as      np
 import  numdifftools    as      nd
+import  cPickle         as      pkl
 
-from    scipy.optimize  import  fmin_bfgs
+import  sys
 
 # project library
-import clsUser
+import clsRequest
 import clsRslt
+import clsModel
+import clsParas
+import clsMax
+import clsGrm
 
-import modMaxFunctions
-
-def maximize(userRequest):
+def maximize(modelObj, parasObj, requestObj):
     ''' Perform the requested maximization given the user's
         specification.
     '''
     # Antibugging.
-    assert (isinstance(userRequest, clsUser.userRequest))
-    assert (userRequest.getStatus() == True)
+    assert (isinstance(modelObj, clsModel.modelCls))
+    assert (modelObj.getStatus() == True)
+        
+    assert (isinstance(parasObj, clsParas.parasCls))
+    assert (parasObj.getStatus() == True)
+        
+    assert (isinstance(requestObj, clsRequest.requestCls))
+    assert (requestObj.getStatus() == True)
+
+    # Initialize container
+    grmObj = clsGrm.grmCls()
+    
+    grmObj.setAttr('modelObj', modelObj)
+    
+    grmObj.setAttr('requestObj', requestObj)
+
+    grmObj.setAttr('parasObj', parasObj)
+    
+    grmObj.lock()
     
     # Set random seed.
     np.random.seed(123)
     
     # Distribute class attributes.
-    parasObj            = userRequest.getAttr('parasObj')   
+    requestObj = grmObj.getAttr('requestObj')
     
-    maxiter             = userRequest.getAttr('maxiter')
-    
-    numAgents           = userRequest.getAttr('numAgents')
-    
-    alpha               = userRequest.getAttr('alpha') 
-        
-    surpEstimation      = userRequest.getAttr('surpEstimation')
+    hessian   = requestObj.getAttr('hessian')
 
-    hessian             = userRequest.getAttr('hessian')
-
-    numDraws            = userRequest.getAttr('numDraws')
-
-    isDebug             = userRequest.getAttr('isDebug') 
-
-    epsilon             = userRequest.getAttr('epsilon') 
-
-    gtol                = userRequest.getAttr('gtol') 
-
-    withAverageEffects  = userRequest.getAttr('withAverageEffects') 
-
-    withMarginalEffects = userRequest.getAttr('withMarginalEffects') 
-
-    withConditionalEffects = userRequest.getAttr('withConditionalEffects') 
-        
-    # Distribute evaluation points.
-    xExPostEval = userRequest.getAttr('xExPostEval') 
-
-    xExAnteEval = userRequest.getAttr('xExAnteEval') 
-    
-    zEval       = userRequest.getAttr('zEval')
-
-    cEval       = userRequest.getAttr('cEval')
-
-    P           = userRequest.getAttr('P')
-    
-    D           = userRequest.getAttr('D')
-                                        
+    withAsymptotics = requestObj.getAttr('withAsymptotics') 
+                   
     # Distribute auxiliary objects.
-    startingValues = parasObj.getValues()
-
-    # Algorithm.
-    sys.stdout = open('logFile.log', 'w')   
-        
-    maxRslt = fmin_bfgs(_scipyWrapper, startingValues, args = (userRequest,), 
-                    full_output = True, maxiter = maxiter, epsilon = epsilon,
-                    gtol = gtol)
-
+    maxCls = clsMax.maxCls(grmObj)
+    
+    maxCls.lock()
+     
+    sys.stdout = open('maxReport.grm.log', 'w')   
+    
+    maxRslt = maxCls.maximize()
+    
     sys.stdout = sys.__stdout__
-
-    # Distribute results.
-    xopt      = maxRslt[0]
-    fun       = maxRslt[1]
-    grad      = maxRslt[2]
-    message   = maxRslt[6]
-    
-    isSuccess = (maxRslt[6] == 0)
-    
-    # Check success.
-    if(isDebug == False):
         
-        assert (isSuccess == True)
+    # Distribute results.
+    xopt      = maxRslt['xopt']
     
     # Approximate hessian.
-    if(hessian == 'bfgs'):
+    covMat  = np.tile(np.nan, (len(xopt), len(xopt)))
+    
+    if(withAsymptotics):
         
-        covMat = maxRslt[3]
-        
-    else:
-        
-        ndObj   = nd.Hessian(lambda x: _scipyWrapper(x, userRequest)) 
-        hess    = ndObj(xopt)
-        covMat  = np.linalg.pinv(hess)
+        if(hessian == 'bfgs'):
+            
+            covMat = maxRslt['covMat']
+            
+        elif(hessian == 'numdiff'):
+            
+            critFunc = maxCls.getAttr('critFunc')
+            
+            ndObj    = nd.Hessian(lambda x: clsMax._scipyWrapperFunction(x, critFunc)) 
+            hess     = ndObj(xopt)
+            covMat   = np.linalg.pinv(hess)       
 
-    # Distribute arguments.
-    parasObj = userRequest.getAttr('parasObj')   
-        
+        pkl.dump(covMat, open('covMat.grm.pkl', 'wb'))
+                 
     # Construct result class.
     rslt = clsRslt.results()
-    
-    rslt.setAttr('withAverageEffects', withAverageEffects)
 
-    rslt.setAttr('withConditionalEffects', withConditionalEffects)
-
-    rslt.setAttr('withMarginalEffects', withMarginalEffects)
-
-    rslt.setAttr('hessian', hessian)
-
-    rslt.setAttr('message', message)
-            
-    rslt.setAttr('xopt', xopt)
-
-    rslt.setAttr('grad', grad)
-    
-    rslt.setAttr('fun', fun)
-            
-    rslt.setAttr('isSuccess', isSuccess)
-
-    rslt.setAttr('maxiter', maxiter)
-
-    rslt.setAttr('isDebug', isDebug)
-    
-    rslt.setAttr('numDraws', numDraws)
-            
-    rslt.setAttr('covMat', covMat)
-            
-    rslt.setAttr('parasObj', parasObj)
-    
-    rslt.setAttr('xExPostEval', xExPostEval)
+    rslt.setAttr('grmObj', grmObj)   
         
-    rslt.setAttr('xExAnteEval', xExAnteEval)
-        
-    rslt.setAttr('zEval', zEval)        
+    rslt.setAttr('maxRslt', maxRslt)    
     
-    rslt.setAttr('cEval', cEval)        
-
-    rslt.setAttr('D', D)   
-    
-    rslt.setAttr('P', P)       
-            
-    rslt.setAttr('numAgents', numAgents)
-    
-    rslt.setAttr('alpha', alpha)
-    
-    rslt.setAttr('surpEstimation', surpEstimation)
+    rslt.setAttr('covMat', covMat)    
 
     rslt.lock()
 
-    rslt.store()
-    
-    # Finishing.
+    rslt.store('rsltObj.grm.pkl')
+
     return rslt
-
-''' Private functions of the module.
-'''
-def _scipyWrapper(x, userRequest):
-    ''' Wrapper for most scipy maximization algorithms.
-    '''
-    # Antibugging.
-    assert (isinstance(userRequest, clsUser.userRequest))
-    assert (userRequest.getStatus() == True)
-
-    assert (isinstance(x, np.ndarray))
-    assert (np.all(np.isfinite(x)))
-    assert (x.dtype == 'float')
-    assert (x.ndim == 1)
-
-    # Distribute class attributes.    
-    parasObj = userRequest.getAttr('parasObj')
-    
-    # Update parameter class.
-    parasObj.updateValues(x)
-    
-    # Evaluate likelihood.
-    likl = modMaxFunctions.criterionFunction(userRequest)
-    
-    # Quality checks.
-    assert (isinstance(likl, float))    
-    assert (np.isfinite(likl))
-    assert (likl > 0.0)
-    
-    #Finishing.        
-    return likl

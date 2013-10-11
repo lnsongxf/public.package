@@ -1,6 +1,6 @@
 ''' ---------------------------------------------------------------------------
 
-    Copyright 2012    Philipp Eisenhauer 
+    Copyright 2013    Philipp Eisenhauer 
     
     This file is part of the Generalized Roy Model Toolbox.
     
@@ -22,7 +22,18 @@
     Wrapper for accessing the Generalized Roy Model Toolbox.
 
 '''
+from clsGrm          import *
 
-from clsUser         import *
+from clsCrit         import *
+
+from clsModel        import *
+
+from clsParas        import *
+
+from clsRequest      import *
 
 from modMaxInterface import *
+
+from tools.modAuxiliaryFunctions import *
+
+from tools.initFile.interface import initialize
