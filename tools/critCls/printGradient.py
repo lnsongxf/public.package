@@ -49,19 +49,12 @@ parser.add_argument('-init', \
 
 initFile = _distributeInput(parser)
 
-''' Check for required files.
-'''
-assert (os.path.isfile('parasObj.grm.pkl'))
-assert (os.path.isfile('stepParas.grm.out'))
-
 ''' Load ingredients.
 '''
-modelObj, _, requestObj, _ = grmToolbox.initialize(initFile)
+modelObj, parasObj, requestObj, _ = grmToolbox.initialize(initFile)
 
 ''' Update parameter class.
 '''
-parasObj = pkl.load(open('parasObj.grm.pkl', 'r'))
-
 parasObj = grmToolbox.updateParameters(parasObj)
 
 ''' Prepare interface.
