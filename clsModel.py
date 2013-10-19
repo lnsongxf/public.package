@@ -87,8 +87,7 @@ class modelCls(clsMeta.meta):
             
         # Surplus estimation.
         self.attr['surpEstimation'] = \
-            (self.attr['xExAnte'].shape[1] > self.attr['G'].shape[1])
-        
+            (self.attr['numCovarsExclBeneExAnte'] > 0)
         
     def _getCommonSupport(self):
         ''' Calculate common support.

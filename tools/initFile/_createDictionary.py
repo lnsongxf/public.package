@@ -434,14 +434,16 @@ def _processDIST(initDict, currentLine):
     # Antibugging.
     assert (isinstance(initDict, dict))
     assert (isinstance(currentLine, list))
-    assert (len(currentLine) == 3)
+    assert (len(currentLine) == 2)
     
     # Process information.   
-    name  = currentLine[0]
-    which = currentLine[1]
+    assert (currentLine[0] in ['rho0', 'rho1'])
+    
+    name  = currentLine[0][:-1]
+    which = currentLine[0][-1]
 
-    isFree = (currentLine[2][0] != '!')
-    value  = currentLine[2].replace('!','')
+    isFree = (currentLine[1][0] != '!')
+    value  = currentLine[1].replace('!','')
 
     if(name not in initDict['DIST'].keys()):
         
@@ -451,7 +453,7 @@ def _processDIST(initDict, currentLine):
                   
     initDict['DIST'][name][which]['value'] = float(value)
     initDict['DIST'][name][which]['free']  = isFree
-            
+
     # Finishing.
     return initDict
         
