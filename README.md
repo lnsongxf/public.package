@@ -11,5 +11,5 @@ http://www.policy-lab.org/grmToolbox
 
 Contact:
 
-Philipp Eisenhauer, eisenhauer@policy-lab.org
+info@policy-lab.org
 
