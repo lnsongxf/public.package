@@ -1,4 +1,4 @@
-grmEstimatorToolbox
+grmToolbox
 ===================
 
 Toolbox for the estimation of the Generalized Roy Model as presented in:
