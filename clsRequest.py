@@ -13,20 +13,22 @@ class requestCls(clsMeta.meta):
         self.attr = {}
         
         # Optional arguments.
-        self.attr['algorithm']  = 'bfgs'
-        self.attr['epsilon']    = 1.4901161193847656e-08
-        self.attr['gtol']       = 1e-05
-        self.attr['maxiter']    = None
+        self.attr['algorithm']       = None
+        self.attr['epsilon']         = None
+        self.attr['differences']     = None
+        
+        self.attr['gtol']            = None
+        self.attr['maxiter']         = None
 
-        self.attr['withAsymptotics'] = False
-        self.attr['numDraws']        = 5000
+        self.attr['withAsymptotics'] = None
+        self.attr['numDraws']        = None
         self.attr['hessian']         = None
-        self.attr['numSims']         = 1000
-        self.attr['alpha']           = 0.05  
+        self.attr['numSims']         = None
+        self.attr['alpha']           = None  
 
-        self.attr['withMarginalEffects']     = False        
-        self.attr['withConditionalEffects']  = False
-        self.attr['withAverageEffects']      = False
+        self.attr['withMarginalEffects']     = None        
+        self.attr['withConditionalEffects']  = None
+        self.attr['withAverageEffects']      = None
                 
         # Status
         self.isLocked = False
@@ -68,19 +70,16 @@ class requestCls(clsMeta.meta):
         # epsilon.
         assert (isinstance(self.attr['epsilon'], float))
         assert (self.attr['epsilon'] > 0.00)
+        
+        # differences.
+        assert (self.attr['differences'] in ['one-sided', 'two-sided'])
                 
         # hessian.
-        if(self.attr['hessian'] is not None):
-            
-            assert (self.attr['hessian'] in ['bfgs', 'numdiff'])
+        assert (self.attr['hessian'] in ['bfgs', 'numdiff'])
         
-            if(self.attr['algorithm'] == 'powell'):
+        if(self.attr['algorithm'] == 'powell'):
                 
-                assert(self.attr['hessian'] == 'bfgs')
-        
-        if(self.attr['withAsymptotics'] == True):
-            
-            assert (self.attr['hessian'] is not None)
+            assert(self.attr['hessian'] == 'bfgs')
         
         # Finishing.
         return True

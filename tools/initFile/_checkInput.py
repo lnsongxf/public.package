@@ -382,7 +382,7 @@ def _checkESTIMATION(initDict):
     # Check keys.
     keys = set(['algorithm', 'maxiter', 'start', 'gtol', 'epsilon', 'marginal',\
                 'conditional', 'average', 'asymptotics', 'hessian', \
-                'draws', 'simulations', 'alpha'])
+                'draws', 'simulations', 'alpha', 'differences'])
 
     assert (keys == set(initDict['ESTIMATION'].keys()))
     
@@ -413,6 +413,8 @@ def _checkESTIMATION(initDict):
 
     alpha       =  initDict['ESTIMATION']['alpha']   
     
+    differences =  initDict['ESTIMATION']['differences']   
+    
     # Checks.
     assert (start in ['manual', 'auto'])
     
@@ -441,6 +443,8 @@ def _checkESTIMATION(initDict):
     
     assert (isinstance(alpha, float))
     assert (0 < alpha < 1.00)
+    
+    assert (differences in ['one-sided', 'two-sided'])
     
     # Implications.
     if(algorithm == 'powell'): assert (hessian == 'bfgs')

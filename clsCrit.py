@@ -85,8 +85,10 @@ class critCls(clsMeta.meta):
 
         parasObj   = grmObj.getAttr('parasObj')
       
-        epsilon  = requestObj.attr['epsilon']
-        maxiter  = requestObj.attr['maxiter']
+        epsilon     = requestObj.getAttr('epsilon')
+        differences = requestObj.getAttr('differences')
+        
+        maxiter     = requestObj.getAttr('maxiter')
         
         # Auxiliary statistics.
         numFree = parasObj.getAttr('numFree')
@@ -111,10 +113,27 @@ class critCls(clsMeta.meta):
             
             # Calculate step size.
             ei[k] = 1.0
+            
             d     = epsilon*ei
     
             # Gradient approximation.
-            grad[k] = (self.evaluate(x + d, 'function') - f0)/d[k]
+            if(differences == 'one-sided'):
+                
+                upper = self.evaluate(x + d, 'function')
+                
+                lower = f0
+                
+                
+                grad[k] = (upper - lower)/d[k]
+            
+            if(differences == 'two-sided'):
+                
+                upper = self.evaluate(x + d, 'function')
+                
+                lower = self.evaluate(x - d, 'function')
+                
+                
+                grad[k] = (upper - lower)/(2.0*d[k])
             
             # Reset step size.
             ei[k] = 0.0

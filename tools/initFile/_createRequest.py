@@ -16,7 +16,11 @@ def constructRequest(initDict):
     
     requestObj.setAttr('algorithm', initDict['ESTIMATION']['algorithm'])
     
+
     requestObj.setAttr('epsilon', initDict['ESTIMATION']['epsilon'])
+    
+    requestObj.setAttr('differences', initDict['ESTIMATION']['differences'])
+    
     
     requestObj.setAttr('gtol', initDict['ESTIMATION']['gtol'])
     
