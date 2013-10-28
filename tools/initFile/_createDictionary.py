@@ -32,30 +32,29 @@ def processInput(initFile):
             '''
             isEmpty, isKeyword = _processCases(currentLine)
             
-            if(isEmpty):    continue
-           
-            if(isKeyword):  keyword = currentLine[0]
-            
-            if(isKeyword and (keyword in ['COST', 'BENE'])): 
+            if(isEmpty):    
                 
-                which = None
-                group = None
-                    
-                which = currentLine[0]
+                continue
+           
+            elif(isKeyword):  
+                
+                keyword = currentLine[0]
             
-                if(which == 'BENE'): group = currentLine[1]
-            
-            if(isKeyword): continue
+                continue
             
             ''' Process major blocks.
             '''
             if(keyword ==  'DATA'):
                 
                 initDict = _processDATA(initDict, currentLine)
-                
-            if(keyword in ['BENE', 'COST']):
+
+            if(keyword == 'BENE'):
     
-                initDict = _processEQN(initDict, currentLine, which, group)
+                initDict = _processBENE(initDict, currentLine)
+                                
+            if(keyword == 'COST'):
+    
+                initDict = _processCOST(initDict, currentLine)
             
             if(keyword ==  'DIST'):
                 
@@ -344,15 +343,14 @@ def _processCases(currentLine):
     # Finishing.
     return isEmpty, isKeyword
 
-def _processEQN(initDict, currentLine, which, group):
-    ''' Process DIST block.
+''' Processing of major blocks.
+'''
+def _processBENE(initDict, currentLine):
+    ''' Process BENE block.
     '''
     # Antibugging.
     assert (isinstance(initDict, dict))
     assert (isinstance(currentLine, list))
-    assert (isinstance(which, str))
-    
-    if(which == 'BENE'): assert (isinstance(group, str))
     
     # Process information.   
     type_ = currentLine[0]
@@ -361,69 +359,83 @@ def _processEQN(initDict, currentLine, which, group):
     
     if(type_ == 'coeff'):
             
+        pos = currentLine[1]
+        
+        assert (len(currentLine) == 5)
+
+        assert (currentLine[4].upper() in ['TRUE', 'FALSE'])
+
+        info  = (currentLine[4].upper() == 'TRUE')
+
+        isFree = (currentLine[2][0] != '!')
+        value  = currentLine[2].replace('!','')
+            
+        initDict['BENE']['TREATED']['coeffs']['values'] += [float(value)]
+        initDict['BENE']['TREATED']['coeffs']['free']   += [isFree]   
+       
+        isFree = (currentLine[3][0] != '!')
+        value  = currentLine[3].replace('!','')
+            
+        initDict['BENE']['UNTREATED']['coeffs']['values'] += [float(value)]
+        initDict['BENE']['UNTREATED']['coeffs']['free']   += [isFree]   
+        
+        for subgroup in ['TREATED', 'UNTREATED']:
+
+            initDict['BENE'][subgroup]['coeffs']['info']  += [info]            
+            initDict['BENE'][subgroup]['coeffs']['pos']   += [int(pos)]            
+
+    if(type_ in ['sd', 'int']):
+
+        assert (len(currentLine) == 3)
+            
+        isFree = (currentLine[1][0] != '!')
+        value  = currentLine[1].replace('!','')
+                  
+        initDict['BENE']['TREATED'][type_]['values'] += [float(value)]
+        initDict['BENE']['TREATED'][type_]['free']   += [isFree]
+
+        isFree = (currentLine[2][0] != '!')
+        value  = currentLine[2].replace('!','')
+                  
+        initDict['BENE']['UNTREATED'][type_]['values'] += [float(value)]
+        initDict['BENE']['UNTREATED'][type_]['free']   += [isFree]
+                            
+    # Finishing.
+    return initDict
+
+def _processCOST(initDict, currentLine):
+    ''' Process COST block.
+    '''
+    # Antibugging.
+    assert (isinstance(initDict, dict))
+    assert (isinstance(currentLine, list))
+    
+    # Process information.   
+    type_ = currentLine[0]
+    
+    assert (type_ in ['coeff', 'int', 'sd'])
+    
+    if(type_ == 'coeff'):
+
+        assert (len(currentLine) == 3)
+            
         pos    = currentLine[1]
         isFree = (currentLine[2][0] != '!')
         value  = currentLine[2].replace('!','')
         
-        if(which == 'BENE'):
-            
-            assert (len(currentLine) == 4)
-
-            assert (currentLine[3].upper() in ['TRUE', 'FALSE'])
-
-            info  = (currentLine[3].upper() == 'TRUE')
-                
-            initDict[which][group]['coeffs']['values'] += [float(value)]
-                
-            initDict[which][group]['coeffs']['pos']    += [int(pos)]            
-                
-            initDict[which][group]['coeffs']['info']   += [info]            
-            
-            initDict[which][group]['coeffs']['free']   += [isFree]   
-            
-        if(which == 'COST'):
-            
-            assert (len(currentLine) == 3)
-    
-            initDict[which]['coeffs']['values'] += [float(value)]
-                
-            initDict[which]['coeffs']['pos']    += [int(pos)]            
-
-            initDict[which]['coeffs']['free']   += [isFree]   
-
-    if(type_ == 'int'):
-        
-        assert (len(currentLine) == 2)
-    
-        isFree = (currentLine[1][0] != '!')
-        value  = currentLine[1].replace('!','')
-    
-        if(which == 'BENE'):
-                
-            initDict[which][group]['int']['values'] += [float(value)]
-            initDict[which][group]['int']['free']   += [isFree]   
-        
-        if(which == 'COST'):
-                
-            initDict[which]['int']['values'] += [float(value)]  
-            initDict[which]['int']['free']   += [isFree]   
+        initDict['COST']['coeffs']['values'] += [float(value)]
+        initDict['COST']['coeffs']['pos']    += [int(pos)]            
+        initDict['COST']['coeffs']['free']   += [isFree]   
                         
-    if(type_ == 'sd'):
+    if(type_ in ['sd', 'int']):
 
         assert (len(currentLine) == 2)
             
         isFree = (currentLine[1][0] != '!')
         value  = currentLine[1].replace('!','')
                   
-        if(which == 'BENE'):
-                
-            initDict[which][group]['sd']['values'] += [float(value)]
-            initDict[which][group]['sd']['free']   += [isFree]
-                    
-        if(which == 'COST'):
-                
-            initDict[which]['sd']['values'] += [float(value)]     
-            initDict[which]['sd']['free']   += [isFree]       
+        initDict['COST'][type_]['values'] += [float(value)]     
+        initDict['COST'][type_]['free']   += [isFree]       
     
     # Finishing.
     return initDict
