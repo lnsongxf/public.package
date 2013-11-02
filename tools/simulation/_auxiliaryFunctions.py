@@ -90,7 +90,7 @@ def _simulateExogenous(simDat, initDict):
 
     simAgents = initDict['SIMULATION']['agents']
 
-    all_      =  initDict['DERIV']['pos']['all']
+    all_      = initDict['DERIV']['pos']['all']
 
     outcome   = initDict['DATA']['outcome']
     

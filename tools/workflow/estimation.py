@@ -78,9 +78,17 @@ if(restart):
     assert (os.path.isfile('parasObj.grm.pkl'))
     assert (os.path.isfile('stepParas.grm.out'))
     
-    # Update parameter object.    
+    # Load parameter objects.   
     parasObj = pkl.load(open('parasObj.grm.pkl', 'r'))
-       
+    
+    # Integrity checks. 
+    modelAgents = modelObj.getAttr('numAgents')
+    
+    parasAgents = parasObj.getAttr('numAgents')
+
+    assert (modelAgents == parasAgents)    
+
+    # Update parameter objects.
     parasObj = grmToolbox.updateParameters(parasObj)
 
     parasObj.updateStart()

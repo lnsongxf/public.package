@@ -34,6 +34,8 @@ class parasCls(clsMeta.meta):
 
         self.attr['xExAnte']                 = modelObj.getAttr('xExAnte')
         self.attr['xExPost']                 = modelObj.getAttr('xExPost')
+
+        self.attr['numAgents']               = modelObj.getAttr('numAgents')
         
         # Initialization.
         self.attr['modelObj']  = modelObj    

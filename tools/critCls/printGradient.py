@@ -9,7 +9,6 @@ import argparse
 
 from time import localtime, strftime
 
-import cPickle  as pkl
 import numpy    as np
 
 # edit pythonpath
@@ -27,14 +26,16 @@ def _distributeInput(parser):
     args = parser.parse_args()
 
     # Distribute arguments.
-    initFile = args.initFile 
-
+    initFile      = args.initFile 
+    useSimulation = args.simulation
+    
     # Assertions.
     assert (initFile is not None)
     assert (os.path.exists(initFile))
-    
+    assert (useSimulation in [True, False])
+        
     # Finishing.
-    return initFile
+    return initFile, useSimulation
 
 ''' Process command line arguments.
 '''
@@ -47,11 +48,17 @@ parser.add_argument('-init', \
                     default = None, \
                     help    = 'Initialization file.')
 
-initFile = _distributeInput(parser)
+parser.add_argument('-simulation', \
+                    action  = 'store_true', \
+                    dest    = 'simulation', \
+                    default = False, \
+                    help    = 'Use SIMULATION information.')
+
+initFile, useSimulation = _distributeInput(parser)
 
 ''' Load ingredients.
 '''
-modelObj, parasObj, requestObj, _ = grmToolbox.initialize(initFile)
+modelObj, parasObj, requestObj, _ = grmToolbox.initialize(initFile, useSimulation)
 
 ''' Update parameter class.
 '''
