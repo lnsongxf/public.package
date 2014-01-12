@@ -1,7 +1,7 @@
 grmToolbox
 ===================
 
-Toolbox for the estimation of the Generalized Roy model as presented in:
+Toolbox for the estimation of the generalized Roy model as presented in:
 
 Eisenhauer, Philipp and James J. Heckman, Edward Vytlacil (2013): The Generalized Roy Model and Cost-Benefit Analysis of Social Programs, Unpublished Manuscript. 
 
