@@ -9,6 +9,34 @@ import numpy as np
 # project library
 import grmToolbox
 
+def _createMock(initFile):
+    ''' Create a mock dataset which allows for use of existing routines 
+        in the case of a missing source dataset. 
+    '''
+    
+    initDict = grmToolbox.processInput(initFile)
+    
+    isMock = (os.path.exists(initDict['DATA']['source']) == False)
+    
+    obsAgents = initDict['DATA']['agents']
+    
+    pos  = initDict['DATA']['treatment']
+    
+    max_      = initDict['DERIV']['pos']['max']
+    
+    simDat      = np.empty((obsAgents, max_ + 1), dtype = 'float')
+    
+    simDat[:,:] = np.random.randn(obsAgents, max_ + 1)
+    
+    simDat[:,pos] = np.random.random_integers(0, 1, obsAgents)
+    
+    source = initDict['DATA']['source']
+    
+    np.savetxt(source, simDat, fmt = '%15.10f')
+    
+    # Finishing.
+    return isMock
+
 def _simulateEndogenous(simDat, parasObj, initDict):
     ''' Simulate the endogenous characteristics such as choices and outcomes.
     '''
@@ -59,7 +87,7 @@ def _simulateEndogenous(simDat, parasObj, initDict):
     # Potential Outcomes
     outcTreated   = parasObj.getParameters('outc', 'treated')
     outcUntreated = parasObj.getParameters('outc', 'untreated') 
-            
+    
     Y1 = np.dot(outcTreated, xExPost.T)   + U1
     Y0 = np.dot(outcUntreated, xExPost.T) + U0
     

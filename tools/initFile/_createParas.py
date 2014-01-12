@@ -13,7 +13,7 @@ import grmToolbox
 
 ''' Main function.
 '''
-def constructParas(initDict, modelObj):
+def constructParas(initDict, modelObj, isSimulation):
     ''' Construct parameter object.
     '''
     # Antibugging.
@@ -29,7 +29,7 @@ def constructParas(initDict, modelObj):
     parasObj = _initializeParameters(initDict, modelObj)
         
     # Update with automatic starting values.
-    if(start == 'auto'):
+    if(start == 'auto' and (not isSimulation)):
     
         parasObj = _autoStart(parasObj, modelObj)
         

@@ -321,7 +321,6 @@ def _checkDATA(initDict):
 
     # Checks.
     assert (isinstance(source, str))
-    assert (os.path.exists(source))
     
     if(agents is not None):
 

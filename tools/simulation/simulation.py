@@ -27,13 +27,15 @@ def _distributeInput(parser):
 
     # Distribute arguments.
     initFile = args.initFile 
+    update   = args.update 
 
     # Assertions.
     assert (initFile is not None)
     assert (os.path.exists(initFile))
+    assert (update in [True, False])
     
     # Finishing.
-    return initFile
+    return initFile, update
 
 ''' Process command line arguments.
 '''
@@ -46,11 +48,21 @@ parser.add_argument('-init', \
                     default = None, \
                     help    = 'Initialization file.')
 
-initFile = _distributeInput(parser)
+parser.add_argument('-update', \
+                    action  = 'store_true', \
+                    dest    = 'update', \
+                    default = False, \
+                    help    = 'Update parameter class.')
+
+initFile, update = _distributeInput(parser)
+
+''' Mock dataset.
+'''
+isMock = auxFunc._createMock(initFile)
 
 ''' Process initialization file.
 '''
-_, parasObj, _, initDict = grmToolbox.initialize(initFile)
+_, parasObj, _, initDict = grmToolbox.initialize(initFile, isSimulation = True)
 
 ''' Distribute information.
 '''
@@ -62,10 +74,12 @@ np.random.seed(seed)
 
 ''' Update parameter class.
 '''
-parasObj = grmToolbox.updateParameters(parasObj)
+if(update): parasObj = grmToolbox.updateParameters(parasObj)
 
 ''' Create simulated dataset.
-'''
+'''   
+if(isMock): os.remove(initDict['DATA']['source'])
+    
 simAgents = initDict['SIMULATION']['agents']
 
 max_      = initDict['DERIV']['pos']['max']

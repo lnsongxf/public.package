@@ -13,7 +13,7 @@ import _createRequest    as auxRequest
 
 ''' Main function.
 '''
-def initialize(initFile, useSimulation = False):
+def initialize(initFile, useSimulation = False, isSimulation = False):
     ''' Read initialization file and construct the objects required for the 
         estimation runs.
     '''
@@ -33,7 +33,7 @@ def initialize(initFile, useSimulation = False):
     # Construct objects.
     modelObj   = auxModel.constructModel(initDict)
     
-    parasObj   = auxParas.constructParas(initDict, modelObj)
+    parasObj   = auxParas.constructParas(initDict, modelObj, isSimulation)
     
     requestObj = auxRequest.constructRequest(initDict)
     

@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+
+# standard library
+import os
+import socket
+
+def build(bld):
+
+    os.chdir(bld.env.project_paths['GRM_ESTIMATOR'] + '/tests')
+        
+    ''' Unit tests for development on @heracles only.
+    '''
+    hostname = socket.gethostname()
+    
+    if(hostname == 'heracles'):
+
+        bld(features = 'run_py_script', source = 'testEstRuns.py', target = '',  version = 2)
+
+    ''' General testing example.
+    '''
+    bld(features = 'run_py_script', source = 'testParasCls.py', target = '',  version = 2)
+    

@@ -37,3 +37,5 @@ from modMaxInterface import *
 from tools.modAuxiliaryFunctions import *
 
 from tools.initFile.interface import initialize
+
+from tools.initFile._createDictionary import processInput 

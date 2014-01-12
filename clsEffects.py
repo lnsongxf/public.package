@@ -256,7 +256,14 @@ class effectCls(clsMeta.meta):
         rslt['ste']['average']   = smteExAnteAll.mean()
         rslt['ste']['treated']   = smteExAnteAll[D == True].mean()
         rslt['ste']['untreated'] = smteExAnteAll[D == False].mean()
+        
+        # Antibugging.
+        for obj in ['bteExPost', 'bteExAnte', 'cte', 'ste']:
             
+            for subgroup in ['average', 'treated', 'untreated']:
+                
+                assert (np.isfinite(rslt[obj][subgroup]))
+        
         # Finishing.
         return rslt
 
