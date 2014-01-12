@@ -12,7 +12,7 @@ def build(bld):
     '''
     hostname = socket.gethostname()
     
-    if(hostname == 'heracles'):
+    if((hostname == 'heracles') and (os.path.exists('testEstRuns.py'))):
 
         bld(features = 'run_py_script', source = 'testEstRuns.py', target = '',  version = 2)
 
