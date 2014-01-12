@@ -4,12 +4,7 @@
 # standard library
 import os
 import shutil
-import sys
 import fnmatch
-
-# project library
-project_root = os.getcwd()
-sys.path.insert(0, os.path.join(project_root, 'dev/py'))
 
 # build directories
 top = '.'
