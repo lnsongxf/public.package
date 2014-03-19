@@ -14,6 +14,14 @@ from nose.tools  import *
 dir_ = os.path.abspath(os.path.split(sys.argv[0])[0])
 os.chdir(dir_)
 
+# Pythonpath
+dir_ = os.path.dirname(os.path.realpath(__file__)).replace('/tests', '')
+sys.path.insert(0, dir_)
+
+import grmToolbox
+
+from tools.workflow.estimation import estimate
+
 ''' Test class.
 '''
 class testParasCls(object):
@@ -25,7 +33,7 @@ class testParasCls(object):
         # Run command.
         initFile = '../dat/testInit_A.ini'
         
-        os.system('../bin/grmToolbox-estimation -init ' + initFile)
+        estimate(initFile, restart = False, useSimulation = False)
         
         # Assessment of results.
         rsltObj = pkl.load(open('rsltObj.grm.pkl', 'r'))
@@ -39,14 +47,14 @@ class testParasCls(object):
             
             value = paraObj.getAttr('value')
             
-            ext  = parasObj._transformToExternal(paraObj, value)
+            ext   = parasObj._transformToExternal(paraObj, value)
             
-            int_ = parasObj._transformToInternal(paraObj, ext)
+            int_  = parasObj._transformToInternal(paraObj, ext)
             
             assert_almost_equal(value, int_)
                     
         # Cleanup.
-        os.system('../bin/grmToolbox-cleanup')
+        grmToolbox.cleanup(isRestart = False)
         
 if __name__ == '__main__': 
     

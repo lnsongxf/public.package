@@ -37,6 +37,54 @@ def _distributeInput(parser):
     # Finishing.
     return initFile, update
 
+def _writeInfo(parasObj, target, rslt):
+    ''' Write out some additional infos about the simulated dataset.
+    '''
+    
+    # Auxiliary objects.
+    fileName     = target.split('.')[0] 
+    
+    numAgents    = str(len(rslt['Y']))
+    
+    numTreated   = np.sum(rslt['D'] == 1)
+    
+    numUntreated = np.sum(rslt['D'] == 0)
+    
+    # Write out structural parameters.
+    paras = parasObj.getValues(isExternal = False, isAll = True)
+    
+    np.savetxt(fileName + '.paras.grm.out', paras, fmt = '%15.10f')
+    
+    # Write out information on agent experiences.    
+    with open(fileName + '.infos.grm.out', 'w') as file_:
+         
+        file_.write('\n Simulated Economy\n\n')
+        
+        file_.write('   Number of Observations: ' + numAgents + '\n\n')
+
+
+        string  = '''{0[0]:<10} {0[1]:>12}\n'''
+    
+        file_.write('   Choices:  \n\n') 
+        
+        file_.write(string.format(['     Treated  ', numTreated]))
+
+        file_.write(string.format(['     Untreated', numUntreated]))
+
+        file_.write('\n\n')    
+        
+        
+        string  = '''{0[0]:<10} {0[1]:15.5f}\n'''
+        
+        file_.write('   Outcomes:  \n\n') 
+        
+        file_.write(string.format(['     Treated  ', np.mean(rslt['Y'][rslt['D'] == 1])]))
+
+        file_.write(string.format(['     Untreated', np.mean(rslt['Y'][rslt['D'] == 0])]))
+        
+        
+        file_.write('\n\n')
+            
 ''' Process command line arguments.
 '''
 parser = argparse.ArgumentParser(description = 
@@ -80,9 +128,9 @@ if(update): parasObj = grmToolbox.updateParameters(parasObj)
 '''   
 if(isMock): os.remove(initDict['DATA']['source'])
     
-simAgents = initDict['SIMULATION']['agents']
+simAgents   = initDict['SIMULATION']['agents']
 
-max_      = initDict['DERIV']['pos']['max']
+max_        = initDict['DERIV']['pos']['max']
 
 simDat      = np.empty((simAgents, max_ + 1), dtype = 'float')
 
@@ -108,3 +156,6 @@ parasObj.lock()
 ''' Save dataset. 
 '''
 np.savetxt(target, simDat, fmt = '%15.10f')
+
+_writeInfo(parasObj, target, rslt)
+

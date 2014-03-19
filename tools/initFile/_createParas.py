@@ -399,6 +399,16 @@ def _autoStart(parasObj, modelObj):
     paraObj.setAttr('value', sd)
         
     parasObj._replaceParasObj(paraObj)
+    
+    # Correlations.
+    for corr in ['U1,V', 'U0,V']:
+
+        paraObj = parasObj.getParameters('rho', corr, isObj = True)
+            
+        paraObj.setAttr('value', 0.0)
+            
+        parasObj._replaceParasObj(paraObj)
+    
 
     # Quality.
     assert (parasObj.getStatus() == True)

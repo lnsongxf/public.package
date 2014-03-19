@@ -37,72 +37,93 @@ def _distributeInput(parser):
     # Finishing.
     return initFile, restart, useSimulation
 
+def fork():
+    ''' Fork child process to run estimation in the background.
+    '''
+        
+    pid = os.fork()
+
+    if(pid > 0): sys.exit(0)
+
+    pid = os.getpid()
+    
+    np.savetxt('.pid', [pid], fmt ='%d')
+    
 ''' Process command line arguments.
 '''
-parser = argparse.ArgumentParser(description = 
-'Start estimation run using the grmToolbox.')
-
-parser.add_argument('-restart', \
-                    action  = 'store_true', \
-                    dest    = 'restart', \
-                    default = False, \
-                    help    = 'Restart estimation run.')
-
-parser.add_argument('-simulation', \
-                    action  = 'store_true', \
-                    dest    = 'simulation', \
-                    default = False, \
-                    help    = 'Use SIMULATION information.')
-
-parser.add_argument('-init', \
-                    action  = 'store', \
-                    dest    = 'initFile', \
-                    default = None, \
-                    help    = 'Initialization file.')
-
-initFile, restart, useSimulation = _distributeInput(parser)
-
-''' Cleanup from previous run.
-'''
-grmToolbox.cleanup(restart)
-
-''' Process initialization file.
-'''
-modelObj, parasObj, requestObj, _ = grmToolbox.initialize(initFile, useSimulation)
-
-''' Process restart.
-'''
-if(restart):
+def estimate(initFile, restart, useSimulation):
+    ''' Estimate specified model.
+    '''
     
-    # Antibugging.
-    assert (os.path.isfile('parasObj.grm.pkl'))
-    assert (os.path.isfile('stepParas.grm.out'))
+    # Cleanup
+    grmToolbox.cleanup(restart)
     
-    # Load parameter objects.   
-    parasObj = pkl.load(open('parasObj.grm.pkl', 'r'))
+    #Process initialization file.
+    modelObj, parasObj, requestObj, _ = grmToolbox.initialize(initFile, useSimulation)
     
-    # Integrity checks. 
-    modelAgents = modelObj.getAttr('numAgents')
-    
-    parasAgents = parasObj.getAttr('numAgents')
-
-    assert (modelAgents == parasAgents)    
-
-    # Update parameter objects.
-    parasObj = grmToolbox.updateParameters(parasObj)
-
-    parasObj.updateStart()
-    
-    parasObj.store('parasObj.grm.pkl')
-
-else:
-    
-    parasObj.store('parasObj.grm.pkl')
-   
-    paras = parasObj.getValues(isExternal = False, isAll = False)
+    # Process restart.
+    if(restart):
         
-    np.savetxt('stepParas.grm.out', paras, fmt = '%25.12f')
+        # Antibugging.
+        assert (os.path.isfile('parasObj.grm.pkl'))
+        assert (os.path.isfile('stepParas.grm.out'))
+        
+        # Load parameter objects.   
+        parasObj = pkl.load(open('parasObj.grm.pkl', 'r'))
+        
+        # Integrity checks. 
+        modelAgents = modelObj.getAttr('numAgents')
+        
+        parasAgents = parasObj.getAttr('numAgents')
     
-''' Maximization process.
+        assert (modelAgents == parasAgents)    
+    
+        # Update parameter objects.
+        parasObj = grmToolbox.updateParameters(parasObj)
+    
+        parasObj.updateStart()
+        
+        parasObj.store('parasObj.grm.pkl')
+    
+    else:
+        
+        parasObj.store('parasObj.grm.pkl')
+       
+        paras = parasObj.getValues(isExternal = False, isAll = False)
+            
+        np.savetxt('stepParas.grm.out', paras, fmt = '%25.12f')
+            
+    # Run optimization.
+    grmToolbox.maximize(modelObj, parasObj, requestObj)
+
+''' Execution of module as script.
 '''
-grmToolbox.maximize(modelObj, parasObj, requestObj)
+if __name__ == '__main__':
+    
+    parser = argparse.ArgumentParser(description = 
+    'Start estimation run using the grmToolbox.')
+    
+    parser.add_argument('-restart', \
+                        action  = 'store_true', \
+                        dest    = 'restart', \
+                        default = False, \
+                        help    = 'Restart estimation run.')
+    
+    parser.add_argument('-simulation', \
+                        action  = 'store_true', \
+                        dest    = 'simulation', \
+                        default = False, \
+                        help    = 'Use SIMULATION information.')
+    
+    parser.add_argument('-init', \
+                        action  = 'store', \
+                        dest    = 'initFile', \
+                        default = None, \
+                        help    = 'Initialization file.')
+    
+    
+    fork() 
+
+    initFile, restart, useSimulation = _distributeInput(parser)
+
+    estimate(initFile, restart, useSimulation)

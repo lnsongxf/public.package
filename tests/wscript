@@ -6,7 +6,7 @@ import socket
 
 def build(bld):
 
-    os.chdir(bld.env.project_paths['GRM_ESTIMATOR'] + '/tests')
+    os.chdir(bld.env.project_paths['GRM_TOOLBOX'] + '/tests')
         
     ''' Unit tests for development on @heracles only.
     '''

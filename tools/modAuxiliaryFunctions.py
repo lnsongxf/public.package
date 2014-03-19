@@ -129,6 +129,8 @@ def cleanup(isRestart):
     # Construct files list.
     fileList = glob.glob('*.grm.*')
     
+    if(os.path.exists('.pid')): fileList = fileList + ['.pid']
+    
     if(isRestart): 
         
         for file_ in ['parasObj.grm.pkl', 'stepParas.grm.out']:

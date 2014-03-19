@@ -16,9 +16,9 @@ def configure(conf):
 
     conf.env.project_paths['MAIN'] = os.getcwd()
     
-    conf.env.project_paths['GRM_ESTIMATOR'] = '.'
+    conf.env.project_paths['GRM_TOOLBOX'] = '.'
 
-    tools_dir = conf.env.project_paths['GRM_ESTIMATOR'] + '/tools'
+    tools_dir = conf.env.project_paths['GRM_TOOLBOX'] + '/tools'
 
     conf.load('runPyScript', tooldir = tools_dir)
 

@@ -239,9 +239,7 @@ class critCls(clsMeta.meta):
         
         # Logging.
         self.attr['currentFval'] = likl
-        
-        self._write('current')
-        
+                
         isStart = (self.attr['startFval'] is None)
 
         if(isStart):
@@ -281,7 +279,7 @@ class critCls(clsMeta.meta):
         ''' Write information to disk.
         '''
         # Antibugging.
-        assert (task in ['start', 'step', 'current'])
+        assert (task in ['start', 'step'])
         
         # Distribute class attributes.
         grmObj = self.getAttr('grmObj')
@@ -289,11 +287,9 @@ class critCls(clsMeta.meta):
         parasObj = grmObj.getAttr('parasObj')
 
         # Collect objects.
-        fval  = np.array([self.attr['currentFval']]) 
         paras = parasObj.getValues(isExternal = False, isAll = False)
         
         # Save.
-        np.savetxt(task + 'Fval.grm.out',  fval,  fmt = '%25.20f')
         np.savetxt(task + 'Paras.grm.out', paras, fmt = '%25.12f')
         
     def _checkIntegrity(self):
