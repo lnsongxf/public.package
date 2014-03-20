@@ -9,7 +9,7 @@ Online Documentation:
 
 http://www.policy-lab.org/grmToolbox
 
-Project Hompage:
+Project Homepage:
 
 http://www.policy-lab.org/cb-analysis
 
