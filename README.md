@@ -11,7 +11,7 @@ http://www.policy-lab.org/grmToolbox
 
 Project Hompage:
 
-http://www.policy-lab.org/cb-Analysis
+http://www.policy-lab.org/cb-analysis
 
 Contact:
 
