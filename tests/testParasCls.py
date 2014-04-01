@@ -20,7 +20,7 @@ sys.path.insert(0, dir_)
 
 import grmToolbox
 
-from tools.workflow.estimation import estimate
+from scripts.estimate import estimate
 
 ''' Test class.
 '''

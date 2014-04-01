@@ -52,7 +52,7 @@ class maxCls(clsMeta.meta):
 
         requestObj = grmObj.getAttr('requestObj')
         
-        algorithm = requestObj.attr['algorithm']
+        algorithm  = requestObj.attr['algorithm']
                 
         # Maximization.
         if(algorithm == 'bfgs'):
@@ -63,11 +63,51 @@ class maxCls(clsMeta.meta):
             
             maxRslt = self._powell()
         
+        # Logging.
+        self._logging(maxRslt)
+        
         # Finishing.
         return maxRslt
         
     ''' Private Methods.
     '''
+    def _logging(self, maxRslt):
+        ''' Finalize logging.
+        '''
+        # Antibugging.
+        assert (self.getStatus() == True)
+        
+        # Distribute information.
+        fval    = str(maxRslt['fun'])
+        
+        if(maxRslt['grad'] is not None):
+        
+            grad = str(np.amax(np.abs(maxRslt['grad'])))
+        
+        else:
+            
+            grad = 'None'
+        
+        success = str(maxRslt['success'])
+        
+        msg     = maxRslt['message']
+        
+        # Write to file.
+        file_ = open('grmToolbox.grm.log', 'a')
+        
+        file_.write('''\n Optimization Report \n''')        
+        
+        file_.write('''\n      Function:   ''' + fval)
+
+        file_.write('''\n      Gradient:   ''' + grad + '\n')
+
+        file_.write('''\n      Success:    ''' + success)
+        
+        file_.write('''\n      Message:    ''' + msg + '\n\n\n\n')
+        
+        file_.close()   
+        
+    
     def _powell(self):
         ''' Method that performs the Powell maximization.
         '''
@@ -86,7 +126,7 @@ class maxCls(clsMeta.meta):
         critFunc   = self.getAttr('critFunc')
         
         # Staring values.
-        startingValues = parasObj.getValues(isExternal = True, isAll = False)
+        startingValues = parasObj.getValues(version = 'external', which = 'free')
         
         rslt = fmin_powell(
                 
@@ -151,7 +191,7 @@ class maxCls(clsMeta.meta):
         critFunc   = self.getAttr('critFunc')
                 
         # Staring values.
-        startingValues = parasObj.getValues(isExternal = True, isAll = False)
+        startingValues = parasObj.getValues(version = 'external', which = 'free')
         
         # Maximization.
         rslt = fmin_bfgs(

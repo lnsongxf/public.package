@@ -230,14 +230,14 @@ class parasCls(clsMeta.meta):
         # Finishing.
         return rslt
 
-    def getValues(self, isExternal, isAll):
+    def getValues(self, version, which):
         ''' Get all free parameter values.
         '''    
         # Antibugging.
         assert (self.getStatus() == True)
         assert (self._checkIntegrity() == True)
-        assert (isExternal in [True, False])
-        assert (isAll in [True, False])
+        assert (version in ['external', 'internal'])
+        assert (which in ['free', 'all'])
 
         # Main algorithm.
         paraObjs = self.attr['paraObjs']
@@ -248,11 +248,11 @@ class parasCls(clsMeta.meta):
             
             isFixed = (paraObj.getAttr('isFree') == False)
             
-            if(isFixed and (isAll is False)): continue
+            if(isFixed and (which == 'free')): continue
                         
             value = paraObj.getAttr('value')
             
-            if(isExternal):
+            if(version == 'external'):
 
                 value = self._transformToExternal(paraObj, paraObj.getAttr('value'))
                 
@@ -266,7 +266,7 @@ class parasCls(clsMeta.meta):
         assert (np.all(np.isfinite(rslt)))
         assert (rslt.dtype == 'float')
         
-        if(isAll): 
+        if(which == 'all'): 
             
             assert (rslt.shape == (self.attr['numParas'], ))
         
@@ -277,164 +277,6 @@ class parasCls(clsMeta.meta):
         # Finishing.
         return rslt
 
-    def modifyParameter(self,  counts, operation, bounds = None, value = None):
-        ''' Modify parameter.
-        '''
-        # Antibugging.
-        assert ((isinstance(counts, int)) or (isinstance(counts, list)))
-        assert (operation in ['fix', 'free', 'modifyValue', 'modifyBounds'])
-        
-        if(bounds is not None):
-            
-            assert (isinstance(bounds, tuple))
-            assert (len(bounds) == 2)
-            
-            lowerBound = bounds[0]
-            upperBound = bounds[1]
-            
-            assert (lowerBound is None) or (isinstance(lowerBound, float))
-            assert (upperBound is None) or (isinstance(upperBound, float))
-            
-            if((lowerBound is not None) and (upperBound is not None)):
-                
-                assert (lowerBound < upperBound)
-        
-        if(value is not None):
-            
-            assert (isinstance(value, float))
-
-        if(operation in ['fix', 'free']):
-            
-            assert (bounds is None)
-            assert (value is None)
-            
-        if(operation in ['modifyValue']):
-            
-            assert (bounds is None)
-            assert (value is not None)
-        
-            assert (isinstance(counts, int))
-        
-        if(operation in ['modifyBounds']):
-            
-            assert (bounds is not None)
-            assert (value is None)
-
-        # Type conversion.
-
-        if(isinstance(counts, int)): counts = [counts]
-
-        # Modifications.
-        if(operation == 'free'):
-        
-            for count in counts:
-                
-                paraObj = self.getParameter(count)
-        
-                # Antibugging.
-                assert (paraObj.getAttr('isFree') == False)
-            
-                # Distribute useful attributes.
-                value = paraObj.getAttr('value')
-                
-                type_ = paraObj.getAttr('type')
-            
-                # Modify object.
-                paraObj.setAttr('isFree', True)   
-            
-                paraObj.setAttr('startVal', value)         
-        
-                if(type_ not in ['rho', 'sd']):
-                    
-                    paraObj.setAttr('bounds', (None, None))  
-                    
-                elif(type_ == 'rho'):
-                
-                    paraObj.setAttr('bounds', (-0.99, 0.99))  
-                    
-                elif(type_ == 'sd'):
-                
-                    paraObj.setAttr('bounds', (0.01, None))          
-                    
-                if(type_ in ['rho', 'sd']):
-                    
-                    paraObj.setAttr('hasBounds', True)         
-
-        if(operation == 'fix'):
-        
-            for count in counts:
-                
-                paraObj = self.getParameter(count)
-                
-                # Antibugging.
-                assert (paraObj.getAttr('isFree') == True)
-            
-                # Modify object.    
-                paraObj.setAttr('isFree', False)
-
-                paraObj.setAttr('startVal', None)
-                            
-                paraObj.setAttr('bounds', (None, None))
-
-        if(operation == 'modifyValue'):
-        
-            for count in counts:
-                
-                paraObj = self.getParameter(count)
-                        
-                # Antibugging.
-                assert (value is not None)
-                
-                # Distribute useful attributes.
-                lowerBound, upperBound = paraObj.getAttr('bounds')
-                
-                # Check (possible) bounds.
-                if(lowerBound is not None): assert (lowerBound < value)
-                if(upperBound is not None): assert (upperBound > value)
-                
-                # Modify object.
-                paraObj.setAttr('value', value)
-
-        if(operation == 'modifyBounds'):
-        
-            for count in counts:
-                
-                paraObj = self.getParameter(count)
-                
-                # Antibugging.
-                assert (paraObj.getAttr('isFree'))
-                assert (bounds is not None)
-                assert (len(bounds) == 2)
-                assert (isinstance(bounds, tuple))
-            
-                # Distribute useful attributes.
-                lowerBound, upperBound = bounds[0], bounds[1]
-                type_ = paraObj.getAttr('type')
-                
-                # Check (possible) bounds.
-                if((lowerBound is not None) and (upperBound is not None)):
-
-                    assert (lowerBound < upperBound)
-                
-                if(lowerBound is not None): assert (lowerBound < paraObj.getAttr('value'))
-                if(upperBound is not None): assert (upperBound > paraObj.getAttr('value'))
-                
-                if(type_ == 'rho'):
-                    
-                    assert (lowerBound > -1.00) and (upperBound < 1.00)
-                
-                if(type_ == 'sd'):
-                    
-                    assert (lowerBound > 0.00)
-                            
-                paraObj.setAttr('bounds', (lowerBound, upperBound))
-
-        # Update.
-        self._replaceParasObj(paraObj)
-        
-        # Finishing.
-        return self
-            
     ''' All methods related to updating the parameters. 
     '''     
     def updateStart(self):
@@ -444,36 +286,32 @@ class parasCls(clsMeta.meta):
         paraObjs = self.attr['paraObjs']
         
         for paraObj in paraObjs:
-            
-            isFree = paraObj.getAttr('isFree')
-        
-            if(isFree):
- 
-                value = paraObj.getAttr('value')
+
+            value = paraObj.getAttr('value')
                 
-                paraObj.unlock()
+            paraObj.unlock()
             
-                paraObj.setAttr('startVal', value)
+            paraObj.setAttr('startVal', value)
                 
-                paraObj.lock()
+            paraObj.lock()
  
-                # Replace.        
-                self._replaceParasObj(paraObj)
+            # Replace.        
+            self._replaceParasObj(paraObj)
         
-    def updateValues(self, x, isExternal, isAll):
+    def update(self, x, version, which):
         ''' Update all free parameters.
         '''
         # Antibugging.
         assert (self.getStatus() == True)
         assert (self._checkIntegrity() == True)
-        assert (isExternal in [True, False])
-        assert (isAll in [True, False])
+        assert (version in ['external', 'internal'])
+        assert (which in ['free', 'all'])
         
         assert (isinstance(x, np.ndarray))
         assert (np.all(np.isfinite(x)))
         assert (x.dtype == 'float')
         
-        if(isAll):
+        if(which == 'all'):
             
             assert (x.shape == (self.getAttr('numParas'), ))
         
@@ -490,15 +328,15 @@ class parasCls(clsMeta.meta):
            
             isFixed = (paraObj.getAttr('isFree') == False)
             
-            if(isFixed and (isAll is False)): continue
+            if(isFixed and (which == 'free')): continue
             
             value = x[counter]
  
-            if(paraObj.getAttr('hasBounds') and isExternal):
+            if(paraObj.getAttr('hasBounds') and (version == 'external')):
                 
                 value = self._transformToInternal(paraObj, value)
-     
-            paraObj.setAttr('value', value)
+            
+            paraObj.setValue(value)
             
             counter += 1
         
@@ -778,6 +616,33 @@ class _paraContainer(clsMeta.meta):
         
     ''' Public get/set methods.
     '''
+    def setValue(self, arg):
+        ''' Set value of parameter object.
+        '''
+        # Antibugging.
+        assert (isinstance(arg, float))
+        
+        # Distribute class attributes.
+        isFree       = self.attr['isFree']
+    
+        value        = self.attr['value']
+        
+        hasBounds    = self.attr['hasBounds']
+            
+        lower, upper = self.attr['bounds']
+            
+        # Checks.        
+        if(not isFree): assert (value == arg)
+            
+        if(hasBounds):
+                
+            if(lower is not None): assert (value > lower)
+        
+            if(upper is not None): assert (value < upper)
+        
+        # Set attribute.
+        self.attr['value'] = arg
+        
     def setAttr(self, key, arg):
         ''' Set attribute.
         
@@ -789,7 +654,7 @@ class _paraContainer(clsMeta.meta):
         '''
         # Antibugging.
         assert (self._checkKey(key) == True)
-        
+
         # Set attribute.
         self.attr[key] = arg
 

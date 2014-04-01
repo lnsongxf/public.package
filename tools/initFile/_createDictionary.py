@@ -6,7 +6,6 @@
 import numpy as np
 
 import shlex
-import json
 import os
 
 # project library
@@ -73,9 +72,6 @@ def processInput(initFile):
     
     # Check quality.
     assert (_checkInput.checkInput(initDict) == True)
-    
-    # Store.
-    json.dump(initDict, open('init.grm.json', 'w'), sort_keys=True, indent=2)
 
     # Type transformation.
     initDict = _typeTransformations(initDict)

@@ -3,6 +3,7 @@
 
 # standard library
 import os
+import glob
 import shutil
 import fnmatch
 
@@ -10,13 +11,21 @@ import fnmatch
 top = '.'
 out = '.bld'
 
+def options(opt):
+    
+    opt.add_option('--test', \
+        action  = 'store_true', \
+        dest    = 'test', \
+        default = False, \
+        help    = 'Execute unit testing library.')    
+    
 def configure(conf):
 
     conf.env.project_paths = {}
 
     conf.env.project_paths['MAIN'] = os.getcwd()
     
-    conf.env.project_paths['GRM_TOOLBOX'] = '.'
+    conf.env.project_paths['GRM_TOOLBOX'] = conf.env.project_paths['MAIN']
 
     tools_dir = conf.env.project_paths['GRM_TOOLBOX'] + '/tools'
 
@@ -24,11 +33,22 @@ def configure(conf):
 
 def build(bld):
     
+    # Distribute options.
+    test  = bld.options.test
+    
+    #Change directory.
+    os.chdir(bld.env.project_paths['GRM_TOOLBOX'])
+    
+    # Fix permissions.
+    set_permissions()
+    
     bld.env.PROJECT_PATHS = set_project_paths(bld)
 
     bld.add_group() 
     
-    bld.recurse('tests')    
+    if(test):
+        
+        bld.recurse('tests')    
 
 def distclean(ctx):
     
@@ -40,9 +60,18 @@ def distclean(ctx):
 
     remove_for_distclean('.bld')
 
-''' Auxillary functions.
-
+''' Auxiliary functions.
 '''
+def set_permissions():
+    ''' Set permissions.
+    '''
+    
+    files = glob.glob('scripts/*.py')
+
+    for file_ in files:
+        
+        os.chmod(file_, 0777)
+        
 def remove_for_distclean(path):
     ''' Remove path, where path can be either a directory or a file. The
         appropriate function is selected. Note, however, that if an 
@@ -67,7 +96,9 @@ def remove_filetypes_distclean(path):
 
     for root, _, filenames in os.walk('.'):
 
-        for filetypes in ['*.aux','*.out','*.log','*.pyc', '*.so', '*~', '*tar', '*.zip', '.waf*', '*lock*', '*.mod', '*.a']:
+        for filetypes in ['*.aux','*.out','*.log','*.pyc', '*.so', '*~', \
+                          '*tar', '*.zip', '.waf*', '*lock*', '*.mod', '*.a', \
+                          '*.grm.*']:
 
                 for filename in fnmatch.filter(filenames, filetypes):
                     

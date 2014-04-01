@@ -49,7 +49,7 @@ class critCls(clsMeta.meta):
         
         parasObj = grmObj.getAttr('parasObj')        
         
-        parasObj.updateValues(x, isExternal = True, isAll = False)
+        parasObj.update(x, version = 'external', which = 'free')
     
     def evaluate(self, x, type_):
         ''' Wrapper for function evaluate.
@@ -254,10 +254,10 @@ class critCls(clsMeta.meta):
         if(isStep or isStart):
 
             self.attr['stepFval'] = self.attr['currentFval']
-            
+             
             self._write('step')
         
-            file_ = open('grmEstimator.grm.log', 'a')
+            file_ = open('grmToolbox.grm.log', 'a')
             
             if(isStart): 
                 
@@ -287,7 +287,7 @@ class critCls(clsMeta.meta):
         parasObj = grmObj.getAttr('parasObj')
 
         # Collect objects.
-        paras = parasObj.getValues(isExternal = False, isAll = False)
+        paras = parasObj.getValues(version = 'internal', which = 'all')
         
         # Save.
         np.savetxt(task + 'Paras.grm.out', paras, fmt = '%25.12f')

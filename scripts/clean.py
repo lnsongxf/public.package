@@ -7,7 +7,7 @@ import sys
 import argparse 
 
 # project library
-dir_ = os.path.realpath(__file__).replace('/tools/workflow/cleanup.py','')
+dir_ = os.path.realpath(__file__).replace('scripts/clean.py','')
 sys.path.insert(0, dir_)
 
 import grmToolbox
@@ -17,11 +17,11 @@ import grmToolbox
 parser = argparse.ArgumentParser(description = 
 'Cleanup after an estimation run of the grmToolbox.')
 
-parser.add_argument('-restart', \
-                    action  = 'store', \
+parser.add_argument('--restart', \
+                    action  = 'store_true', \
                     dest    = 'isRestart', \
                     default = False, \
-                    help    = 'Maintain restart files.')
+                    help    = 'keep files required for a restart')
 
 args = parser.parse_args()
 

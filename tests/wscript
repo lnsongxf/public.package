@@ -8,15 +8,17 @@ def build(bld):
 
     os.chdir(bld.env.project_paths['GRM_TOOLBOX'] + '/tests')
         
-    ''' Unit tests for development on @heracles only.
+    ''' Unit tests for development on @heracles only (confidential data).
     '''
     hostname = socket.gethostname()
     
-    if((hostname == 'heracles') and (os.path.exists('testEstRuns.py'))):
+    if((hostname == 'heracles') and (os.path.exists('testConfidential.py'))):
 
-        bld(features = 'run_py_script', source = 'testEstRuns.py', target = '',  version = 2)
+        bld(features = 'run_py_script', source = 'testConfidential.py', target = '',  version = 2)
 
     ''' General testing example.
     '''
+    bld(features = 'run_py_script', source = 'testEstRuns.py', target = '',  version = 2)
+
     bld(features = 'run_py_script', source = 'testParasCls.py', target = '',  version = 2)
     

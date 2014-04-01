@@ -103,7 +103,7 @@ def updateParameters(parasObj):
         
         internalValues = np.array(np.genfromtxt('stepParas.grm.out'), dtype = 'float', ndmin = 1)
     
-        parasObj.updateValues(internalValues, isExternal = False, isAll = False)
+        parasObj.update(internalValues, version = 'internal', which = 'all')
     
     # Finishing.
     return parasObj
@@ -133,7 +133,7 @@ def cleanup(isRestart):
     
     if(isRestart): 
         
-        for file_ in ['parasObj.grm.pkl', 'stepParas.grm.out']:
+        for file_ in ['stepParas.grm.out']:
             
             try:
                 
@@ -148,4 +148,10 @@ def cleanup(isRestart):
                
     for file_ in fileList:
         
-        os.remove(file_)
+        try:
+            
+            os.remove(file_)
+            
+        except OSError:
+            
+            pass

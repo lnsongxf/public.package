@@ -4,7 +4,6 @@
 # standard library
 import numpy    as np
 
-import os
 import scipy
 import copy
 import random
@@ -80,10 +79,9 @@ class results(clsMeta.meta):
         cov       = scale*covMat
         
         # Sampling.
-        np.random.seed(123)
-        random.seed(456)
+        np.random.seed(123), random.seed(456)
         
-        externalValues   = parasObj.getValues(isExternal = True, isAll = False)
+        externalValues   = parasObj.getValues(version = 'external', which = 'free')
          
         if(withAsymptotics):
            
@@ -111,7 +109,7 @@ class results(clsMeta.meta):
                 
                 for randomPara in randomParameters:
    
-                    parasCopy.updateValues(randomPara, isExternal = True, isAll = False)
+                    parasCopy.update(randomPara, version = 'external', which = 'free')
        
                     paraCopy = parasCopy.getParameter(counter)
        
@@ -176,20 +174,24 @@ class results(clsMeta.meta):
         surpEstimation          = parasObj.getAttr('surpEstimation')
         
         # Write results.
-        with open('rslt.grm.log', 'w') as file_:
-            
-            ''' Marginal Effects
-            '''
-            if(withMarginalEffects):    self._writeMarginal(file_, withAsymptotics, surpEstimation)
+        isRelevant = (withMarginalEffects or withAverageEffects or withConditionalEffects)
+        
+        if(isRelevant):
 
-            ''' Average Effects
-            '''
-            if(withAverageEffects):     self._writeAverage(file_, withAsymptotics, surpEstimation)
-
-            ''' Conditional Effects
-            '''
-            if(withConditionalEffects): self._writeConditional(file_, withAsymptotics, surpEstimation)
-
+            with open('rslt.grm.log', 'w') as file_:
+                
+                ''' Marginal Effects
+                '''
+                if(withMarginalEffects):    self._writeMarginal(file_, withAsymptotics, surpEstimation)
+    
+                ''' Average Effects
+                '''
+                if(withAverageEffects):     self._writeAverage(file_, withAsymptotics, surpEstimation)
+    
+                ''' Conditional Effects
+                '''
+                if(withConditionalEffects): self._writeConditional(file_, withAsymptotics, surpEstimation)
+    
     def _writeConditional(self, file_, withAsymptotics, surpEstimation):
         ''' Write results on conditional effects of treatment.
         '''
@@ -474,7 +476,7 @@ class results(clsMeta.meta):
             
             for randomPara in randomParameters:
    
-                parasCopy.updateValues(randomPara, isExternal = True, isAll = False)
+                parasCopy.update(randomPara, version = 'external', which = 'free')
    
                 rslt[parameter].append(effectObj.getEffects(modelObj, parasCopy, 'marginal', args))
             
@@ -572,7 +574,7 @@ class results(clsMeta.meta):
                 
         for randomPara in randomParameters:
        
-            parasCopy.updateValues(randomPara, isExternal = True, isAll = False)
+            parasCopy.update(randomPara, version = 'external', which = 'free')
                 
             rslt.append(effectObj.getEffects(modelObj, parasCopy, 'average', args))
             
@@ -682,7 +684,7 @@ class results(clsMeta.meta):
                 
         for randomPara in randomParameters:
        
-            parasCopy.updateValues(randomPara, isExternal = True, isAll = False)
+            parasCopy.update(randomPara, version = 'external', which = 'free')
                 
             rslt.append(effectObj.getEffects(modelObj, parasCopy, 'average', args))
             

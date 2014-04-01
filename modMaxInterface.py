@@ -56,7 +56,7 @@ def maximize(modelObj, parasObj, requestObj):
     
     maxCls.lock()
      
-    sys.stdout = open('maxReport.grm.log', 'w')   
+    sys.stdout = open('/dev/null', 'w')   
     
     maxRslt = maxCls.maximize()
     
