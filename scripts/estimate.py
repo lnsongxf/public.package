@@ -80,9 +80,6 @@ def fork():
     
     np.savetxt('.pid', [pid], fmt ='%d')
     
-''' Process command line arguments.
-'''
-
 ''' Execution of module as script.
 '''
 if __name__ == '__main__':
