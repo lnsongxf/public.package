@@ -120,18 +120,18 @@ def runExternalProgramWait(program, *args):
     
     return os.wait()
 
-def cleanup(isRestart):
+def cleanup(resume):
     ''' Cleanup from previous estimation run.
     '''
     # Antibugging.
-    assert (isRestart in [True, False])
+    assert (resume in [True, False])
     
     # Construct files list.
     fileList = glob.glob('*.grm.*')
     
     if(os.path.exists('.pid')): fileList = fileList + ['.pid']
     
-    if(isRestart): 
+    if(resume): 
         
         for file_ in ['stepParas.grm.out']:
             
@@ -142,6 +142,17 @@ def cleanup(isRestart):
             except:
                 
                 pass
+    
+    # Remove information from simulated data.
+    for file_ in ['*.infos.grm.out', '*.paras.grm.out']:
+                        
+        try:
+            
+            fileList.remove(glob.glob(file_)[0])
+            
+        except:
+            
+            pass
     
     # Cleanup
     if(os.path.exists('grm.rslt')): shutil.rmtree('grm.rslt')

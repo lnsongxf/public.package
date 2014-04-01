@@ -10,7 +10,6 @@ def build(bld):
         
     ''' Unit tests for development on @heracles only (confidential data).
     '''
-
     hostname = socket.gethostname()
     
     if((hostname == 'heracles')):
@@ -19,7 +18,7 @@ def build(bld):
 
         bld(features = 'run_py_script', source = 'testEstRuns.py', target = '',  version = 2)
     
-        ''' General testing example.
-        '''
+    ''' General testing example.
+    '''
     bld(features = 'run_py_script', source = 'testParasCls.py', target = '',  version = 2)
     

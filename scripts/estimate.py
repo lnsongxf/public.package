@@ -16,17 +16,17 @@ import grmToolbox
 
 ''' Main function.
 '''
-def estimate(init = 'init.ini', restart = False, useSimulation = False):
+def estimate(init = 'init.ini', resume = False, useSimulation = False):
     ''' Estimate specified model.
     '''
     # Cleanup
-    grmToolbox.cleanup(restart)
+    grmToolbox.cleanup(resume)
     
     #Process initialization file.
     modelObj, parasObj, requestObj, _ = grmToolbox.initialize(init, useSimulation)
     
-    # Process restart.
-    if(restart):
+    # Process resume.
+    if(resume):
         
         # Antibugging.
         assert (os.path.isfile('stepParas.grm.out'))
@@ -55,18 +55,18 @@ def _distributeInput(parser):
     args = parser.parse_args()
 
     # Distribute arguments.
-    restart       = args.restart
+    resume        = args.resume
     initFile      = args.initFile 
     useSimulation = args.simulation
 
     # Assertions.
-    assert (restart in [True, False])
+    assert (resume in [True, False])
     assert (useSimulation in [True, False])
     assert (initFile is not None)
     assert (os.path.exists(initFile))
     
     # Finishing.
-    return initFile, restart, useSimulation
+    return initFile, resume, useSimulation
 
 def fork():
     ''' Fork child process to run estimation in the background.
@@ -87,11 +87,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 
     'Start estimation run using the grmToolbox.')
     
-    parser.add_argument('--restart', \
+    parser.add_argument('--resume', \
                         action  = 'store_true', \
-                        dest    = 'restart', \
+                        dest    = 'resume', \
                         default = False, \
-                        help    = 'restart estimation run')
+                        help    = 'resume estimation run')
     
     parser.add_argument('--simulation', \
                         action  = 'store_true', \
@@ -108,6 +108,6 @@ if __name__ == '__main__':
     
     fork() 
 
-    initFile, restart, useSimulation = _distributeInput(parser)
+    initFile, resume, useSimulation = _distributeInput(parser)
 
-    estimate(initFile, restart, useSimulation)
+    estimate(initFile, resume, useSimulation)

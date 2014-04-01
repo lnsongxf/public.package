@@ -41,6 +41,16 @@ def perturb(scale = 0.1, seed = 123, init = 'init.ini'):
     #Process initialization file.
     _, parasObj, _, _ = grmToolbox.initialize(init, useSimulation = False)
     
+    ''' Update parameter object.
+    '''
+    # Antibugging.
+    assert (os.path.isfile('stepParas.grm.out'))
+    
+    # Update parameter objects.
+    parasObj = grmToolbox.updateParameters(parasObj)
+    
+    parasObj.updateStart()
+            
     ''' Perturb external values.
     '''
     np.random.seed(seed)

@@ -12,21 +12,36 @@ sys.path.insert(0, dir_)
 
 import grmToolbox
 
-''' Process command line arguments.
+''' Auxiliary functions.
 '''
-parser = argparse.ArgumentParser(description = 
-'Cleanup after an estimation run of the grmToolbox.')
+def _distributeInput(parser):
+    ''' Check input for estimation script.
+    '''
+    # Parse arguments.
+    args = parser.parse_args()
 
-parser.add_argument('--restart', \
-                    action  = 'store_true', \
-                    dest    = 'isRestart', \
-                    default = False, \
-                    help    = 'keep files required for a restart')
+    # Distribute arguments.
+    resume = args.resume
 
-args = parser.parse_args()
+    # Assertions.
+    assert (resume in [True, False])    
 
-isRestart = args.isRestart
+    # Finishing.
+    return resume
 
-isRestart = bool(isRestart)
-
-grmToolbox.cleanup(isRestart)
+''' Execution of module as script.
+'''
+if __name__ == '__main__':
+    
+    parser = argparse.ArgumentParser(description = 
+    'Cleanup after an estimation run of the grmToolbox.')
+    
+    parser.add_argument('--resume', \
+                        action  = 'store_true', \
+                        dest    = 'resume', \
+                        default = False, \
+                        help    = 'keep files required to resume estimation')
+    
+    resume = _distributeInput(parser)
+    
+    grmToolbox.cleanup(resume)

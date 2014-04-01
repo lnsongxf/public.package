@@ -33,7 +33,7 @@ class testParasCls(object):
         # Run command.
         initFile = '../dat/testInit_A.ini'
         
-        estimate(initFile, restart = False, useSimulation = False)
+        estimate(initFile, resume = False, useSimulation = False)
         
         # Assessment of results.
         rsltObj = pkl.load(open('rsltObj.grm.pkl', 'r'))
@@ -54,7 +54,7 @@ class testParasCls(object):
             assert_almost_equal(value, int_)
                     
         # Cleanup.
-        grmToolbox.cleanup(isRestart = False)
+        grmToolbox.cleanup(resume = False)
         
 if __name__ == '__main__': 
     
