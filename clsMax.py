@@ -48,18 +48,44 @@ class maxCls(clsMeta.meta):
         assert (self.getStatus() == True)
         
         # Distribute class attributes.
-        grmObj = self.getAttr('grmObj')
+        grmObj     = self.getAttr('grmObj')
 
-        requestObj = grmObj.getAttr('requestObj')
+        critFunc   = self.getAttr('critFunc')
+        
+
+        parasObj   = grmObj.getAttr('parasObj')
+
+        requestObj = grmObj.getAttr('requestObj')        
+
         
         algorithm  = requestObj.attr['algorithm']
-                
+        
+        maxiter    = requestObj.getAttr('maxiter')
+        
         # Maximization.
-        if(algorithm == 'bfgs'):
+        if(maxiter == 0):
+            
+            x        = parasObj.getValues('external', 'free')
+            
+            
+            maxRslt = {}
+            
+            maxRslt['fun']     = _scipyWrapperFunction(x, critFunc)
+            
+            maxRslt['grad']    = _scipyWrapperGradient(x, critFunc)
+            
+            maxRslt['xopt']    = x
+                        
+            maxRslt['success'] = False
+    
+            # Message:
+            maxRslt['message'] = 'Single function evaluation at starting values.'
+                
+        elif(algorithm == 'bfgs'):
             
             maxRslt = self._bfgs()
             
-        if(algorithm == 'powell'):
+        elif(algorithm == 'powell'):
             
             maxRslt = self._powell()
         
@@ -78,7 +104,7 @@ class maxCls(clsMeta.meta):
         assert (self.getStatus() == True)
         
         # Distribute information.
-        fval    = str(maxRslt['fun'])
+        fval = str(maxRslt['fun'])
         
         if(maxRslt['grad'] is not None):
         

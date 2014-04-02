@@ -22,20 +22,21 @@ def process(args):
     ''' Process arguments.
     '''
     # Distribute arguments.
-    seed, scale, init = args.seed, args.scale, args.init
+    seed, scale, init, update = args.seed, args.scale, args.init, args.update
     
     # Quality checks.
+    assert (update in [True, False])
     assert (os.path.exists(init))
     assert (isinstance(seed, int))
     assert (isinstance(scale, float))
     assert (scale >= 0)
     
     # Finishing.
-    return seed, scale, init
+    return seed, scale, init, update
 
 ''' Main function.
 '''
-def perturb(scale = 0.1, seed = 123, init = 'init.ini'):
+def perturb(scale = 0.1, seed = 123, init = 'init.ini', update = False):
     ''' Perturb current values of structural parameters.
     '''
     #Process initialization file.
@@ -43,13 +44,15 @@ def perturb(scale = 0.1, seed = 123, init = 'init.ini'):
     
     ''' Update parameter object.
     '''
-    # Antibugging.
-    assert (os.path.isfile('stepParas.grm.out'))
-    
-    # Update parameter objects.
-    parasObj = grmToolbox.updateParameters(parasObj)
-    
-    parasObj.updateStart()
+    if(update):
+
+        # Antibugging.
+        assert (os.path.isfile('stepParas.grm.out'))
+        
+        # Update parameter objects.
+        parasObj = grmToolbox.updateParameters(parasObj)
+        
+        parasObj.updateStart()
             
     ''' Perturb external values.
     '''
@@ -95,11 +98,17 @@ if __name__ == '__main__':
                         dest    = 'init', \
                         default = 'init.ini', \
                         help    = 'source for model configuration')
+
+    parser.add_argument('--update', \
+                        action  = 'store_true', \
+                        dest    = 'update', \
+                        default = False, \
+                        help    = 'update structural parameters')
+     
+     
+    args = parser.parse_args()
+    
+    seed, scale, init, update = process(args)
     
     
-    args              = parser.parse_args()
-    
-    seed, scale, init = process(args)
-    
-    
-    perturb(scale = scale, seed = seed, init = init)
+    perturb(scale = scale, seed = seed, init = init, update = update)

@@ -87,16 +87,9 @@ class critCls(clsMeta.meta):
       
         epsilon     = requestObj.getAttr('epsilon')
         differences = requestObj.getAttr('differences')
-        
-        maxiter     = requestObj.getAttr('maxiter')
-        
+         
         # Auxiliary statistics.
         numFree = parasObj.getAttr('numFree')
-        
-        # Applicability.
-        if(maxiter == 0):
-            
-            return np.zeros(numFree)
         
         # Antibugging.
         assert (x.shape == (numFree, ))
@@ -119,7 +112,7 @@ class critCls(clsMeta.meta):
             # Gradient approximation.
             if(differences == 'one-sided'):
                 
-                upper = self.evaluate(x + d, 'function')
+                upper = self._evaluateFunction(x + d,  False)
                 
                 lower = f0
                 
@@ -128,9 +121,9 @@ class critCls(clsMeta.meta):
             
             if(differences == 'two-sided'):
                 
-                upper = self.evaluate(x + d, 'function')
+                upper = self._evaluateFunction(x + d, False)
                 
-                lower = self.evaluate(x - d, 'function')
+                lower = self._evaluateFunction(x - d, False)
                 
                 
                 grad[k] = (upper - lower)/(2.0*d[k])
@@ -147,7 +140,7 @@ class critCls(clsMeta.meta):
         # Finishing.
         return grad
     
-    def _evaluateFunction(self, x):
+    def _evaluateFunction(self, x, logging = True):
         ''' Negative log-likelihood function of the grmEstimatorToolbox.
         '''    
         # Antibugging.
@@ -222,7 +215,7 @@ class critCls(clsMeta.meta):
         assert (likl > 0.0)
         
         # Logging.
-        self._logging(likl)
+        if(logging): self._logging(likl)
     
         #Finishing.        
         return likl    
@@ -261,7 +254,7 @@ class critCls(clsMeta.meta):
             
             if(isStart): 
                 
-                file_.write('  Start ')
+                file_.write('\n  Start ')
 
             else:
             

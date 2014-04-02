@@ -22,6 +22,8 @@ def simulate(init = 'init.ini', update = False):
     ''' Simulate dataset for grmToolbox.
     '''
     
+    isMock = _createMock(init)
+    
     ''' Process initialization file.
     '''
     _, parasObj, _, initDict = grmToolbox.initialize(init, isSimulation = True)
@@ -33,10 +35,6 @@ def simulate(init = 'init.ini', update = False):
     seed   = initDict['SIMULATION']['seed']
     
     np.random.seed(seed); random.seed(seed)
-   
-    ''' Mock dataset.
-    '''
-    isMock = _createMock(init)
 
     ''' Update parameter class.
     '''
@@ -110,6 +108,12 @@ def _getLikelihood(init):
     x    = parasObj.getValues('external', 'free')
     
     likl = grmToolbox.evaluate(x, critObj)
+    
+    # Cleanup.
+    for file_ in ['grmToolbox.grm.log', 'stepParas.grm.out', \
+                  'startParas.grm.out']: 
+        
+        os.remove(file_)
     
     # Finishing.
     return likl

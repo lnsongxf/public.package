@@ -63,7 +63,7 @@ def maximize(modelObj, parasObj, requestObj):
     sys.stdout = sys.__stdout__
         
     # Distribute results.
-    xopt      = maxRslt['xopt']
+    xopt = maxRslt['xopt']
     
     # Approximate hessian.
     covMat  = np.tile(np.nan, (len(xopt), len(xopt)))
