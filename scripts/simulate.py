@@ -319,7 +319,7 @@ def _writeInfo(parasObj, target, rslt, likl):
         
         file_.write('   Number of Observations: ' + numAgents + '\n')
 
-        file_.write('   Likelihood:             ' + fval + '\n\n')
+        file_.write('   Function Value:         ' + fval + '\n\n')
 
         string  = '''{0[0]:<10} {0[1]:>12}\n'''
     
