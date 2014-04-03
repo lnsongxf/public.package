@@ -305,7 +305,6 @@ def _scipyWrapperFunction(x, critFunc):
     # Quality checks.
     assert (isinstance(likl, float))    
     assert (np.isfinite(likl))
-    assert (likl > 0.0)
     
     #Finishing.        
     return likl

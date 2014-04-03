@@ -212,8 +212,7 @@ class critCls(clsMeta.meta):
         # Quality checks.
         assert (isinstance(likl, float))    
         assert (np.isfinite(likl))
-        assert (likl > 0.0)
-        
+         
         # Logging.
         if(logging): self._logging(likl)
     
@@ -228,8 +227,7 @@ class critCls(clsMeta.meta):
         # Antibugging.
         assert (isinstance(likl, float))    
         assert (np.isfinite(likl))
-        assert (likl > 0.0)
-        
+   
         # Logging.
         self.attr['currentFval'] = likl
                 
