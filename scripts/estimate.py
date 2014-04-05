@@ -34,8 +34,6 @@ def estimate(init = 'init.ini', resume = False, useSimulation = False):
         # Update parameter objects.
         parasObj = grmToolbox.updateParameters(parasObj)
     
-        parasObj.updateStart()
-    
     else:
        
         paras = parasObj.getValues(version = 'internal', which = 'all')
@@ -85,7 +83,8 @@ def fork():
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description = 
-    'Start estimation run using the grmToolbox.')
+        'Start estimation run using the grmToolbox.', 
+        formatter_class = argparse.ArgumentDefaultsHelpFormatter)
     
     parser.add_argument('--resume', \
                         action  = 'store_true', \

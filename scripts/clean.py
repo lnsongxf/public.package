@@ -34,7 +34,8 @@ def _distributeInput(parser):
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description = 
-    'Cleanup after an estimation run of the grmToolbox.')
+        'Cleanup after an estimation run of the grmToolbox.', 
+        formatter_class = argparse.ArgumentDefaultsHelpFormatter)
     
     parser.add_argument('--resume', \
                         action  = 'store_true', \

@@ -348,7 +348,8 @@ def _writeInfo(parasObj, target, rslt, likl):
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description = 
-       'Start simulation using the grmToolbox.')
+        'Start simulation using the grmToolbox.', 
+        formatter_class = argparse.ArgumentDefaultsHelpFormatter)
     
     parser.add_argument('--init', \
                         action  = 'store', \

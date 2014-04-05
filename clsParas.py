@@ -80,8 +80,6 @@ class parasCls(clsMeta.meta):
             
             paraObj.setAttr('id', id_)
             
-            paraObj.setAttr('startVal', value)
-            
         else:
             
             paraObj.setAttr('id', None)
@@ -278,26 +276,7 @@ class parasCls(clsMeta.meta):
         return rslt
 
     ''' All methods related to updating the parameters. 
-    '''     
-    def updateStart(self):
-        ''' Update all startVals to the current parameter values.
-        '''
-        
-        paraObjs = self.attr['paraObjs']
-        
-        for paraObj in paraObjs:
-
-            value = paraObj.getAttr('value')
-                
-            paraObj.unlock()
-            
-            paraObj.setAttr('startVal', value)
-                
-            paraObj.lock()
- 
-            # Replace.        
-            self._replaceParasObj(paraObj)
-        
+    '''             
     def update(self, x, version, which):
         ''' Update all free parameters.
         '''
@@ -607,8 +586,6 @@ class _paraContainer(clsMeta.meta):
         
         self.attr['pvalue']    = None          
         self.attr['confi']     = (None, None)        
-        
-        self.attr['startVal']  = None        
 
         self.attr['hasBounds'] = False      
 
@@ -691,12 +668,6 @@ class _paraContainer(clsMeta.meta):
         assert (isinstance(self.getAttr('value'), float))
         assert (np.isfinite(self.getAttr('value')))           
 
-        # startVal.
-        if(self.getAttr('isFree')):
-
-            assert (isinstance(self.getAttr('startVal'), float))
-            assert (np.isfinite(self.getAttr('startVal')))      
-                
         # isFree.
         assert (self.getAttr('isFree') in [True, False])
         

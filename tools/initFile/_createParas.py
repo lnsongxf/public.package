@@ -32,9 +32,7 @@ def constructParas(initDict, modelObj, isSimulation):
     if(start == 'auto' and (not isSimulation)):
     
         parasObj = _autoStart(parasObj, modelObj)
-        
-        parasObj.updateStart()
-        
+                
     # Quality.
     assert (parasObj.getStatus() == True)
 

@@ -52,8 +52,6 @@ def perturb(scale = 0.1, seed = 123, init = 'init.ini', update = False):
         # Update parameter objects.
         parasObj = grmToolbox.updateParameters(parasObj)
         
-        parasObj.updateStart()
-            
     ''' Perturb external values.
     '''
     np.random.seed(seed)
@@ -79,7 +77,8 @@ def perturb(scale = 0.1, seed = 123, init = 'init.ini', update = False):
 if __name__ == '__main__':
     
     parser  = argparse.ArgumentParser(description = \
-                'Perturb current value of structural parameters.')
+        'Perturb current value of structural parameters for grmToolbox.', 
+        formatter_class = argparse.ArgumentDefaultsHelpFormatter)
     
     parser.add_argument('--seed', \
                         type    = int , \
