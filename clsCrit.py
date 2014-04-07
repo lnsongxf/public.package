@@ -228,6 +228,13 @@ class critCls(clsMeta.meta):
         assert (isinstance(likl, float))    
         assert (np.isfinite(likl))
    
+        # Distribute class attributes.
+        grmObj    = self.attr['grmObj']
+        
+        modelObj  = grmObj.getAttr('modelObj')
+        
+        numAgents = modelObj.getAttr('numAgents')
+        
         # Logging.
         self.attr['currentFval'] = likl
                 
@@ -251,6 +258,8 @@ class critCls(clsMeta.meta):
             file_ = open('grmToolbox.grm.log', 'a')
             
             if(isStart): 
+                
+                file_.write('\n Estimation Sample: ' + str(numAgents) + '\n')
                 
                 file_.write('\n  Start ')
 
