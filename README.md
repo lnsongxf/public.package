@@ -13,7 +13,7 @@ info@policy-lab.org
 
 You can sign up for our mailing list [here](http://eepurl.com/RStEH).
 
------
+=====
 
 The **grmToolbox** was originally developed for the research documented in:
 
