@@ -17,6 +17,6 @@ You can sign up for our mailing list [here](http://eepurl.com/RStEH).
 
 The **grmToolbox** was originally developed for research documented in:
 
-Eisenhauer, Philipp and James J. Heckman, Edward Vytlacil (2014): The Generalized Roy Model and Cost-Benefit Analysis of Social Programs, *Journal of Political Economy*, resubmitted.
+Eisenhauer, Philipp and James J. Heckman, Edward Vytlacil (2014): The Generalized Roy Model and the Cost-Benefit Analysis of Social Programs, *Journal of Political Economy*, forthcoming.
 
 Additional information about this research is available [here](http://www.policy-lab.org/cb-analysis).
