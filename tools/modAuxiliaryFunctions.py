@@ -107,18 +107,6 @@ def updateParameters(parasObj):
     
     # Finishing.
     return parasObj
-    
-def runExternalProgramWait(program, *args):
-    ''' Using the os.module to run another program.
-    
-    '''
-    pid = os.fork()
-    
-    if not pid:
-    
-        os.execvp(program, (program,) +  args)
-    
-    return os.wait()
 
 def cleanup(resume):
     ''' Cleanup from previous estimation run.
@@ -128,9 +116,7 @@ def cleanup(resume):
     
     # Construct files list.
     fileList = glob.glob('*.grm.*')
-    
-    if(os.path.exists('.pid')): fileList = fileList + ['.pid']
-    
+        
     if(resume): 
         
         for file_ in ['stepParas.grm.out']:

@@ -6,7 +6,7 @@ import os
 import sys
 import argparse
 
-import numpy   as np
+import numpy as np
 
 # project library
 dir_ = os.path.realpath(__file__).replace('/scripts/estimate.py','')
@@ -66,18 +66,6 @@ def _distributeInput(parser):
     # Finishing.
     return initFile, resume, useSimulation
 
-def fork():
-    ''' Fork child process to run estimation in the background.
-    '''
-        
-    pid = os.fork()
-
-    if(pid > 0): sys.exit(0)
-
-    pid = os.getpid()
-    
-    np.savetxt('.pid', [pid], fmt ='%d')
-    
 ''' Execution of module as script.
 '''
 if __name__ == '__main__':
@@ -103,9 +91,6 @@ if __name__ == '__main__':
                         dest    = 'initFile', \
                         default = 'init.ini', \
                         help    = 'source for model configuration')
-    
-    
-    fork() 
 
     initFile, resume, useSimulation = _distributeInput(parser)
 

@@ -51,7 +51,7 @@ class RunPyScriptBase(Task.Task):
         return (nodes, [])
 
     def run(self):
-        Logs.debug('runner: {} on {}'.format(self.py_cmd_str(), self.inputs[0].abspath))
+        #Logs.debug('runner: {} on {}'.format(self.py_cmd_str(), self.inputs[0].abspath))
         # Pass the environment on.
         self.env.env = os.environ
         # Make sure PYTHONPATH attribute is present
