@@ -10,7 +10,7 @@ http://grmToolbox.github.io/
 
 Quality Assurance:
 
-[![Build Status](https://travis-ci.org/structToolbox/structToolbox.svg?branch=master)](https://travis-ci.org/structToolbox/structToolbox)
+[![Build Status](https://travis-ci.org/grmToolbox/grmToolbox.svg?branch=master)](https://travis-ci.org/grmToolbox/grmToolbox)
 
 Contact:
 
