@@ -56,14 +56,14 @@ class RunPyScriptBase(Task.Task):
         self.env.env = os.environ
         # Make sure PYTHONPATH attribute is present
         self.env.env['PYTHONPATH'] = self.env.env.get('PYTHONPATH', '')
-        # Add stuff from the project paths 
+        # Add stuff from the project paths
         project_paths = getattr(self.env, 'PROJECT_PATHS', None)
         if project_paths and 'PROJECT_ROOT' in project_paths:
             self.env.env['PYTHONPATH'] += os.pathsep + project_paths['PROJECT_ROOT'].abspath()
         # Add manual extensions to PYTHONPATH.
         if getattr(self.generator, 'add_to_pythonpath', None):
             self.env.env['PYTHONPATH'] += os.pathsep + self.generator.add_to_pythonpath
-        # Clean up the PYTHONPATH -- replace double occurrences of path separator 
+        # Clean up the PYTHONPATH -- replace double occurrences of path separator
         self.env.env['PYTHONPATH'] = re.sub(os.pathsep + '+', os.pathsep, self.env.env['PYTHONPATH'])
         # Clean up the PYTHONPATH -- doesn't like starting with path separator
         if self.env.env['PYTHONPATH'].startswith(os.pathsep):
@@ -82,8 +82,10 @@ class RunPy2Script(RunPyScriptBase):
         return self.env.PY2CMD
 
     def py_fun(self):
-        in_script = self.inputs[0].abspath()
+        in_script =''# self.inputs[0].abspath()
         fun_str = '{} {}'.format(self.env.PY2CMD, in_script)
+
+        print fun_str
         return Task.compile_fun(fun_str, shell=True)[0]
 
 
@@ -103,18 +105,18 @@ class RunPy3Script(RunPyScriptBase):
 @TaskGen.before_method('process_source')
 def apply_run_py_script(tsk_g):
     """Task generator for running either Python 2 or Python 3 on a single
-    script. 
-    
+    script.
+
     Attributes:
         * source -- A **single** source node or string. (required)
-        * target -- A single target or list of targets (nodes or strings). 
+        * target -- A single target or list of targets (nodes or strings).
         * deps -- A single dependency or list of dependencies (nodes or strings)
         * add_to_pythonpath -- A string that will be appended to the PYTHONPATH
                                environment variable.
-    
+
     Note that if the build environment has an attribute "PROJECT_PATHS" with
-    a key "PROJECT_ROOT", its value will be appended to the PYTHONPATH. 
-    
+    a key "PROJECT_ROOT", its value will be appended to the PYTHONPATH.
+
     """
 
     # Set the Python version to use, default to 3.
@@ -123,7 +125,7 @@ def apply_run_py_script(tsk_g):
         "Specify the 'version' attribute for run_py_script task "
         "generator as integer 2 or 3.\n Got: {}".format(v))
 
-    # Convert sources and targets to nodes 
+    # Convert sources and targets to nodes
     src_node = tsk_g.path.find_resource(tsk_g.source)
     tgt_nodes = [tsk_g.path.find_or_declare(t) for t in tsk_g.to_list(tsk_g.target)]
 
