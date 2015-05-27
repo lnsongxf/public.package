@@ -6,7 +6,7 @@ Toolbox for the estimation of the generalized Roy model.
 
 Online Documentation:
 
-http://grmToolbox.github.io/
+http://grmToolbox.github.io
 
 Quality Assurance:
 
