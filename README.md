@@ -8,6 +8,10 @@ Online Documentation:
 
 http://grmToolbox.github.io/
 
+Quality Assurance:
+
+[![Build Status](https://travis-ci.org/grmToolbox/grmToolbox.svg?branch=master)](https://travis-ci.org/grmToolbox/grmToolbox)
+
 Contact:
 
 [![Join the chat at https://gitter.im/grmToolbox/grmToolbox](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/grmToolbox/grmToolbox?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
