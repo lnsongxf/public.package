@@ -6,7 +6,7 @@ Toolbox for the estimation of the generalized Roy model.
 
 Online Documentation:
 
-http://www.policy-lab.org/grmToolbox
+http://grmToolbox.github.io/
 
 Contact:
 
