@@ -1,0 +1,7 @@
+coveralls
+numdifftools
+numpy
+scipy
+statsmodels
+nose
+pandas
