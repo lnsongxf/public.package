@@ -4,7 +4,7 @@ python:
 bundler_args: --retry 3
 before_install: python tests/travis-ci/requirements.py
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install: travis_wait pip install -r requirements.txt
+install: travis_retry pip install -r requirements.txt
 # command to run tests, e.g. python setup.py test
 script:  python tests/travis-ci/run.py
 # command to run coveralls.
