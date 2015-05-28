@@ -13,7 +13,7 @@ dir_ = os.path.dirname(os.path.realpath(__file__)).replace('/scripts', '')
 sys.path.insert(0, dir_)
 
 # project library
-import grmToolbox
+import interface as grmToolbox
 
 
 ''' Auxiliary function.

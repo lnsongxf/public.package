@@ -7,31 +7,43 @@ import sys
 
 import cPickle as pkl
 
-from nose.core   import *
-from nose.tools  import *
 
-# set working directory
-dir_ = os.path.abspath(os.path.split(sys.argv[0])[0])
-os.chdir(dir_)
+# module variables
+FILE_PATH = os.path.dirname(os.path.realpath(__file__))
+TEST_PATH = os.getcwd()
+
+# testing library
+from nose.core import runmodule
+from nose.tools import *
 
 # Pythonpath
-dir_ = os.path.dirname(os.path.realpath(__file__)).replace('/tests', '')
+dir_ = FILE_PATH.replace('/tests', '')
 sys.path.insert(0, dir_)
 
-import grmToolbox
-
+# project library
+import interface as grmToolbox
 from scripts.estimate import estimate
+
 
 ''' Test class.
 '''
 class testParasCls(object):
     ''' Test class.
     '''
+
+    def setup(self):
+
+        os.chdir(FILE_PATH)
+
+    def teardown(self):
+
+        os.chdir(TEST_PATH)
+
     def testA(self):
         ''' Test parameter transformations.
         '''
 
-        grmToolbox.cleanup(resume = False)
+        #grmToolbox.cleanup(resume = False)
 
         # Run command.
         initFile = '../dat/testInit_A.ini'

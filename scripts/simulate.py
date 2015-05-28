@@ -14,7 +14,7 @@ import numpy    as np
 dir_ = os.path.realpath(__file__).replace('/scripts/simulate.py','')
 sys.path.insert(0, dir_)
 
-import grmToolbox
+import interface as grmToolbox
 
 ''' Main function.
 '''

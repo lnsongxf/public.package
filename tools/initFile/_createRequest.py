@@ -2,7 +2,7 @@
 '''
 
 # project library
-import grmToolbox
+import interface as grmToolbox
 
 ''' Construct request object.
 '''

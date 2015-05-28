@@ -9,7 +9,8 @@ import numpy            as np
 import sys
 
 # project library.
-import grmToolbox
+import interface as grmToolbox
+
 
 ''' Main function.
 '''

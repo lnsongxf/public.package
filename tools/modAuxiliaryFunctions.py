@@ -8,7 +8,8 @@ import os
 import numpy            as np
 
 # project library
-import grmToolbox
+import interface as grmToolbox
+
 
 def createMatrices(dataset, initDict):
     ''' Create the data matrices.

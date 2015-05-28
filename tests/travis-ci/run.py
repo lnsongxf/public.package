@@ -1,12 +1,9 @@
-""" This module runs the tests.
+#!/usr/bin/env python
+""" Script that executes the testings for the Travis CI integration server.
 """
 
-# standard library
+#standard library
 import os
 
-
-dir_ = os.path.dirname(os.path.realpath(__file__))
-
-os.chdir(dir_)
-
-os.system('python ../testParasCls.py')
+#Tests
+os.system('nosetests --with-coverage --exe')
