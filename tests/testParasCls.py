@@ -30,6 +30,9 @@ class testParasCls(object):
     def testA(self):
         ''' Test parameter transformations.
         '''
+
+        grmToolbox.cleanup(resume = False)
+
         # Run command.
         initFile = '../dat/testInit_A.ini'
         
