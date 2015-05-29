@@ -87,24 +87,6 @@ def createMatrices(dataset, initDict):
     # Finishing.
     return rslt
 
-def updateParameters(parasObj):
-    ''' Update parameter object if possible.
-    '''
-    # Antibugging.
-    assert (parasObj.getStatus() == True)
-    
-    # Update.
-    hasStep = (os.path.isfile('stepParas.grm.out'))
-    
-    if(hasStep):
-        
-        internalValues = np.array(np.genfromtxt('stepParas.grm.out'), dtype = 'float', ndmin = 1)
-    
-        parasObj.update(internalValues, version = 'internal', which = 'all')
-    
-    # Finishing.
-    return parasObj
-
 def cleanup(resume):
     ''' Cleanup from previous estimation run.
     '''

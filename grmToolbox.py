@@ -2,21 +2,25 @@
 """
 
 # standard library
+import numdifftools as nd
 import numpy as np
+import cPickle as pkl
+import sys
 import random
 import shutil
 import glob
 import os
 
 # project library
-from tools.modAuxiliaryFunctions import cleanup, createMatrices, updateParameters
+from tools.modAuxiliaryFunctions import cleanup, createMatrices
 from tools.initFile.init_interface import initialize
-from modMaxInterface import maximize
 from clsGrm import grmCls
 from clsCrit import critCls
 from tools.initFile._createDictionary import processInput
 from clsMax import _scipyWrapperFunction as evaluate
-
+import clsMax
+import clsGrm
+import clsRslt
 
 def clean():
     ''' Cleanup from previous estimation run.
@@ -66,7 +70,7 @@ def estimate(init = 'init.ini', resume = False, useSimulation = False):
         assert (os.path.isfile('stepParas.grm.out'))
 
         # Update parameter objects.
-        parasObj = updateParameters(parasObj)
+        parasObj = _updateParameters(parasObj)
 
     else:
 
@@ -75,7 +79,74 @@ def estimate(init = 'init.ini', resume = False, useSimulation = False):
         np.savetxt('stepParas.grm.out', paras, fmt = '%25.12f')
 
     # Run optimization.
-    maximize(modelObj, parasObj, requestObj)
+    # Initialize container
+    grmObj = clsGrm.grmCls()
+
+    grmObj.setAttr('modelObj', modelObj)
+
+    grmObj.setAttr('requestObj', requestObj)
+
+    grmObj.setAttr('parasObj', parasObj)
+
+    grmObj.lock()
+
+    # Set random seed.
+    np.random.seed(123)
+
+    # Distribute class attributes.
+    requestObj = grmObj.getAttr('requestObj')
+
+    hessian   = requestObj.getAttr('hessian')
+
+    withAsymptotics = requestObj.getAttr('withAsymptotics')
+
+    # Distribute auxiliary objects.
+    maxCls = clsMax.maxCls(grmObj)
+
+    maxCls.lock()
+
+    sys.stdout = open('/dev/null', 'w')
+
+    maxRslt = maxCls.maximize()
+
+    sys.stdout = sys.__stdout__
+
+    # Distribute results.
+    xopt = maxRslt['xopt']
+
+    # Approximate hessian.
+    covMat  = np.tile(np.nan, (len(xopt), len(xopt)))
+
+    if(withAsymptotics):
+
+        if(hessian == 'bfgs'):
+
+            covMat = maxRslt['covMat']
+
+        elif(hessian == 'numdiff'):
+
+            critFunc = maxCls.getAttr('critFunc')
+
+            ndObj    = nd.Hessian(lambda x: clsMax._scipyWrapperFunction(x, critFunc))
+            hess     = ndObj(xopt)
+            covMat   = np.linalg.pinv(hess)
+
+        pkl.dump(covMat, open('covMat.grm.pkl', 'wb'))
+
+    # Construct result class.
+    rslt = clsRslt.results()
+
+    rslt.setAttr('grmObj', grmObj)
+
+    rslt.setAttr('maxRslt', maxRslt)
+
+    rslt.setAttr('covMat', covMat)
+
+    rslt.lock()
+
+    rslt.store('rslt.grm.pkl')
+
+    return rslt
 
 def perturb(scale = 0.1, seed = 123, init = 'init.ini', update = False):
     ''' Perturb current values of structural parameters.
@@ -91,7 +162,7 @@ def perturb(scale = 0.1, seed = 123, init = 'init.ini', update = False):
         assert (os.path.isfile('stepParas.grm.out'))
 
         # Update parameter objects.
-        parasObj = updateParameters(parasObj)
+        parasObj = _updateParameters(parasObj)
 
     ''' Perturb external values.
     '''
@@ -136,7 +207,7 @@ def simulate(init = 'init.ini', update = False):
 
     ''' Update parameter class.
     '''
-    if(update): parasObj = updateParameters(parasObj)
+    if(update): parasObj = _updateParameters(parasObj)
 
     ''' Create simulated dataset.
     '''
@@ -177,6 +248,24 @@ def simulate(init = 'init.ini', update = False):
 
 ''' Auxiliary functions.
 '''
+def _updateParameters(parasObj):
+    ''' Update parameter object if possible.
+    '''
+    # Antibugging.
+    assert (parasObj.getStatus() == True)
+
+    # Update.
+    hasStep = (os.path.isfile('stepParas.grm.out'))
+
+    if(hasStep):
+
+        internalValues = np.array(np.genfromtxt('stepParas.grm.out'), dtype = 'float', ndmin = 1)
+
+        parasObj.update(internalValues, version = 'internal', which = 'all')
+
+    # Finishing.
+    return parasObj
+
 def _getLikelihood(init):
     ''' Calculate likelihood for simulated dataset at true parameter values.
     '''

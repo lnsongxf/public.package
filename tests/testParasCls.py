@@ -22,8 +22,6 @@ sys.path.insert(0, dir_)
 
 # project library
 from tools.modAuxiliaryFunctions import cleanup
-
-
 from tools.initFile._createParas import constructParas
 from tools.initFile._createDictionary import  processInput
 from tools.initFile._createModel import constructModel
@@ -49,7 +47,6 @@ class testParasCls(object):
 
         initDict = processInput('../dat/testInit_A.ini')
 
-
         modelObj = constructModel(initDict)
 
         parasObj = constructParas(initDict, modelObj, False)
@@ -67,7 +64,7 @@ class testParasCls(object):
             assert_almost_equal(value, int_)
                     
         # Cleanup.
-        interface.cleanup(resume = False)
+        cleanup(resume = False)
         
 if __name__ == '__main__': 
     
