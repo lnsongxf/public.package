@@ -3,6 +3,7 @@
 
 # standard library
 import numpy    as np
+import cPickle as pkl
 
 import scipy
 import copy
@@ -47,7 +48,20 @@ class results(clsMeta.meta):
 
         # Status indicator
         self.isLocked = False
-        
+
+
+    ''' Public methods
+    '''
+    def store(self, fileName):
+        ''' Store class instance.
+        '''
+        # Antibugging.
+        assert (self.getStatus() == True)
+        assert (isinstance(fileName, str))
+
+        # Store.
+        pkl.dump(self.attr, open(fileName, 'wb'))
+
     ''' Calculate derived attributes.
     '''
     def _derivedAttributes(self):
@@ -151,9 +165,12 @@ class results(clsMeta.meta):
         ''' Store update parameter objects.'''
         
         self.attr['parasObj'] = parasObj
-        
+
+        self.attr['paras'] = parasObj.getValues('internal', 'all')
+
         # Cleanup.
         self.attr.pop('grmObj', None)
+        self.attr.pop('parasObj', None)
 
     def _writeFile(self):
         ''' Write results to file.

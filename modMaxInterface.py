@@ -95,6 +95,6 @@ def maximize(modelObj, parasObj, requestObj):
 
     rslt.lock()
 
-    rslt.store('rsltObj.grm.pkl')
+    rslt.store('rslt.grm.pkl')
 
     return rslt

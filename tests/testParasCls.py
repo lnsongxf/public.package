@@ -21,8 +21,12 @@ dir_ = FILE_PATH.replace('/tests', '')
 sys.path.insert(0, dir_)
 
 # project library
-import interface as grmToolbox
-from scripts.estimate import estimate
+import interface
+
+
+from tools.initFile._createParas import constructParas
+from tools.initFile._createDictionary import  processInput
+from tools.initFile._createModel import constructModel
 
 
 ''' Test class.
@@ -43,19 +47,13 @@ class testParasCls(object):
         ''' Test parameter transformations.
         '''
 
-        #grmToolbox.cleanup(resume = False)
+        initDict = processInput('../dat/testInit_A.ini')
 
-        # Run command.
-        initFile = '../dat/testInit_A.ini'
-        
-        estimate(initFile, resume = False, useSimulation = False)
-        
-        # Assessment of results.
-        rsltObj = pkl.load(open('rsltObj.grm.pkl', 'r'))
-                
-        # Access class attributes
-        parasObj = rsltObj.getAttr('parasObj')
-        
+
+        modelObj = constructModel(initDict)
+
+        parasObj = constructParas(initDict, modelObj, False)
+
         paraObjs = parasObj.getAttr('paraObjs')
         
         for paraObj in paraObjs:
@@ -65,11 +63,11 @@ class testParasCls(object):
             ext   = parasObj._transformToExternal(paraObj, value)
             
             int_  = parasObj._transformToInternal(paraObj, ext)
-            
+
             assert_almost_equal(value, int_)
                     
         # Cleanup.
-        grmToolbox.cleanup(resume = False)
+        interface.cleanup(resume = False)
         
 if __name__ == '__main__': 
     
