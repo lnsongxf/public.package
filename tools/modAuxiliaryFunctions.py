@@ -7,9 +7,6 @@ import os
 
 import numpy            as np
 
-# project library
-import interface as grmToolbox
-
 
 def createMatrices(dataset, initDict):
     ''' Create the data matrices.
@@ -94,7 +91,6 @@ def updateParameters(parasObj):
     ''' Update parameter object if possible.
     '''
     # Antibugging.
-    assert (isinstance(parasObj, grmToolbox.parasCls))
     assert (parasObj.getStatus() == True)
     
     # Update.

@@ -21,7 +21,7 @@ dir_ = FILE_PATH.replace('/tests', '')
 sys.path.insert(0, dir_)
 
 # project library
-import interface
+from tools.modAuxiliaryFunctions import cleanup
 
 
 from tools.initFile._createParas import constructParas

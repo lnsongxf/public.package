@@ -9,10 +9,13 @@ import glob
 import os
 
 # project library
-import interface
-
-
-
+from tools.modAuxiliaryFunctions import cleanup, createMatrices, updateParameters
+from tools.initFile.init_interface import initialize
+from modMaxInterface import maximize
+from clsGrm import grmCls
+from clsCrit import critCls
+from tools.initFile._createDictionary import processInput
+from clsMax import _scipyWrapperFunction as evaluate
 
 
 def clean():
@@ -51,10 +54,10 @@ def estimate(init = 'init.ini', resume = False, useSimulation = False):
     ''' Estimate specified model.
     '''
     # Cleanup
-    interface.cleanup(resume)
+    cleanup(resume)
 
     #Process initialization file.
-    modelObj, parasObj, requestObj, _ = interface.initialize(init, useSimulation)
+    modelObj, parasObj, requestObj, _ = initialize(init, useSimulation)
 
     # Process resume.
     if(resume):
@@ -63,7 +66,7 @@ def estimate(init = 'init.ini', resume = False, useSimulation = False):
         assert (os.path.isfile('stepParas.grm.out'))
 
         # Update parameter objects.
-        parasObj = interface.updateParameters(parasObj)
+        parasObj = updateParameters(parasObj)
 
     else:
 
@@ -72,13 +75,13 @@ def estimate(init = 'init.ini', resume = False, useSimulation = False):
         np.savetxt('stepParas.grm.out', paras, fmt = '%25.12f')
 
     # Run optimization.
-    interface.maximize(modelObj, parasObj, requestObj)
+    maximize(modelObj, parasObj, requestObj)
 
 def perturb(scale = 0.1, seed = 123, init = 'init.ini', update = False):
     ''' Perturb current values of structural parameters.
     '''
     #Process initialization file.
-    _, parasObj, _, _ = interface.initialize(init, useSimulation = False)
+    _, parasObj, _, _ = initialize(init, useSimulation = False)
 
     ''' Update parameter object.
     '''
@@ -88,7 +91,7 @@ def perturb(scale = 0.1, seed = 123, init = 'init.ini', update = False):
         assert (os.path.isfile('stepParas.grm.out'))
 
         # Update parameter objects.
-        parasObj = interface.updateParameters(parasObj)
+        parasObj = updateParameters(parasObj)
 
     ''' Perturb external values.
     '''
@@ -121,7 +124,7 @@ def simulate(init = 'init.ini', update = False):
 
     ''' Process initialization file.
     '''
-    _, parasObj, _, initDict = interface.initialize(init, isSimulation = True)
+    _, parasObj, _, initDict = initialize(init, isSimulation = True)
 
     ''' Distribute information.
     '''
@@ -133,7 +136,7 @@ def simulate(init = 'init.ini', update = False):
 
     ''' Update parameter class.
     '''
-    if(update): parasObj = interface.updateParameters(parasObj)
+    if(update): parasObj = updateParameters(parasObj)
 
     ''' Create simulated dataset.
     '''
@@ -154,7 +157,7 @@ def simulate(init = 'init.ini', update = False):
 
     ''' Update for prediction step.
     '''
-    rslt = interface.createMatrices(simDat, initDict)
+    rslt = createMatrices(simDat, initDict)
 
     parasObj.unlock()
 
@@ -181,10 +184,10 @@ def _getLikelihood(init):
     assert (isinstance(init, str))
 
     # Process model ingredients.
-    modelObj, parasObj, requestObj, _ = interface.initialize(init, True)
+    modelObj, parasObj, requestObj, _ = initialize(init, True)
 
     # Initialize container.
-    grmObj = interface.grmCls()
+    grmObj = grmCls()
 
     grmObj.setAttr('modelObj', modelObj)
 
@@ -195,14 +198,14 @@ def _getLikelihood(init):
     grmObj.lock()
 
 
-    critObj = interface.critCls(grmObj)
+    critObj = critCls(grmObj)
 
     critObj.lock()
 
     # Evaluate at true values.
     x    = parasObj.getValues('external', 'free')
 
-    likl = interface.evaluate(x, critObj)
+    likl = evaluate(x, critObj)
 
     # Cleanup.
     for file_ in ['grmToolbox.grm.log', 'stepParas.grm.out', \
@@ -218,7 +221,7 @@ def _createMock(init):
         in the case of a missing source dataset.
     '''
 
-    initDict = interface.processInput(init)
+    initDict = processInput(init)
 
     isMock = (os.path.exists(initDict['DATA']['source']) == False)
 
@@ -247,7 +250,6 @@ def _simulateEndogenous(simDat, parasObj, initDict):
     # Antibugging.
     assert (isinstance(initDict, dict))
     assert (isinstance(simDat, np.ndarray))
-    assert (isinstance(parasObj, interface.parasCls))
     assert (parasObj.getStatus() == True)
 
     # Distribute information.
@@ -277,7 +279,7 @@ def _simulateEndogenous(simDat, parasObj, initDict):
     U1, U0, V = np.random.multivariate_normal(mean, covMat, simAgents).T
 
     # Create data matrices.
-    rslt    = interface.createMatrices(simDat, initDict)
+    rslt    = createMatrices(simDat, initDict)
 
     xExPost = rslt['xExPost']
 

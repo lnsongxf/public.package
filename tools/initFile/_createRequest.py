@@ -2,7 +2,7 @@
 '''
 
 # project library
-import interface as grmToolbox
+from clsRequest import requestCls
 
 ''' Construct request object.
 '''
@@ -12,7 +12,7 @@ def constructRequest(initDict):
     assert (isinstance(initDict, dict))
     
     # Initialize request.    
-    requestObj = grmToolbox.requestCls()
+    requestObj = requestCls()
     
     requestObj.setAttr('algorithm', initDict['ESTIMATION']['algorithm'])
     

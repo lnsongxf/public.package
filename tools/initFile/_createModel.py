@@ -6,7 +6,8 @@
 import numpy as np
 
 # project library
-import interface as grmToolbox
+from clsModel import modelCls
+from tools.modAuxiliaryFunctions import createMatrices
 
 
 ''' Main function.
@@ -28,10 +29,10 @@ def constructModel(initDict):
     # Construct data array.
     dataset = _processDataset(initDict)
     
-    rslt    = grmToolbox.createMatrices(dataset, initDict)
+    rslt    = createMatrices(dataset, initDict)
 
     # Initialize model object.
-    modelObj = grmToolbox.modelCls()
+    modelObj = modelCls()
     
     
     modelObj.setAttr('Y', rslt['Y'])

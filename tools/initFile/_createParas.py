@@ -9,7 +9,8 @@ import numpy            as np
 import sys
 
 # project library.
-import interface as grmToolbox
+from clsParas import parasCls
+from clsModel import modelCls
 
 
 ''' Main function.
@@ -19,8 +20,6 @@ def constructParas(initDict, modelObj, isSimulation):
     '''
     # Antibugging.
     assert (isinstance(initDict, dict))
-    
-    assert (isinstance(modelObj, grmToolbox.modelCls))
     assert (modelObj.getStatus() == True)
 
     # Distribute auxiliary objects.
@@ -172,8 +171,6 @@ def _initializeParameters(initDict, modelObj):
     ''' 
     # Antibugging.
     assert (isinstance(initDict, dict))
-
-    assert (isinstance(modelObj, grmToolbox.modelCls))
     assert (modelObj.getStatus() == True)
 
     # Distribute information
@@ -182,7 +179,7 @@ def _initializeParameters(initDict, modelObj):
     numCovarsCost   = len(initDict['COST']['coeffs']['pos'])
 
     # Initialize parameter container.
-    parasObj = grmToolbox.parasCls(modelObj)
+    parasObj = parasCls(modelObj)
 
     # Benefits.
     
@@ -344,10 +341,10 @@ def _autoStart(parasObj, modelObj):
     ''' Core function.
     '''
     # Antibugging.
-    assert (isinstance(parasObj, grmToolbox.parasCls))
+    assert (isinstance(parasObj, parasCls))
     assert (parasObj.getStatus() == True)
 
-    assert (isinstance(modelObj, grmToolbox.modelCls))
+    assert (isinstance(modelObj, modelCls))
     assert (modelObj.getStatus() == True)
     
     # Benefits.
