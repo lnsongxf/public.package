@@ -1,8 +1,7 @@
 grmToolbox
 ===================
 
-
-Toolbox for the estimation of the generalized Roy model.
+Repository for implementation of the generalized Roy model as a Python package.
 
 Online Documentation:
 
