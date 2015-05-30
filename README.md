@@ -1,4 +1,4 @@
-grmToolbox
+grmpy
 ===================
 
 Repository for implementation of the generalized Roy model as a Python package.
