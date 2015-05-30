@@ -13,10 +13,10 @@ import os
 
 # project library
 from tools.modAuxiliaryFunctions import cleanup, createMatrices
-from tools.initFile.init_interface import initialize
+from user.init_interface import initialize
 from clsGrm import grmCls
 from clsCrit import critCls
-from tools.initFile._createDictionary import processInput
+from user._createDictionary import processInput
 from clsMax import _scipyWrapperFunction as evaluate
 import clsMax
 import clsGrm

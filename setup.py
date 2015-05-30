@@ -1,7 +1,7 @@
 from distutils.core import setup
 setup(
   name = 'grmpy',
-  packages = ['grmpy', 'grmpy.tests'], # this must be the same as the name above
+  packages = ['grmpy', 'grmpy.tests', 'grmpy.tools', 'grmpy.user'], # this must be the same as the name above
   package_data = {'data': ['test.*'],}
   version = 'v1.1.1.1',
   description = 'Estimator for the generalized Roy Model',

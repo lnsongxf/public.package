@@ -19,9 +19,9 @@ sys.path.insert(0, dir_)
 
 # project library
 from tools.modAuxiliaryFunctions import cleanup
-from tools.initFile._createParas import constructParas
-from tools.initFile._createDictionary import  processInput
-from tools.initFile._createModel import constructModel
+from user._createParas import constructParas
+from user._createDictionary import  processInput
+from user._createModel import constructModel
 
 
 ''' Test class.
@@ -40,7 +40,7 @@ class testParasCls(object):
     def testA(self):
         """ Test parameter transformations.
         """
-        init_dict = processInput('../dat/testInit_A.ini')
+        init_dict = processInput('../data/test.ini')
 
         model_obj = constructModel(init_dict)
 
