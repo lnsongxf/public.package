@@ -1,1 +1,1 @@
-from grmpy import *
+from interface import *

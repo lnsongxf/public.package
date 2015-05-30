@@ -11,4 +11,4 @@ grmpy/clsModel.py
 grmpy/clsParas.py
 grmpy/clsRequest.py
 grmpy/clsRslt.py
-grmpy/grmToolbox.py
+grmpy/interface.py
