@@ -16,8 +16,6 @@ Contact:
 Installation
 ------------
 
-.. code-block:: bash
-
     $ pip install grmpy
     $ python -c "import grmpy; grmpy.test()"
 
