@@ -9,8 +9,8 @@ import numpy            as np
 import sys
 
 # project library.
-from clsParas import parasCls
-from clsModel import modelCls
+from grmpy.clsParas import parasCls
+from grmpy.clsModel import modelCls
 
 
 ''' Main function.

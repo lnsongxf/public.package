@@ -10,8 +10,8 @@ import copy
 import random
 
 # project library
-import clsMeta
-import clsEffects
+import grmpy.clsMeta
+import grmpy.clsEffects
 
 class results(clsMeta.meta):
     ''' This class contains all results provided back to the user from the 

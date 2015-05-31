@@ -5,8 +5,8 @@
 import numpy   as np
 
 # project library
-import clsMeta
-import clsModel
+import grmpy.clsMeta
+import grmpy.clsModel
 
 class parasCls(clsMeta.meta):
     ''' Class for the parameter management.

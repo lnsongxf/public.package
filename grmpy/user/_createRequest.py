@@ -2,7 +2,7 @@
 '''
 
 # project library
-from clsRequest import requestCls
+from grmpy.clsRequest import requestCls
 
 ''' Construct request object.
 '''

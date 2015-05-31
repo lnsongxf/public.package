@@ -6,8 +6,8 @@ import  numpy           as      np
 from    scipy.stats     import  norm
 
 # project library
-import clsMeta
-import clsGrm
+import grmpy.clsMeta
+import grmpy.clsGrm
 
 class critCls(clsMeta.meta):
     

@@ -7,9 +7,9 @@ import scipy
 import random
 
 # project library
-import clsMeta
-import clsModel
-import clsParas
+import grmpy.clsMeta
+import grmpy.clsModel
+import grmpy.clsParas
 
 class effectCls(clsMeta.meta):
     ''' Lightweight class for the simulation of treatment effect parameters.

@@ -6,8 +6,8 @@ import numpy as np
 from   scipy.optimize  import  fmin_bfgs, fmin_powell
 
 # project library
-import clsMeta
-import clsCrit
+import grmpy.clsMeta
+import grmpy.clsCrit
 
 
 class maxCls(clsMeta.meta):

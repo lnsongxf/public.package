@@ -9,7 +9,7 @@ import shlex
 import os
 
 # project library
-import _checkInput
+import grmpy.user._checkInput
 
 ''' Main function.
 '''

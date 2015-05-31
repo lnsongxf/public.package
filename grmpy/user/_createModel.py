@@ -6,8 +6,8 @@
 import numpy as np
 
 # project library
-from clsModel import modelCls
-from tools.modAuxiliaryFunctions import createMatrices
+from grmpy.clsModel import modelCls
+from grmpy.tools.auxiliary import createMatrices
 
 
 ''' Main function.

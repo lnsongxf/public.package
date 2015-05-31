@@ -12,15 +12,15 @@ import glob
 import os
 
 # project library
-from tools.modAuxiliaryFunctions import cleanup, createMatrices
-from user.init_interface import initialize
-from clsGrm import grmCls
-from clsCrit import critCls
-from user._createDictionary import processInput
-from clsMax import _scipyWrapperFunction as evaluate
-import clsMax
-import clsGrm
-import clsRslt
+from grmpy.tools.auxiliary import cleanup, createMatrices
+from grmpy.user.init_interface import initialize
+from grmpy.clsGrm import grmCls
+from grmpy.clsCrit import critCls
+from grmpy.user._createDictionary import processInput
+from grmpy.clsMax import _scipyWrapperFunction as evaluate
+import grmpy.clsMax
+import grmpy.clsGrm
+import grmpy.clsRslt
 
 def clean():
     ''' Cleanup from previous estimation run.

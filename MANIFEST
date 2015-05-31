@@ -11,4 +11,15 @@ grmpy/clsModel.py
 grmpy/clsParas.py
 grmpy/clsRequest.py
 grmpy/clsRslt.py
-grmpy/interface.py
+grmpy/public.py
+grmpy/tests/__init__.py
+grmpy/tests/test.py
+grmpy/tools/__init__.py
+grmpy/tools/auxiliary.py
+grmpy/user/__init__.py
+grmpy/user/_checkInput.py
+grmpy/user/_createDictionary.py
+grmpy/user/_createModel.py
+grmpy/user/_createParas.py
+grmpy/user/_createRequest.py
+grmpy/user/init_interface.py

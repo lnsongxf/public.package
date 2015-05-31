@@ -2,7 +2,7 @@
     formulation of the user's request.
 '''
 # project library
-import clsMeta
+import grmpy.clsMeta
 
 class requestCls(clsMeta.meta):
     ''' This class collects all information related to the user's request.

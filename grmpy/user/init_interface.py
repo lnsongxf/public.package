@@ -6,10 +6,10 @@
 import os
 
 # project library
-import _createDictionary as auxDict
-import _createModel      as auxModel
-import _createParas      as auxParas
-import _createRequest    as auxRequest
+import grmpy.user._createDictionary as auxDict
+import grmpy.user._createModel      as auxModel
+import grmpy.user._createParas      as auxParas
+import grmpy.user._createRequest    as auxRequest
 
 ''' Main function.
 '''
