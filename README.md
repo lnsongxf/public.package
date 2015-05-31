@@ -1,5 +1,4 @@
-grmpy
-===================
+# grmpy
 
 Repository for implementation of the generalized Roy model as a Python package. The *grmpy* package was originally developed for research documented in: 
 
