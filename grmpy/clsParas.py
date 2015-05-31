@@ -6,7 +6,7 @@ import numpy   as np
 
 # project library
 from grmpy.clsMeta import metaCls
-import grmpy.clsModel
+from grmpy.clsModel import modelCls
 
 class parasCls(metaCls):
     ''' Class for the parameter management.
@@ -14,7 +14,7 @@ class parasCls(metaCls):
     def __init__(self, modelObj):
         
         # Antibugging.
-        assert (isinstance(modelObj, grmpy.clsModel.modelCls))
+        assert (isinstance(modelObj, modelCls))
         assert (modelObj.getStatus() == True)
         
         # Attach attributes.

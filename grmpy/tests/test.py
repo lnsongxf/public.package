@@ -18,11 +18,10 @@ dir_ = FILE_PATH.replace('/tests', '')
 sys.path.insert(0, dir_)
 
 # project library
-from tools.auxiliary import cleanup
-from user._createParas import constructParas
-from user._createDictionary import  processInput
-from user._createModel import constructModel
-
+from grmpy.tools.auxiliary import cleanup
+from grmpy.user._createParas import constructParas
+from grmpy.user._createDictionary import  processInput
+from grmpy.user._createModel import constructModel
 
 ''' Test class.
 '''

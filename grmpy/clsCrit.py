@@ -7,14 +7,14 @@ from    scipy.stats     import  norm
 
 # project library
 from grmpy.clsMeta import metaCls
-import grmpy.clsGrm
+from grmpy.clsGrm import grmCls
 
 class critCls(metaCls):
     
     def __init__(self, grmObj):
 
         # Antibugging.
-        assert (isinstance(grmObj, grmpy.clsGrm.grmCls))
+        assert (isinstance(grmObj, grmCls))
         assert (grmObj.getStatus() == True)
 
         self.attr = {}
@@ -299,7 +299,7 @@ class critCls(metaCls):
         assert (self.getStatus() == True)
         
         # GrmObject.
-        assert (isinstance(self.attr['grmObj'], grmpy.clsGrm.grmCls))
+        assert (isinstance(self.attr['grmObj'], grmCls))
         assert (self.attr['grmObj'].getStatus() == True)
 
         # Function values.

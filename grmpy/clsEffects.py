@@ -8,8 +8,8 @@ import random
 
 # project library
 from grmpy.clsMeta import metaCls
-import grmpy.clsModel as clsModel
-import grmpy.clsParas as clsParas
+from grmpy.clsModel import modelCls
+from grmpy.clsParas import parasCls
 
 class effectCls(metaCls):
     ''' Lightweight class for the simulation of treatment effect parameters.
@@ -24,10 +24,10 @@ class effectCls(metaCls):
         # Antibugging.
         assert (self.getStatus() == True)
         
-        assert (isinstance(modelObj, clsModel.modelCls)) 
+        assert (isinstance(modelObj, modelCls))
         assert (modelObj.getStatus() == True)
         
-        assert (isinstance(parasObj, clsParas.parasCls)) 
+        assert (isinstance(parasObj, parasCls))
         assert (parasObj.getStatus() == True)
 
         assert (type_ in ['marginal', 'average'])
@@ -63,10 +63,10 @@ class effectCls(metaCls):
         assert (self.getStatus() == True)
         assert (which in ['smteExAnte', 'cmteExAnte', 'bmteExPost'])
         
-        assert (isinstance(modelObj, clsModel.modelCls)) 
+        assert (isinstance(modelObj, modelCls))
         assert (modelObj.getStatus() == True)
         
-        assert (isinstance(parasObj, clsParas.parasCls)) 
+        assert (isinstance(parasObj, parasCls))
         assert (parasObj.getStatus() == True)
         
         # Distribute class attributes.
@@ -147,10 +147,10 @@ class effectCls(metaCls):
         assert (isinstance(numSims, int))
         assert (numSims > 0)
         
-        assert (isinstance(modelObj, clsModel.modelCls)) 
+        assert (isinstance(modelObj, modelCls))
         assert (modelObj.getStatus() == True)
         
-        assert (isinstance(parasObj, clsParas.parasCls)) 
+        assert (isinstance(parasObj, parasCls))
         assert (parasObj.getStatus() == True)
 
         # Distribute class attributes.

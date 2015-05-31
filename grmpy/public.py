@@ -18,7 +18,6 @@ from grmpy.clsGrm import grmCls
 from grmpy.clsCrit import critCls
 from grmpy.user._createDictionary import processInput
 from grmpy.clsMax import _scipyWrapperFunction as evaluate
-
 from grmpy.clsMax import maxCls
 from grmpy.clsGrm import grmCls
 from grmpy.clsRslt import results

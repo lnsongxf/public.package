@@ -3,10 +3,9 @@
 
 # project library
 from grmpy.clsMeta import metaCls
-
-import grmpy.clsModel
-import grmpy.clsParas
-import grmpy.clsRequest
+from grmpy.clsModel import modelCls
+from grmpy.clsParas import parasCls
+from grmpy.clsRequest import requestCls
 
 class grmCls(metaCls):
     
@@ -30,13 +29,13 @@ class grmCls(metaCls):
         assert (self.getStatus() == True)
         
         # Model.
-        assert (isinstance(self.attr['modelObj'], grmpy.clsModel.modelCls))
+        assert (isinstance(self.attr['modelObj'], modelCls))
         assert (self.attr['modelObj'].getStatus() == True)
         
         # Parameters.
-        assert (isinstance(self.attr['parasObj'], grmpy.clsParas.parasCls))
+        assert (isinstance(self.attr['parasObj'], parasCls))
         assert (self.attr['parasObj'].getStatus() == True)
         
         # Request.
-        assert (isinstance(self.attr['requestObj'], grmpy.clsRequest.requestCls))
+        assert (isinstance(self.attr['requestObj'], requestCls))
         assert (self.attr['requestObj'].getStatus() == True)

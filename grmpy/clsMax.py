@@ -7,7 +7,7 @@ from   scipy.optimize  import  fmin_bfgs, fmin_powell
 
 # project library
 from grmpy.clsMeta import metaCls
-import grmpy.clsCrit as clsCrit
+from grmpy.clsCrit import critCls
 
 
 class maxCls(metaCls):
@@ -35,7 +35,7 @@ class maxCls(metaCls):
         grmObj = self.getAttr('grmObj')
         
         # Criterion function.
-        critFunc = clsCrit.critCls(grmObj)
+        critFunc = critCls(grmObj)
         
         critFunc.lock()            
     
@@ -274,7 +274,7 @@ def _scipyWrapperGradient(x, critFunc):
     assert (x.dtype == 'float')
     assert (x.ndim == 1)
     
-    assert (isinstance(critFunc, clsCrit.critCls))
+    assert (isinstance(critFunc, critCls))
     assert (critFunc.getStatus() == True)
 
     # Evaluate gradient.
@@ -296,7 +296,7 @@ def _scipyWrapperFunction(x, critFunc):
     assert (x.dtype == 'float')
     assert (x.ndim == 1)
     
-    assert (isinstance(critFunc, clsCrit.critCls))
+    assert (isinstance(critFunc, critCls))
     assert (critFunc.getStatus() == True)
     
     # Evaluate likelihood.

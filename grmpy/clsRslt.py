@@ -11,7 +11,7 @@ import random
 
 # project library
 from grmpy.clsMeta import metaCls
-import grmpy.clsEffects as clsEffects
+from grmpy.clsEffects import effectCls
 
 class results(metaCls):
     ''' This class contains all results provided back to the user from the 
@@ -444,7 +444,7 @@ class results(metaCls):
 
         surpEstimation      = parasObj.getAttr('surpEstimation')
         
-        effectObj = clsEffects.effectCls()
+        effectObj = effectCls()
         
         effectObj.lock()
         
@@ -532,7 +532,7 @@ class results(metaCls):
         modelObj    = grmObj.getAttr('modelObj')
         parasObj    = grmObj.getAttr('parasObj')
         
-        effectObj = clsEffects.effectCls()
+        effectObj = effectCls()
         
         effectObj.lock()
 
@@ -640,7 +640,7 @@ class results(metaCls):
         modelObj    = grmObj.getAttr('modelObj')
         parasObj    = grmObj.getAttr('parasObj')
         
-        effectObj = clsEffects.effectCls()
+        effectObj = effectCls()
         
         effectObj.lock()
         
