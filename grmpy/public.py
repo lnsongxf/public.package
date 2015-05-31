@@ -188,11 +188,15 @@ def test():
     """ Run nose tester.
     """
 
+    base = os.getcwd()
+
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
     os.chdir('tests')
 
     os.system('nosetests test.py')
+
+    os.chdir(base)
 
 ''' Simulation '''
 def simulate(init = 'init.ini', update = False):

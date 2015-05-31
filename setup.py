@@ -1,8 +1,9 @@
 from distutils.core import setup
 setup(
   name = 'grmpy',
-  packages = ['grmpy', 'grmpy.tests', 'grmpy.tools', 'grmpy.user','grmpy.data'], # this must be the same as the name above
-  version = '1.1.1.10',
+  packages = ['grmpy', 'grmpy.tests', 'grmpy.tools', 'grmpy.user',], # this must be the same as the name above
+  package_data = {'grmpy': ['data/test.*'],},
+  version = '1.1.1.13',
   description = 'Estimator for the generalized Roy Model',
   author = 'Philipp Eisenhauer',
   author_email = 'eisenhauer@policy-lab.org',

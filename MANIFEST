@@ -12,6 +12,8 @@ grmpy/clsParas.py
 grmpy/clsRequest.py
 grmpy/clsRslt.py
 grmpy/public.py
+grmpy/data/test.dat
+grmpy/data/test.ini
 grmpy/tests/__init__.py
 grmpy/tests/test.py
 grmpy/tools/__init__.py
