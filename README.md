@@ -1,7 +1,7 @@
 grmpy
 ===================
 
-Repository for implementation of the generalized Roy model as a Python package. The **grmpy** package was originally developed for research documented in: 
+Repository for implementation of the generalized Roy model as a Python package. The *grmpy* package was originally developed for research documented in: 
 
 Eisenhauer, Philipp and James J. Heckman, Edward Vytlacil (2014): The Generalized Roy Model and the Cost-Benefit Analysis of Social Programs, *Journal of Political Economy*, 123(2): 413-443.
 
