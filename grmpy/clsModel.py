@@ -8,9 +8,10 @@ import statsmodels.api  as sm
 import numpy            as np
 
 # project library
-import clsMeta
+from grmpy.clsMeta import metaCls
 
-class modelCls(clsMeta.meta):
+
+class modelCls(metaCls):
     
     def __init__(self):
         

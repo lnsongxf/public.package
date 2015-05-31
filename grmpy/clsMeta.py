@@ -4,7 +4,7 @@
 # standard library
 import cPickle as pkl
 
-class meta(object):
+class metaCls(object):
     
     def __init__(self):
         

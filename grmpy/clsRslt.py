@@ -10,10 +10,10 @@ import copy
 import random
 
 # project library
-import grmpy.clsMeta
-import grmpy.clsEffects
+from grmpy.clsMeta import metaCls
+import grmpy.clsEffects as clsEffects
 
-class results(clsMeta.meta):
+class results(metaCls):
     ''' This class contains all results provided back to the user from the 
         maximization setup.
     ''' 

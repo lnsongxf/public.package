@@ -18,9 +18,10 @@ from grmpy.clsGrm import grmCls
 from grmpy.clsCrit import critCls
 from grmpy.user._createDictionary import processInput
 from grmpy.clsMax import _scipyWrapperFunction as evaluate
-import grmpy.clsMax
-import grmpy.clsGrm
-import grmpy.clsRslt
+
+from grmpy.clsMax import maxCls
+from grmpy.clsGrm import grmCls
+from grmpy.clsRslt import results
 
 def clean():
     ''' Cleanup from previous estimation run.
@@ -80,7 +81,7 @@ def estimate(init = 'init.ini', resume = False, useSimulation = False):
 
     # Run optimization.
     # Initialize container
-    grmObj = clsGrm.grmCls()
+    grmObj = grmCls()
 
     grmObj.setAttr('modelObj', modelObj)
 
@@ -101,13 +102,13 @@ def estimate(init = 'init.ini', resume = False, useSimulation = False):
     withAsymptotics = requestObj.getAttr('withAsymptotics')
 
     # Distribute auxiliary objects.
-    maxCls = clsMax.maxCls(grmObj)
+    maxObj = maxCls(grmObj)
 
-    maxCls.lock()
+    maxObj.lock()
 
     sys.stdout = open('/dev/null', 'w')
 
-    maxRslt = maxCls.maximize()
+    maxRslt = maxObj.maximize()
 
     sys.stdout = sys.__stdout__
 
@@ -125,7 +126,7 @@ def estimate(init = 'init.ini', resume = False, useSimulation = False):
 
         elif(hessian == 'numdiff'):
 
-            critFunc = maxCls.getAttr('critFunc')
+            critFunc = maxObj.getAttr('critFunc')
 
             ndObj    = nd.Hessian(lambda x: clsMax._scipyWrapperFunction(x, critFunc))
             hess     = ndObj(xopt)
@@ -134,7 +135,7 @@ def estimate(init = 'init.ini', resume = False, useSimulation = False):
         pkl.dump(covMat, open('covMat.grm.pkl', 'wb'))
 
     # Construct result class.
-    rslt = clsRslt.results()
+    rslt = results()
 
     rslt.setAttr('grmObj', grmObj)
 

@@ -9,7 +9,7 @@ import shlex
 import os
 
 # project library
-import grmpy.user._checkInput
+from grmpy.user._checkInput import checkInput
 
 ''' Main function.
 '''
@@ -71,7 +71,7 @@ def processInput(initFile):
     initDict = _addDERIV(initDict)
     
     # Check quality.
-    assert (_checkInput.checkInput(initDict) == True)
+    assert (checkInput(initDict) == True)
 
     # Type transformation.
     initDict = _typeTransformations(initDict)

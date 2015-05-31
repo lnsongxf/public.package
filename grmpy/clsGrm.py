@@ -2,12 +2,13 @@
 '''
 
 # project library
-import clsMeta
-import clsModel
-import clsParas
-import clsRequest
+from grmpy.clsMeta import metaCls
 
-class grmCls(clsMeta.meta):
+import grmpy.clsModel
+import grmpy.clsParas
+import grmpy.clsRequest
+
+class grmCls(metaCls):
     
     def __init__(self):
         
@@ -29,13 +30,13 @@ class grmCls(clsMeta.meta):
         assert (self.getStatus() == True)
         
         # Model.
-        assert (isinstance(self.attr['modelObj'], clsModel.modelCls))
+        assert (isinstance(self.attr['modelObj'], grmpy.clsModel.modelCls))
         assert (self.attr['modelObj'].getStatus() == True)
         
         # Parameters.
-        assert (isinstance(self.attr['parasObj'], clsParas.parasCls))
+        assert (isinstance(self.attr['parasObj'], grmpy.clsParas.parasCls))
         assert (self.attr['parasObj'].getStatus() == True)
         
         # Request.
-        assert (isinstance(self.attr['requestObj'], clsRequest.requestCls))
+        assert (isinstance(self.attr['requestObj'], grmpy.clsRequest.requestCls))
         assert (self.attr['requestObj'].getStatus() == True)

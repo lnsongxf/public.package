@@ -6,11 +6,11 @@ import numpy as np
 from   scipy.optimize  import  fmin_bfgs, fmin_powell
 
 # project library
-import grmpy.clsMeta
-import grmpy.clsCrit
+from grmpy.clsMeta import metaCls
+import grmpy.clsCrit as clsCrit
 
 
-class maxCls(clsMeta.meta):
+class maxCls(metaCls):
     
     def __init__(self, grmObj):
         

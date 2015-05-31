@@ -2,9 +2,9 @@
     formulation of the user's request.
 '''
 # project library
-import grmpy.clsMeta
+from grmpy.clsMeta import metaCls
 
-class requestCls(clsMeta.meta):
+class requestCls(metaCls):
     ''' This class collects all information related to the user's request.
     '''
     def __init__(self):

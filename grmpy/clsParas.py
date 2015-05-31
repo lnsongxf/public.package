@@ -5,16 +5,16 @@
 import numpy   as np
 
 # project library
-import grmpy.clsMeta
+from grmpy.clsMeta import metaCls
 import grmpy.clsModel
 
-class parasCls(clsMeta.meta):
+class parasCls(metaCls):
     ''' Class for the parameter management.
     '''
     def __init__(self, modelObj):
         
         # Antibugging.
-        assert (isinstance(modelObj, clsModel.modelCls)) 
+        assert (isinstance(modelObj, grmpy.clsModel.modelCls))
         assert (modelObj.getStatus() == True)
         
         # Attach attributes.
@@ -560,7 +560,7 @@ class parasCls(clsMeta.meta):
 
 ''' Private methods and classes of the module. 
 '''
-class _paraContainer(clsMeta.meta):
+class _paraContainer(metaCls):
     ''' Container for parameter class.
     '''
     counter = 0

@@ -6,15 +6,15 @@ import  numpy           as      np
 from    scipy.stats     import  norm
 
 # project library
-import grmpy.clsMeta
+from grmpy.clsMeta import metaCls
 import grmpy.clsGrm
 
-class critCls(clsMeta.meta):
+class critCls(metaCls):
     
     def __init__(self, grmObj):
 
         # Antibugging.
-        assert (isinstance(grmObj, clsGrm.grmCls))
+        assert (isinstance(grmObj, grmpy.clsGrm.grmCls))
         assert (grmObj.getStatus() == True)
 
         self.attr = {}
@@ -299,7 +299,7 @@ class critCls(clsMeta.meta):
         assert (self.getStatus() == True)
         
         # GrmObject.
-        assert (isinstance(self.attr['grmObj'], clsGrm.grmCls))
+        assert (isinstance(self.attr['grmObj'], grmpy.clsGrm.grmCls))
         assert (self.attr['grmObj'].getStatus() == True)
 
         # Function values.
