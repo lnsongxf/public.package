@@ -4,7 +4,7 @@ Repository for implementation of the generalized Roy model as a Python package. 
 
 Eisenhauer, Philipp and James J. Heckman, Edward Vytlacil (2014): The Generalized Roy Model and the Cost-Benefit Analysis of Social Programs, *Journal of Political Economy*, 123(2): 413-443.
 
-Additional information about our research is available [online](http://www.policy-lab.org/cb-analysis) and you can
+Additional information about our research is available [online](http://www.policy-lab.org) and you can
 sign up for our mailing list [here](http://eepurl.com/RStEH).
 
 #### Contact
