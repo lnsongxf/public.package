@@ -184,7 +184,15 @@ def perturb(scale = 0.1, seed = 123, init = 'init.ini', update = False):
     '''
     np.savetxt('stepParas.grm.out',  evalPoints, fmt = '%15.10f')
 
+def test():
+    """ Run nose tester.
+    """
 
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
+    os.chdir('tests')
+
+    os.system('nosetests test.py')
 
 ''' Simulation '''
 def simulate(init = 'init.ini', update = False):
