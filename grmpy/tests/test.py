@@ -60,7 +60,7 @@ class testParasCls(object):
                     
         # Cleanup.
         cleanup(resume=False)
-        
+
 if __name__ == '__main__': 
     
     runmodule()   
