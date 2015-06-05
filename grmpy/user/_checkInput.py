@@ -381,7 +381,7 @@ def _checkESTIMATION(initDict):
     # Check keys.
     keys = set(['algorithm', 'maxiter', 'start', 'gtol', 'epsilon', 'marginal',\
                 'conditional', 'average', 'asymptotics', 'hessian', \
-                'draws', 'simulations', 'alpha', 'differences'])
+                'draws', 'simulations', 'alpha', 'differences', 'version'])
 
     assert (keys == set(initDict['ESTIMATION'].keys()))
     

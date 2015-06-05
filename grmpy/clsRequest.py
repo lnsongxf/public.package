@@ -22,6 +22,8 @@ class requestCls(metaCls):
 
         self.attr['withAsymptotics'] = None
         self.attr['numDraws']        = None
+
+        self.attr['version']         = None
         self.attr['hessian']         = None
         self.attr['numSims']         = None
         self.attr['alpha']           = None  
@@ -37,7 +39,11 @@ class requestCls(metaCls):
     '''
     def _checkIntegrity(self):
         ''' Check integrity of user request.
-        '''       
+        '''
+
+        # version
+        assert (self.attr['version'] in ['fast', 'slow'])
+
         # withAsymptotics.
         assert (self.attr['withAsymptotics'] in [True, False])
         

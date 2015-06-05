@@ -157,58 +157,31 @@ class critCls(metaCls):
         modelObj = grmObj.getAttr('modelObj')
         
         parasObj = grmObj.getAttr('parasObj')
-        
-        
-        numAgents = modelObj.getAttr('numAgents')
-        
-        xExPost   = modelObj.getAttr('xExPost')    
-        
-        Y         = modelObj.getAttr('Y')
-        
-        D         = modelObj.getAttr('D')
-        
-        Z         = modelObj.getAttr('Z')
-                
+
+        requestObj = grmObj.getAttr('requestObj')
+
+        # Auxiliary objects
+        version = requestObj.getAttr('version')
+
         # Update values.            
         self.update(x)
 
-        # Distribute current parametrization.
-        outcTreated   = parasObj.getParameters('outc', 'treated')
-        outcUntreated = parasObj.getParameters('outc', 'untreated') 
-        coeffsChoc    = parasObj.getParameters('choice', None)
-        
-        sdU1    = parasObj.getParameters('sd',  'U1') 
-        sdU0    = parasObj.getParameters('sd',  'U0') 
-        sdV     = parasObj.getParameters('sd',  'V')  
-        varV    = parasObj.getParameters('var', 'V') 
-            
-        rhoU1V  = parasObj.getParameters('rho', 'U1,V')  
-        rhoU0V  = parasObj.getParameters('rho', 'U0,V')  
-        
         # Likelihood calculation.
-        choiceIndices = np.dot(coeffsChoc, Z.T) 
-    
-        argOne = D*(Y - np.dot(outcTreated, xExPost.T))/sdU1 + \
-                (1 - D)*(Y - np.dot(outcUntreated, xExPost.T))/sdU0
-    
-        argTwo = D*(choiceIndices - sdV*rhoU1V*argOne)/np.sqrt((1.0 - rhoU1V**2)*varV) + \
-                (1 - D)*(choiceIndices - sdV*rhoU0V*argOne)/np.sqrt((1.0 - rhoU0V**2)*varV)
-        
-        cdfEvals = norm.cdf(argTwo)
-        pdfEvals = norm.pdf(argOne)
-    
-        likl = D*(1.0/sdU1)*pdfEvals*cdfEvals + \
-                    (1 - D)*(1.0/sdU0)*pdfEvals*(1.0  - cdfEvals)
-    
+        if version == 'slow':
+
+            likl = self._evaluateFunction_slow(parasObj, modelObj)
+
+        elif version == 'fast':
+
+            likl = self._evaluateFunction_fast(parasObj, modelObj)
+
+        else:
+
+            raise AssertionError
+
         # Transformations.
-        likl = np.clip(likl, 1e-20, np.inf)
-        
-        likl = -np.log(likl)
-        
-        likl = likl.sum()
-        
-        likl = (1.0/float(numAgents))*likl
-    
+        likl = -np.mean(np.log(np.clip(likl, 1e-20, np.inf)))
+
         # Quality checks.
         assert (isinstance(likl, float))    
         assert (np.isfinite(likl))
@@ -221,6 +194,110 @@ class critCls(metaCls):
 
     ''' Private class attributes.
     '''
+    def _evaluateFunction_fast(self, parasObj, modelObj):
+        """ Evaluate the criterion function in a fast fashion.
+        """
+        # Distribute model information
+        xExPost = modelObj.getAttr('xExPost')
+
+        Y = modelObj.getAttr('Y')
+
+        D = modelObj.getAttr('D')
+
+        Z = modelObj.getAttr('Z')
+
+        # Distribute current parametrization.
+        outcTreated = parasObj.getParameters('outc', 'treated')
+        outcUntreated = parasObj.getParameters('outc', 'untreated')
+        coeffsChoc = parasObj.getParameters('choice', None)
+
+        sdU1 = parasObj.getParameters('sd',  'U1')
+        sdU0 = parasObj.getParameters('sd',  'U0')
+        sdV = parasObj.getParameters('sd',  'V')
+        varV = parasObj.getParameters('var',  'V')
+
+        rhoU1V = parasObj.getParameters('rho', 'U1,V')
+        rhoU0V = parasObj.getParameters('rho', 'U0,V')
+
+        # Construct choice index
+        choiceIndices = np.dot(coeffsChoc, Z.T)
+
+        # Calculate densities
+        argOne = D*(Y - np.dot(outcTreated, xExPost.T))/sdU1 + \
+            (1 - D)*(Y - np.dot(outcUntreated, xExPost.T))/sdU0
+        argTwo = D*(choiceIndices - sdV*rhoU1V*argOne)/np.sqrt((1.0 - rhoU1V**2)*varV) + \
+            (1 - D)*(choiceIndices - sdV*rhoU0V*argOne)/np.sqrt((1.0 - rhoU0V**2)*varV)
+
+        # Evaluate densities
+        cdfEvals, pdfEvals = norm.cdf(argTwo), norm.pdf(argOne)
+
+        # Calculate individual likelihoods
+        likl = D*(1.0/sdU1)*pdfEvals*cdfEvals + \
+            (1 - D)*(1.0/sdU0)*pdfEvals*(1.0  - cdfEvals)
+
+        # Finishing
+        return likl
+
+    def _evaluateFunction_slow(self, parasObj, modelObj):
+        """ Evaluate the criterion function in a slow fashion.
+        """
+        # Distribute model information
+        numAgents = modelObj.getAttr('numAgents')
+
+        xExPost = modelObj.getAttr('xExPost')
+
+        Y = modelObj.getAttr('Y')
+
+        D = modelObj.getAttr('D')
+
+        Z = modelObj.getAttr('Z')
+
+        # Distribute current parametrization.
+        outcTreated = parasObj.getParameters('outc', 'treated')
+        outcUntreated = parasObj.getParameters('outc', 'untreated')
+        coeffsChoc = parasObj.getParameters('choice', None)
+
+        sdU1 = parasObj.getParameters('sd',  'U1')
+        sdU0 = parasObj.getParameters('sd',  'U0')
+        sdV = parasObj.getParameters('sd',  'V')
+
+        rhoU1V = parasObj.getParameters('rho', 'U1,V')
+        rhoU0V = parasObj.getParameters('rho', 'U0,V')
+
+        # Initialize containers
+        likl = np.tile(np.nan, numAgents)
+        choice_idx = np.tile(np.nan, numAgents)
+
+        for i in range(numAgents):
+
+            # Construct choice index
+            choice_idx[i] = np.dot(coeffsChoc, Z[i,:])
+
+            # Select outcome information
+            if D[i] == 1.00:
+                coeffs, rho, sd = outcTreated, rhoU1V, sdU1
+            else:
+                coeffs, rho, sd = outcUntreated, rhoU0V, sdU0
+
+            # Calculate densities
+            arg_one = (Y[i] - np.dot(coeffs, xExPost[i, :])) / sd
+            arg_two = (choice_idx[i] - rho * sdV * arg_one) / \
+                np.sqrt((1.0 - rho ** 2) * sdV**2)
+
+            pdf_evals, cdf_evals = norm.pdf(arg_one), norm.cdf(arg_two)
+
+            # Construct likelihood
+            if D[i] == 1.0:
+                contrib = (1.0 / float(sd)) * pdf_evals * cdf_evals
+            else:
+                contrib = (1.0 / float(sd)) * pdf_evals * (1.0 - cdf_evals)
+
+            # Collect individual information
+            likl[i] = contrib
+
+        # Finishing
+        return likl
+
     def _logging(self, likl):
         ''' Logging of progress.
         '''
