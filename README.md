@@ -21,7 +21,7 @@ http://grmToolbox.github.io
 
 #### Quality Assurance
 
-[![Build Status](https://travis-ci.org/grmToolbox/grmToolbox.svg?branch=master)](https://travis-ci.org/grmToolbox/grmToolbox)
+[![Build Status](https://travis-ci.org/grmToolbox/package.svg?branch=master)](https://travis-ci.org/grmToolbox/grmToolbox)
 [![Coverage Status](https://coveralls.io/repos/grmToolbox/grmToolbox/badge.svg)](https://coveralls.io/r/grmToolbox/grmToolbox)
 
 
