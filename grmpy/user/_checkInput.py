@@ -5,8 +5,6 @@
 # standard library
 import numpy as np
 
-import os 
-
 ''' Main function.
 '''
 def checkInput(initDict):
@@ -50,7 +48,7 @@ def _checkDERIV(initDict):
     '''
     # Distribute.
     all_ = initDict['DERIV']['pos']['all']
-    
+
     max_ = initDict['DERIV']['pos']['max']
     
     # Checks.
@@ -72,8 +70,8 @@ def _checkDERIV(initDict):
         
         assert (isinstance(list_, list))
         assert (isinstance(num, int))
-        
-        assert (all(isinstance(pos, int) for pos in list_))
+
+        assert (all(isinstance(pos, np.int64) for pos in list_))
         assert (num >= 0)
     
     # Cost shifters.
@@ -84,8 +82,8 @@ def _checkDERIV(initDict):
     assert (isinstance(list_, list))
     assert (isinstance(num, int))
         
-    assert (all(isinstance(pos, int) for pos in list_))
-    assert (num >= 0)   
+    assert (all(isinstance(pos, np.int64) for pos in list_))
+    assert (num >= 0)
 
     # Common elements.
     list_ = initDict['DERIV']['common']['pos']
@@ -95,7 +93,7 @@ def _checkDERIV(initDict):
     assert (isinstance(list_, list))
     assert (isinstance(num, int))
         
-    assert (all(isinstance(pos, int) for pos in list_))
+    assert (all(isinstance(pos, np.int64) for pos in list_))
     assert (num >= 0)  
     
     # Finishing.

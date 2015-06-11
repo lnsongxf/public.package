@@ -4,12 +4,17 @@
 # standard library
 import numdifftools as nd
 import numpy as np
-import cPickle as pkl
 import sys
 import random
 import shutil
 import glob
 import os
+
+try:
+   import cPickle as pkl
+except:
+   import pickle as pkl
+
 
 # project library
 from grmpy.tools.auxiliary import cleanup, createMatrices
