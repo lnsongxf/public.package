@@ -446,7 +446,7 @@ def _checkESTIMATION(initDict):
     assert (differences in ['one-sided', 'two-sided'])
     
     # Implications.
-    if(algorithm == 'powell'): assert (hessian == 'bfgs')
+    if(algorithm == 'powell'): assert (hessian == 'numdiff')
     
     # Finishing.
     return True  
