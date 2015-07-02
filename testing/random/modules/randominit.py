@@ -16,7 +16,7 @@ MAX_COEFFS   = 10
 MIN_AGENTS, MAX_AGENTS = 100, 1000
 
 MAX_ITER = 100
-MAX_SIMULATIONS = 1000
+MIN_SIMULATIONS, MAX_SIMULATIONS = 100, 1000
 MAX_DRAWS = 5
 
 ''' Public Function
@@ -221,7 +221,7 @@ def _randomDict(dict_  = {}):
         dict_['ESTIMATION']['hessian'] = 'numdiff'
 
     dict_['ESTIMATION']['alpha'] = np.random.choice([0.01, 0.05, 0.1])
-    dict_['ESTIMATION']['simulations'] = np.random.random_integers(1, MAX_SIMULATIONS)
+    dict_['ESTIMATION']['simulations'] = np.random.random_integers(MIN_SIMULATIONS, MAX_SIMULATIONS)
     dict_['ESTIMATION']['draws'] = np.random.random_integers(1, MAX_DRAWS)
 
     dict_['ESTIMATION']['version'] = version
