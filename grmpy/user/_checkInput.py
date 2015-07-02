@@ -447,7 +447,10 @@ def _checkESTIMATION(initDict):
     
     # Implications.
     if(algorithm == 'powell'): assert (hessian == 'numdiff')
-    
+
+    if (maxiter == 0) and (asymptotics is True):
+        assert (hessian == 'numdiff')
+
     # Finishing.
     return True  
     
