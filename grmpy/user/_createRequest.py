@@ -29,7 +29,9 @@ def constructRequest(initDict):
     requestObj.setAttr('withAsymptotics', initDict['ESTIMATION']['asymptotics'])
     
     requestObj.setAttr('numDraws', initDict['ESTIMATION']['draws'])
-    
+
+    requestObj.setAttr('version', initDict['ESTIMATION']['version'])
+
     requestObj.setAttr('hessian', initDict['ESTIMATION']['hessian'])
     
     requestObj.setAttr('numSims', initDict['ESTIMATION']['simulations'])
