@@ -195,10 +195,8 @@ def _randomDict(dict_  = {}):
     ''' DIST
     '''
     dict_['DIST'] = {}
-    
-    dict_['DIST']['rho0'] = [constraints.pop(), np.random.uniform(-1.00, 1.00)]
-            
-    dict_['DIST']['rho1'] = [constraints.pop(), np.random.uniform(-1.00, 1.00)]
+    dict_['DIST']['rho0'] = [constraints.pop(), np.random.uniform(-0.98, 0.98)]
+    dict_['DIST']['rho1'] = [constraints.pop(), np.random.uniform(-0.98, 0.98)]
     
     
     ''' ESTIMATION
