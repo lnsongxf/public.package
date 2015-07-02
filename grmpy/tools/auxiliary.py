@@ -123,6 +123,9 @@ def cleanup(resume):
     if(os.path.exists('grm.rslt')): shutil.rmtree('grm.rslt')
                
     for file_ in fileList:
+
+        if 'ini' in file_:
+            continue
         
         try:
             

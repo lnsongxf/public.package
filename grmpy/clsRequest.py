@@ -79,7 +79,7 @@ class requestCls(metaCls):
         
         if(self.attr['algorithm'] == 'powell'):
                 
-            assert(self.attr['hessian'] == 'bfgs')
+            assert(self.attr['hessian'] == 'numdiff')
         
         # Finishing.
         return True
