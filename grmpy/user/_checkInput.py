@@ -379,7 +379,7 @@ def _checkESTIMATION(initDict):
     # Check keys.
     keys = set(['algorithm', 'maxiter', 'start', 'gtol', 'epsilon', 'marginal',\
                 'conditional', 'average', 'asymptotics', 'hessian', \
-                'draws', 'simulations', 'alpha', 'differences'])
+                'draws', 'simulations', 'alpha', 'differences', 'version'])
 
     assert (keys == set(initDict['ESTIMATION'].keys()))
     
@@ -444,8 +444,11 @@ def _checkESTIMATION(initDict):
     assert (differences in ['one-sided', 'two-sided'])
     
     # Implications.
-    if(algorithm == 'powell'): assert (hessian == 'bfgs')
-    
+    if(algorithm == 'powell'): assert (hessian == 'numdiff')
+
+    if (maxiter == 0) and (asymptotics is True):
+        assert (hessian == 'numdiff')
+
     # Finishing.
     return True  
     
