@@ -3,7 +3,12 @@
 
 # standard library
 import numpy    as np
-import cPickle as pkl
+
+try:
+   import cPickle as pkl
+except:
+   import pickle as pkl
+
 
 import scipy
 import copy
@@ -215,8 +220,7 @@ class results(metaCls):
         # Antibugging.
         assert (surpEstimation in [True, False])
         assert (withAsymptotics in [True, False])
-        assert (isinstance(file_, file))
-        
+
         # Preparation
         struct = ''' {0[0]}    {0[1]}          {0[2]} / {0[3]}    {0[4]}\n'''
     
@@ -289,8 +293,7 @@ class results(metaCls):
         # Antibugging.
         assert (surpEstimation in [True, False])
         assert (withAsymptotics in [True, False])
-        assert (isinstance(file_, file))
-    
+
         # Preparation
         struct = ''' {0[0]}    {0[1]}          {0[2]} / {0[3]}    {0[4]}\n'''
         
@@ -364,9 +367,8 @@ class results(metaCls):
         # Antibugging.
         assert (surpEstimation in [True, False])
         assert (withAsymptotics in [True, False])
-        assert (isinstance(file_, file))
-    
-        # Preparation
+
+         # Preparation
         struct = '''   {0[0]}        {0[1]}          {0[2]} / {0[3]}\n'''
         idx    = np.arange(0.01, 1.00, 0.01)
     
