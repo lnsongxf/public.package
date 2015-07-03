@@ -87,7 +87,7 @@ def finish(dict_, HOURS, notification):
         file_.write('\n')
 
     # Send notification.
-    subject = ' grmToolbox: Completed Testing Battery '
+    subject = ' GRMPY: Completed Testing Battery '
 
     message = ' A ' + str(HOURS) +' hour run of the testing battery on @' + hostname + ' is completed.'
 
