@@ -21,6 +21,8 @@ import modules.tests as lib
 if not hasattr(sys, 'real_prefix'):
    raise AssertionError('Please use a virtual environment for testing')
 
+PYTHON_VERSION = sys.version_info[0]
+
 ''' Main Function.
 '''
 def run(hours):
@@ -47,7 +49,7 @@ def run(hours):
     # Logging.
     logger = logging.getLogger('DEV-TEST')
 
-    msg = 'Initialization of a ' + str(hours) + ' hours testing run.'
+    msg = 'Initialization of a ' + str(hours) + ' hours testing run with Python ' + str(PYTHON_VERSION) + '.'
 
     logger.info(msg)
 
