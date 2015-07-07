@@ -3,7 +3,14 @@
 
 # standard library
 import numpy    as np
+
 import pickle as pkl
+
+try:
+   import cPickle as pkl
+except:
+   import pickle as pkl
+
 
 import scipy
 import copy
@@ -149,10 +156,6 @@ class results(metaCls):
         ''' Unconditional Average Effects of Treatment. '''
         
         _ = self._addResultsAverageEffects(randomParameters)
-
-        ''' Conditional Average Effects of Treatment. '''
-        
-        _ = self._addResultsConditionalAverageEffects(randomParameters)
                 
         ''' Marginal Effects of Treatment. '''
         
@@ -185,8 +188,7 @@ class results(metaCls):
 
         withMarginalEffects     = requestObj.getAttr('withMarginalEffects')
         withAverageEffects      = requestObj.getAttr('withAverageEffects')
-        withConditionalEffects  = requestObj.getAttr('withConditionalEffects')
-        
+
         withAsymptotics         = requestObj.getAttr('withAsymptotics')
         surpEstimation          = parasObj.getAttr('surpEstimation')
         
@@ -204,84 +206,8 @@ class results(metaCls):
                 ''' Average Effects
                 '''
                 if(withAverageEffects):     self._writeAverage(file_, withAsymptotics, surpEstimation)
-    
-                ''' Conditional Effects
-                '''
-                if(withConditionalEffects): self._writeConditional(file_, withAsymptotics, surpEstimation)
-    
-    def _writeConditional(self, file_, withAsymptotics, surpEstimation):
-        ''' Write results on conditional effects of treatment.
-        '''
-        # Antibugging.
-        assert (surpEstimation in [True, False])
-        assert (withAsymptotics in [True, False])
-        assert (isinstance(file_, file))
-        
-        # Preparation
-        struct = ''' {0[0]}    {0[1]}          {0[2]} / {0[3]}    {0[4]}\n'''
-    
-        parameterList = ['bteExPostCond']
-    
-        if(surpEstimation): parameterList += ['bteExAnteCond', 'cteCond', 'steCond']
-    
-        # Output.            
-        file_.write('\n' + ' --------------------------------------- ' + '\n' + \
-                           '  Conditional Effects of Treatment       ' + '\n' + \
-                           ' --------------------------------------- ' + '\n')
 
-        for parameter in parameterList:
-            
-            if(parameter == 'bteExPostCond'): 
-                
-                title = ' Conditional Benefits of Treatment (ex post) '
-                            
-            if(parameter == 'bteExAnteCond'): 
-                
-                title = ' Conditional Benefits of Treatment (ex ante) '
 
-            if(parameter == 'cteCond'): 
-                
-                title = ' Conditional Cost of Treatment '
-            
-            if(parameter == 'steCond'): 
-                
-                title = ' Conditional Surplus of Treatment  '
-                            
-            file_.write('\n' + title + '\n')
-    
-            file_.write('\n' + ' Group     Estimate    Confidence Interval  p-value' + '\n\n')
-            
-            for subgroup in ['average', 'treated', 'untreated']:
-            
-                rslt = self.attr[parameter][subgroup]
-            
-                est    = '{0:5.2f}'.format(rslt['estimate'])
-
-                upper  = '---'
-                lower  = '---'
-
-                pvalue = '---'
-  
-                if(subgroup == 'average'):
-                    
-                    label = 'Average  '
-                    
-                if(subgroup == 'treated'):
-                    
-                    label = 'Treated  '                
-
-                if(subgroup == 'untreated'):
-                    
-                    label = 'Untreated'
-                    
-                if(withAsymptotics):
-                    
-                    upper  = '{0:5.2f}'.format(rslt['confi']['upper'])
-                    lower  = '{0:5.2f}'.format(rslt['confi']['lower'])
-
-                    pvalue = '{0:5.2f}'.format(rslt['pvalue'])
-                
-                file_.write(struct.format([label, est, lower, upper, pvalue]))
                             
     def _writeAverage(self, file_, withAsymptotics, surpEstimation):
         ''' Write results on average effects of treatment.
@@ -289,8 +215,7 @@ class results(metaCls):
         # Antibugging.
         assert (surpEstimation in [True, False])
         assert (withAsymptotics in [True, False])
-        assert (isinstance(file_, file))
-    
+
         # Preparation
         struct = ''' {0[0]}    {0[1]}          {0[2]} / {0[3]}    {0[4]}\n'''
         
@@ -364,9 +289,8 @@ class results(metaCls):
         # Antibugging.
         assert (surpEstimation in [True, False])
         assert (withAsymptotics in [True, False])
-        assert (isinstance(file_, file))
-    
-        # Preparation
+
+         # Preparation
         struct = '''   {0[0]}        {0[1]}          {0[2]} / {0[3]}\n'''
         idx    = np.arange(0.01, 1.00, 0.01)
     

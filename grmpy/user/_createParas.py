@@ -233,13 +233,13 @@ def _initializeParameters(initDict, modelObj):
         parasObj.addParameter(type_, None, value, isFree = isFree, bounds = (None, None), col = col)
 
     # Correlation parameters.
-    value  = initDict['DIST']['rho']['1']['value']
-    isFree = initDict['DIST']['rho']['1']['free']
+    value  = initDict['DIST']['rho_']['treated']['value']
+    isFree = initDict['DIST']['rho_']['treated']['free']
     
-    parasObj.addParameter('rho', 'U1,V', value, isFree, (-0.99, 0.99), col = None)    
+    parasObj.addParameter('rho_', 'U1,V', value, isFree, (-0.99, 0.99), col = None)
     
-    value  = initDict['DIST']['rho']['0']['value']
-    isFree = initDict['DIST']['rho']['0']['free']
+    value  = initDict['DIST']['rho_']['untreated']['value']
+    isFree = initDict['DIST']['rho_']['untreated']['free']
        
     parasObj.addParameter('rho', 'U0,V', value, isFree, (-0.99, 0.99), col = None)    
     

@@ -5,8 +5,6 @@
 # standard library
 import numpy as np
 
-import os 
-
 ''' Main function.
 '''
 def checkInput(initDict):
@@ -50,7 +48,7 @@ def _checkDERIV(initDict):
     '''
     # Distribute.
     all_ = initDict['DERIV']['pos']['all']
-    
+
     max_ = initDict['DERIV']['pos']['max']
     
     # Checks.
@@ -72,8 +70,8 @@ def _checkDERIV(initDict):
         
         assert (isinstance(list_, list))
         assert (isinstance(num, int))
-        
-        assert (all(isinstance(pos, int) for pos in list_))
+
+        assert (all(isinstance(pos, np.int64) for pos in list_))
         assert (num >= 0)
     
     # Cost shifters.
@@ -84,8 +82,8 @@ def _checkDERIV(initDict):
     assert (isinstance(list_, list))
     assert (isinstance(num, int))
         
-    assert (all(isinstance(pos, int) for pos in list_))
-    assert (num >= 0)   
+    assert (all(isinstance(pos, np.int64) for pos in list_))
+    assert (num >= 0)
 
     # Common elements.
     list_ = initDict['DERIV']['common']['pos']
@@ -95,7 +93,7 @@ def _checkDERIV(initDict):
     assert (isinstance(list_, list))
     assert (isinstance(num, int))
         
-    assert (all(isinstance(pos, int) for pos in list_))
+    assert (all(isinstance(pos, np.int64) for pos in list_))
     assert (num >= 0)  
     
     # Finishing.
@@ -344,19 +342,19 @@ def _checkDIST(initDict):
     assert (isinstance(initDict, dict))
     
     # Check keys.
-    keys = set(['rho'])
+    keys = set(['rho_'])
 
     assert (keys == set(initDict['DIST'].keys()))
 
     # Check keys.
-    keys = set(['1', '0'])
+    keys = set(['treated', 'untreated'])
     
-    assert (keys == set(initDict['DIST']['rho'].keys()))
+    assert (keys == set(initDict['DIST']['rho_'].keys()))
         
     # Distribute elements.
-    rhoU1V = initDict['DIST']['rho']['1']
+    rhoU1V = initDict['DIST']['rho_']['treated']
     
-    rhoU0V = initDict['DIST']['rho']['0']
+    rhoU0V = initDict['DIST']['rho_']['untreated']
         
     # Checks.
     for obj in [rhoU1V, rhoU0V]:
@@ -380,8 +378,8 @@ def _checkESTIMATION(initDict):
     
     # Check keys.
     keys = set(['algorithm', 'maxiter', 'start', 'gtol', 'epsilon', 'marginal',\
-                'conditional', 'average', 'asymptotics', 'hessian', \
-                'draws', 'simulations', 'alpha', 'differences'])
+                'average', 'asymptotics', 'hessian', \
+                'draws', 'simulations', 'alpha', 'differences', 'version'])
 
     assert (keys == set(initDict['ESTIMATION'].keys()))
     
@@ -397,8 +395,6 @@ def _checkESTIMATION(initDict):
     epsilon     =  initDict['ESTIMATION']['epsilon']
 
     marginal    =  initDict['ESTIMATION']['marginal']
-
-    conditional =  initDict['ESTIMATION']['conditional']
 
     average     =  initDict['ESTIMATION']['average']
 
@@ -429,7 +425,7 @@ def _checkESTIMATION(initDict):
         assert (isinstance(obj, float))
         assert (obj > 0)
 
-    for obj in [marginal, conditional, average, asymptotics]:
+    for obj in [marginal, average, asymptotics]:
         
         assert (obj in [True, False])
     
@@ -446,8 +442,11 @@ def _checkESTIMATION(initDict):
     assert (differences in ['one-sided', 'two-sided'])
     
     # Implications.
-    if(algorithm == 'powell'): assert (hessian == 'bfgs')
-    
+    if(algorithm == 'powell'): assert (hessian == 'numdiff')
+
+    if (maxiter == 0) and (asymptotics is True):
+        assert (hessian == 'numdiff')
+
     # Finishing.
     return True  
     

@@ -11,6 +11,12 @@ import shutil
 import glob
 import os
 
+try:
+   import cPickle as pkl
+except:
+   import pickle as pkl
+
+
 # project library
 from grmpy.tools.auxiliary import cleanup, createMatrices
 from grmpy.user.init_interface import initialize
@@ -127,7 +133,7 @@ def estimate(init = 'init.ini', resume = False, useSimulation = False):
 
             critFunc = maxObj.getAttr('critFunc')
 
-            ndObj    = nd.Hessian(lambda x: clsMax._scipyWrapperFunction(x, critFunc))
+            ndObj    = nd.Hessian(lambda x: evaluate(x, critFunc))
             hess     = ndObj(xopt)
             covMat   = np.linalg.pinv(hess)
 
@@ -148,11 +154,11 @@ def estimate(init = 'init.ini', resume = False, useSimulation = False):
 
     return rslt
 
-def perturb(scale = 0.1, seed = 123, init = 'init.ini', update = False):
+def perturb(scale = 0.1, seed = 123, init = 'init.ini', update = False, useSimulation = False):
     ''' Perturb current values of structural parameters.
     '''
     #Process initialization file.
-    _, parasObj, _, _ = initialize(init, useSimulation = False)
+    _, parasObj, _, _ = initialize(init, useSimulation=useSimulation)
 
     ''' Update parameter object.
     '''

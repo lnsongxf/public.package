@@ -111,7 +111,7 @@ def _addDERIV(initDict):
     
     # Construct derived information
     all_ = list(set([Ypos] + [Dpos] + Bpos + Gpos))
-    
+
     max_ = int(max(all_))
         
     # Collect.
@@ -198,7 +198,7 @@ def _addDERIV(initDict):
     
     initDict['DERIV']['exclCost']['num'] = \
         len(initDict['DERIV']['exclCost']['pos'])
-        
+
     # Finishing.
     return initDict
     
@@ -492,7 +492,7 @@ def _processESTIMATION(initDict, currentLine):
             
             flag = int(flag)
 
-    if(keyword in ['marginal', 'conditional', 'average', 'asymptotics']):
+    if(keyword in ['marginal', 'average', 'asymptotics']):
         
         assert (flag.upper() in ['TRUE', 'FALSE'])
         

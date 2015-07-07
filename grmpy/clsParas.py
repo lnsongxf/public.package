@@ -655,9 +655,9 @@ class _paraContainer(metaCls):
         if(self.getAttr('col') is not None):
 
             col = self.getAttr('col')
-            
+
             assert (isinstance(col, int) or (col == 'int'))
-            assert (self.getAttr('col') >= 0)
+            if col != 'int': assert (col >= 0)
 
         # subgroup.
         if(self.getAttr('subgroup') is not None):
