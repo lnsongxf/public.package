@@ -342,7 +342,7 @@ def _printDict(dict_):
 
         file_.write('DIST' +'\n\n')
 
-        for key_ in ['row_treated', 'rho_untreated']:
+        for key_ in ['rho_treated', 'rho_untreated']:
 
             constr, value = dict_['DIST'][key_]
 
