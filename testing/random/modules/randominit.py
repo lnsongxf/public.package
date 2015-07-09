@@ -195,8 +195,8 @@ def _randomDict(dict_  = {}):
     ''' DIST
     '''
     dict_['DIST'] = {}
-    dict_['DIST']['rho0'] = [constraints.pop(), np.random.uniform(-0.98, 0.98)]
-    dict_['DIST']['rho1'] = [constraints.pop(), np.random.uniform(-0.98, 0.98)]
+    dict_['DIST']['rho_untreated'] = [constraints.pop(), np.random.uniform(-0.98, 0.98)]
+    dict_['DIST']['rho_treated'] = [constraints.pop(), np.random.uniform(-0.98, 0.98)]
     
     
     ''' ESTIMATION
@@ -211,7 +211,7 @@ def _randomDict(dict_  = {}):
     dict_['ESTIMATION']['differences'] = differences
     dict_['ESTIMATION']['asymptotics'] = asymptotics
 
-    for flag in ['marginal', 'conditional', 'average']:
+    for flag in ['marginal', 'average']:
 
         dict_['ESTIMATION'][flag] = np.random.choice(['true', 'false'])
 
@@ -338,11 +338,11 @@ def _printDict(dict_):
         ''' DIST
         '''
         
-        str_ = ' {0:<5} {1}{2:<5} \n'
+        str_ = ' {0:<10} {1}{2:<5} \n'
 
         file_.write('DIST' +'\n\n')
 
-        for key_ in ['rho0', 'rho1']:
+        for key_ in ['rho_treated', 'rho_untreated']:
 
             constr, value = dict_['DIST'][key_]
 
@@ -370,7 +370,7 @@ def _printDict(dict_):
         
         file_.write('\n')
         
-        for key_ in ['marginal', 'conditional', 'average']:
+        for key_ in ['marginal', 'average']:
         
             file_.write(str_.format('   ' + key_, dict_['ESTIMATION'][key_]))
             

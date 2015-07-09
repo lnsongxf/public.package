@@ -40,8 +40,6 @@ def constructRequest(initDict):
     
     
     requestObj.setAttr('withMarginalEffects', initDict['ESTIMATION']['marginal'])
-    
-    requestObj.setAttr('withConditionalEffects', initDict['ESTIMATION']['conditional'])
 
     requestObj.setAttr('withAverageEffects', initDict['ESTIMATION']['average'])
     

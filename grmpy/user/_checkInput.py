@@ -342,19 +342,19 @@ def _checkDIST(initDict):
     assert (isinstance(initDict, dict))
     
     # Check keys.
-    keys = set(['rho'])
+    keys = set(['rho_'])
 
     assert (keys == set(initDict['DIST'].keys()))
 
     # Check keys.
-    keys = set(['1', '0'])
+    keys = set(['treated', 'untreated'])
     
-    assert (keys == set(initDict['DIST']['rho'].keys()))
+    assert (keys == set(initDict['DIST']['rho_'].keys()))
         
     # Distribute elements.
-    rhoU1V = initDict['DIST']['rho']['1']
+    rhoU1V = initDict['DIST']['rho_']['treated']
     
-    rhoU0V = initDict['DIST']['rho']['0']
+    rhoU0V = initDict['DIST']['rho_']['untreated']
         
     # Checks.
     for obj in [rhoU1V, rhoU0V]:
@@ -378,7 +378,7 @@ def _checkESTIMATION(initDict):
     
     # Check keys.
     keys = set(['algorithm', 'maxiter', 'start', 'gtol', 'epsilon', 'marginal',\
-                'conditional', 'average', 'asymptotics', 'hessian', \
+                'average', 'asymptotics', 'hessian', \
                 'draws', 'simulations', 'alpha', 'differences', 'version'])
 
     assert (keys == set(initDict['ESTIMATION'].keys()))
@@ -395,8 +395,6 @@ def _checkESTIMATION(initDict):
     epsilon     =  initDict['ESTIMATION']['epsilon']
 
     marginal    =  initDict['ESTIMATION']['marginal']
-
-    conditional =  initDict['ESTIMATION']['conditional']
 
     average     =  initDict['ESTIMATION']['average']
 
@@ -427,7 +425,7 @@ def _checkESTIMATION(initDict):
         assert (isinstance(obj, float))
         assert (obj > 0)
 
-    for obj in [marginal, conditional, average, asymptotics]:
+    for obj in [marginal, average, asymptotics]:
         
         assert (obj in [True, False])
     

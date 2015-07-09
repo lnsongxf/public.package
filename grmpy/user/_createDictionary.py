@@ -492,7 +492,7 @@ def _processESTIMATION(initDict, currentLine):
             
             flag = int(flag)
 
-    if(keyword in ['marginal', 'conditional', 'average', 'asymptotics']):
+    if(keyword in ['marginal', 'average', 'asymptotics']):
         
         assert (flag.upper() in ['TRUE', 'FALSE'])
         
