@@ -18,7 +18,7 @@ def signal_handler(signum, frame):
 signal.signal(signal.SIGALRM, signal_handler)
 
 # GRMPY import
-sys.path.insert(0, os.environ['GRMPY'])
+sys.path.insert(0, os.environ['GRMPY_TEST'])
 from grmpy import *
 
 # Module-wide variables
