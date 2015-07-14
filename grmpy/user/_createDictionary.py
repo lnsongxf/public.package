@@ -281,7 +281,9 @@ def _constructDictionary():
 
     initDict['DATA']         = {}
         
-    initDict['DIST']         = {}
+    initDict['DIST']        = {}
+    initDict['DIST']['rho_treated']         = {}
+    initDict['DIST']['rho_untreated']       = {}
 
     initDict['ESTIMATION'] = {}
     
@@ -442,7 +444,7 @@ def _processDIST(initDict, currentLine):
     # Antibugging.
     assert (isinstance(initDict, dict))
     assert (isinstance(currentLine, list))
-    #assert (len(currentLine) == 2)
+    assert (len(currentLine) == 2)
     
     # Process information.   
     assert (currentLine[0] in ['rho_untreated', 'rho_treated'])
