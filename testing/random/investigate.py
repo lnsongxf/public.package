@@ -9,7 +9,7 @@ import modules.tests as lib
 
 ''' Request
 '''
-label, seed = 'B', 7456
+label, seed = 'D', 7456
 
 ''' Error Reproduction
 '''
