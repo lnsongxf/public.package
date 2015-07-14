@@ -342,14 +342,14 @@ def _checkDIST(initDict):
     assert (isinstance(initDict, dict))
     
     # Check keys.
-    keys = set(['rho_treated', 'rho_untreated'])
+    keys = set(['untreated', 'treated'])
 
-    assert (keys == set(initDict['DIST'].keys()))
+    assert (keys == set(initDict['DIST']['rho'].keys()))
         
     # Distribute elements.
-    rhoU1V = initDict['DIST']['rho_treated']
+    rhoU1V = initDict['DIST']['rho']['treated']
     
-    rhoU0V = initDict['DIST']['rho_untreated']
+    rhoU0V = initDict['DIST']['rho']['untreated']
         
     # Checks.
     for obj in [rhoU1V, rhoU0V]:

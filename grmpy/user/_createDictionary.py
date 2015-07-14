@@ -69,7 +69,7 @@ def processInput(initFile):
     
     # Add derived information.
     initDict = _addDERIV(initDict)
-    
+	
     # Check quality.
     assert (checkInput(initDict) == True)
 
@@ -448,9 +448,9 @@ def _processDIST(initDict, currentLine):
     
     # Process information.   
     assert (currentLine[0] in ['rho_untreated', 'rho_treated'])
-    
-    name  = currentLine[0][:-1]
-    which = currentLine[0][-1]
+
+    name  = currentLine[0].split('_')[0]
+    which = currentLine[0].split('_')[1]
 
     isFree = (currentLine[1][0] != '!')
     value  = currentLine[1].replace('!','')
