@@ -86,9 +86,7 @@ class TestEstimationRuns(object):
         # Assessment of results
         rslt_dict = pkl.load(open('rslt.grmpy.pkl', 'rb'))
 
-        # This test only succeeds on our testing server. Otherwise, slight
-        # differences in the Python version result in a failure. It only
-        # checked to work with Python 2.7.6.
+        # This test only succeeds on our testing server. 
         if socket.gethostname() != 'zeus':
             return True
 
@@ -105,9 +103,9 @@ class TestEstimationRuns(object):
         assert_almost_equal(rslt_dict['smteExAnte']['estimate'][50],
         -0.13443516496559108)
         assert_almost_equal(rslt_dict['smteExAnte']['confi']['upper'][50],
-        -0.10158353097568325)
+        -0.10380872727729094)
         assert_almost_equal(rslt_dict['smteExAnte']['confi']['lower'][50],
-        -0.16744058087070901)
+        -0.16786079416740679)
    
         #Assert relationship between parameters
         for i in range(99):
