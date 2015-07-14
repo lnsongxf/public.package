@@ -442,7 +442,7 @@ def _processDIST(initDict, currentLine):
     # Antibugging.
     assert (isinstance(initDict, dict))
     assert (isinstance(currentLine, list))
-    assert (len(currentLine) == 2)
+    #assert (len(currentLine) == 2)
     
     # Process information.   
     assert (currentLine[0] in ['rho untreated', 'rho treated'])

@@ -338,7 +338,7 @@ def _printDict(dict_):
         ''' DIST
         '''
         
-        str_ = ' {0:<10} {1}{2:<5} \n'
+        str_ = ' {0:<15} {1}{2:<5} \n'
 
         file_.write('DIST' +'\n\n')
 
