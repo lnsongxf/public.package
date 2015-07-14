@@ -9,6 +9,7 @@ import os
 
 # project library
 from modules.randominit import *
+from modules.randominit import _randomDict
 from modules.exceptions import TimedOutError
 
 # Setting up signal handler
@@ -89,25 +90,25 @@ def test_C():
 def test_D():
     """ Testing if the fast and slow evaluation of the criterion function result in same value.
     """
-    # Get a seeed
-    seed = np.random.randint(1)
-
     # Initialize containers
     fval = None
+
+    # Impose constraints
+    dict_ = dict()
+
+    dict_['asymptotics'] = 'false'
+    dict_['maxiter'] = 0
+
+    dict_ = _randomDict(dict_)
 
     # Loop over fast and slow evaluation of criterion function.
     for version in ['fast', 'slow']:
 
-        np.random.seed(seed)
-
         # Impose constraints to initialization file
-        dict_ = dict()
-        dict_['maxiter'] = 0
-        dict_['version'] = version
-        dict_['asymptotics'] = 'false'
+        dict_['ESTIMATION']['version'] = version
 
         # Generate random request
-        generateInitFile(dict_)
+        _printDict(dict_)
 
         # Simulation
         simulate('test.grm.ini')
