@@ -59,7 +59,6 @@ def clean():
 
             pass
 
-
 def estimate(init = 'init.ini', resume = False, useSimulation = False):
     ''' Estimate specified model.
     '''
