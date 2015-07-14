@@ -195,8 +195,8 @@ def _randomDict(dict_  = {}):
     ''' DIST
     '''
     dict_['DIST'] = {}
-    dict_['DIST']['rho_untreated'] = [constraints.pop(), np.random.uniform(-0.98, 0.98)]
-    dict_['DIST']['rho_treated'] = [constraints.pop(), np.random.uniform(-0.98, 0.98)]
+    dict_['DIST']['rho untreated'] = [constraints.pop(), np.random.uniform(-0.98, 0.98)]
+    dict_['DIST']['rho treated'] = [constraints.pop(), np.random.uniform(-0.98, 0.98)]
     
     
     ''' ESTIMATION
@@ -342,7 +342,7 @@ def _printDict(dict_):
 
         file_.write('DIST' +'\n\n')
 
-        for key_ in ['rho_treated', 'rho_untreated']:
+        for key_ in ['rho treated', 'rho untreated']:
 
             constr, value = dict_['DIST'][key_]
 

@@ -445,7 +445,7 @@ def _processDIST(initDict, currentLine):
     assert (len(currentLine) == 2)
     
     # Process information.   
-    assert (currentLine[0] in ['rho_untreated', 'rho_treated'])
+    assert (currentLine[0] in ['rho untreated', 'rho treated'])
     
     name  = currentLine[0][:-1]
     which = currentLine[0][-1]
