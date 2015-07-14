@@ -23,22 +23,17 @@ from grmpy.clsMax import maxCls
 
 ''' Main function
 '''
-def estimate(init='init.ini', resume=False, useSimulation=False):
+def estimate(init='init.ini', resume=False, use_simulation=False):
     """ Estimate specified model.
     """
     # Cleanup
     cleanup(resume)
 
     # Process initialization file
-    model_obj, paras_obj, request_obj, _ = initialize(init, useSimulation)
+    model_obj, paras_obj, request_obj, _ = initialize(init, use_simulation)
 
-    # Process resume.
+    # Update parameter objects.
     if resume:
-
-        # Antibugging.
-        assert (os.path.isfile('info.grmpy.out'))
-
-        # Update parameter objects.
         paras_obj = _updateParameters(paras_obj)
 
     paras = paras_obj.getValues('internal', 'all')
@@ -179,48 +174,33 @@ def _write_optimization_results(maxRslt, paras_obj):
     file_.close()
 
 def cleanup(resume):
-    ''' Cleanup from previous estimation run.
-    '''
+    """ Cleanup from previous estimation run.
+    """
     # Antibugging.
     assert (resume in [True, False])
 
     # Construct files list.
-    fileList = glob.glob('*.grmpy.*')
+    file_list = glob.glob('*.grmpy.*')
 
-    if(resume):
-
-        for file_ in ['info.grmpy.out']:
-
-            try:
-
-                fileList.remove(file_)
-
-            except:
-
-                pass
+    if resume:
+        file_list.remove('info.grmpy.out')
 
     # Remove information from simulated data.
     for file_ in ['*.infos.grmpy.out', '*.paras.grmpy.out']:
 
         try:
 
-            fileList.remove(glob.glob(file_)[0])
+            file_list.remove(glob.glob(file_)[0])
 
-        except:
+        except Exception:
 
             pass
 
     # Cleanup
-    for file_ in fileList:
+    for file_ in file_list:
 
         if 'ini' in file_:
             continue
 
-        try:
-
-            os.remove(file_)
-
-        except OSError:
-
-            pass
+        os.remove(file_)
 

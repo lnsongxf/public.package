@@ -19,309 +19,306 @@ from grmpy.tools.auxiliary import _updateParameters
 
 ''' Main functions
 '''
-def simulate(init = 'init.ini', update = False):
-    ''' Simulate dataset for grmToolbox.
-    '''
+def simulate(init='init.ini', update=False):
+    """ Simulate dataset for grmToolbox.
+    """
 
-    isMock = _createMock(init)
+    is_mock = _create_mock(init)
 
     ''' Process initialization file.
     '''
-    _, parasObj, _, initDict = initialize(init, isSimulation = True)
+    _, paras_obj, _, init_dict = initialize(init, is_simulation=True)
 
     ''' Distribute information.
     '''
-    target = initDict['SIMULATION']['target']
+    target = init_dict['SIMULATION']['target']
 
-    seed   = initDict['SIMULATION']['seed']
+    seed = init_dict['SIMULATION']['seed']
 
-    np.random.seed(seed); random.seed(seed)
+    np.random.seed(seed)
+
+    random.seed(seed)
 
     ''' Update parameter class.
     '''
-    if(update): parasObj = _updateParameters(parasObj)
+    if update:
+        paras_obj = _updateParameters(paras_obj)
 
     ''' Create simulated dataset.
     '''
-    if(isMock): os.remove(initDict['DATA']['source'])
+    if is_mock:
+        os.remove(init_dict['DATA']['source'])
 
-    simAgents   = initDict['SIMULATION']['agents']
+    sim_agents = init_dict['SIMULATION']['agents']
 
-    max_        = initDict['DERIV']['pos']['max']
+    max_ = init_dict['DERIV']['pos']['max']
 
-    simDat      = np.empty((simAgents, max_ + 1), dtype = 'float')
+    sim_dat = np.empty((sim_agents, max_ + 1), dtype='float')
 
-    simDat[:,:] = np.nan
+    sim_dat[:, :] = np.nan
 
+    sim_dat = _simulate_exogenous(sim_dat, init_dict)
 
-    simDat = _simulateExogenous(simDat, initDict)
-
-    simDat = _simulateEndogenous(simDat, parasObj, initDict)
+    sim_dat = _simulate_endogenous(sim_dat, paras_obj, init_dict)
 
     ''' Update for prediction step.
     '''
-    rslt = createMatrices(simDat, initDict)
+    rslt = createMatrices(sim_dat, init_dict)
 
-    parasObj.unlock()
+    paras_obj.unlock()
 
-    parasObj.setAttr('xExAnte', rslt['xExAnte'])
+    paras_obj.setAttr('xExAnte', rslt['xExAnte'])
 
-    parasObj.setAttr('xExPost', rslt['xExPost'])
+    paras_obj.setAttr('xExPost', rslt['xExPost'])
 
-    parasObj.lock()
+    paras_obj.lock()
 
     ''' Save dataset.
     '''
-    np.savetxt(target, simDat, fmt = '%15.10f')
+    np.savetxt(target, sim_dat, fmt='%15.10f')
 
-    likl = _getLikelihood(init)
+    likl = _get_likelihood(init)
 
-    _writeInfo(parasObj, target, rslt, likl)
+    _write_info(paras_obj, target, rslt, likl)
 
 ''' Auxiliary functions.
 '''
 
-def _getLikelihood(init):
-    ''' Calculate likelihood for simulated dataset at true parameter values.
-    '''
+
+def _get_likelihood(init):
+    """ Calculate likelihood for simulated dataset at true parameter values.
+    """
     # Antibugging.
     assert (isinstance(init, str))
 
     # Process model ingredients.
-    modelObj, parasObj, requestObj, _ = initialize(init, True)
+    model_obj, paras_obj, request_obj, _ = initialize(init, True)
 
     # Initialize container.
-    grmObj = grmCls()
+    grm_obj = grmCls()
 
-    grmObj.setAttr('modelObj', modelObj)
+    grm_obj.setAttr('modelObj', model_obj)
 
-    grmObj.setAttr('requestObj', requestObj)
+    grm_obj.setAttr('requestObj', request_obj)
 
-    grmObj.setAttr('parasObj', parasObj)
+    grm_obj.setAttr('parasObj', paras_obj)
 
-    grmObj.lock()
+    grm_obj.lock()
 
+    crit_obj = critCls(grm_obj)
 
-    critObj = critCls(grmObj)
-
-    critObj.lock()
+    crit_obj.lock()
 
     # Evaluate at true values.
-    x    = parasObj.getValues('external', 'free')
+    x = paras_obj.getValues('external', 'free')
 
-    likl = evaluate(x, critObj)
+    likl = evaluate(x, crit_obj)
 
     # Cleanup.
     try:
         os.remove('info.grmpy.out')
-    except:
+    except Exception:
         pass
 
     # Finishing.
     return likl
 
-def _createMock(init):
-    ''' Create a mock dataset which allows for use of existing routines
+def _create_mock(init):
+    """ Create a mock dataset which allows for use of existing routines
         in the case of a missing source dataset.
-    '''
+    """
+    init_dict = processInput(init)
 
-    initDict = processInput(init)
+    is_mock = (os.path.exists(init_dict['DATA']['source']) == False)
 
-    isMock = (os.path.exists(initDict['DATA']['source']) == False)
+    obs_agents = init_dict['DATA']['agents']
 
-    obsAgents = initDict['DATA']['agents']
+    pos = init_dict['DATA']['treatment']
 
-    pos  = initDict['DATA']['treatment']
+    max_ = init_dict['DERIV']['pos']['max']
 
-    max_      = initDict['DERIV']['pos']['max']
+    sim_dat = np.empty((obs_agents, max_ + 1), dtype='float')
 
-    simDat      = np.empty((obsAgents, max_ + 1), dtype = 'float')
+    sim_dat[:, :] = np.random.randn(obs_agents, max_ + 1)
 
-    simDat[:,:] = np.random.randn(obsAgents, max_ + 1)
+    sim_dat[:, pos] = np.random.random_integers(0, 1, obs_agents)
 
-    simDat[:,pos] = np.random.random_integers(0, 1, obsAgents)
+    source = init_dict['DATA']['source']
 
-    source = initDict['DATA']['source']
-
-    np.savetxt(source, simDat, fmt = '%15.10f')
+    np.savetxt(source, sim_dat, fmt='%15.10f')
 
     # Finishing.
-    return isMock
+    return is_mock
 
-def _simulateEndogenous(simDat, parasObj, initDict):
-    ''' Simulate the endogenous characteristics such as choices and outcomes.
-    '''
+def _simulate_endogenous(sim_dat, paras_obj, init_dict):
+    """ Simulate the endogenous characteristics such as choices and outcomes.
+    """
     # Antibugging.
-    assert (isinstance(initDict, dict))
-    assert (isinstance(simDat, np.ndarray))
-    assert (parasObj.getStatus() == True)
+    assert (isinstance(init_dict, dict))
+    assert (isinstance(sim_dat, np.ndarray))
+    assert (paras_obj.getStatus() == True)
 
     # Distribute information.
-    simAgents = initDict['SIMULATION']['agents']
+    sim_agents = init_dict['SIMULATION']['agents']
 
-    outcome   = initDict['DATA']['outcome']
+    outcome = init_dict['DATA']['outcome']
 
-    treatment = initDict['DATA']['treatment']
+    treatment = init_dict['DATA']['treatment']
 
-    all_      = initDict['DERIV']['pos']['all']
+    all_ = init_dict['DERIV']['pos']['all']
 
     # Sampling of unobservables.
-    varV  = parasObj.getParameters('var',  'V')
+    var_v = paras_obj.getParameters('var',  'V')
 
-    varU1 = parasObj.getParameters('var',  'U1')
+    var_u1 = paras_obj.getParameters('var',  'U1')
 
-    varU0 = parasObj.getParameters('var',  'U0')
+    var_u0 = paras_obj.getParameters('var',  'U0')
 
-    mean   = np.tile(0.0, 3)
+    mean = np.tile(0.0, 3)
 
-    covMat = np.diag([varU1, varU0, varV])
+    cov_mat = np.diag([var_u1, var_u0, var_v])
 
-    covMat[2,0] = covMat[0,2] = parasObj.getParameters('cov', 'U1,V')
+    cov_mat[2,0] = cov_mat[0,2] = paras_obj.getParameters('cov', 'U1,V')
 
-    covMat[2,1] = covMat[1,2] = parasObj.getParameters('cov', 'U0,V')
+    cov_mat[2,1] = cov_mat[1,2] = paras_obj.getParameters('cov', 'U0,V')
 
-    U1, U0, V = np.random.multivariate_normal(mean, covMat, simAgents).T
+    u1, u0, V = np.random.multivariate_normal(mean, cov_mat, sim_agents).T
 
     # Create data matrices.
-    rslt    = createMatrices(simDat, initDict)
+    rslt = createMatrices(sim_dat, init_dict)
 
-    xExPost = rslt['xExPost']
+    x_ex_post = rslt['xExPost']
 
-    Z       = rslt['Z']
+    z = rslt['Z']
 
     # Simulate choices.
-    coeffsChoc = parasObj.getParameters('choice', None)
+    coeffs_choc = paras_obj.getParameters('choice', None)
 
-    D = (np.dot(coeffsChoc, Z.T) - V > 0.0)
+    d = (np.dot(coeffs_choc, z.T) - V > 0.0)
 
     # Potential Outcomes
-    outcTreated   = parasObj.getParameters('outc', 'treated')
-    outcUntreated = parasObj.getParameters('outc', 'untreated')
+    outc_treated = paras_obj.getParameters('outc', 'treated')
+    outc_untreated = paras_obj.getParameters('outc', 'untreated')
 
-    Y1 = np.dot(outcTreated, xExPost.T)   + U1
-    Y0 = np.dot(outcUntreated, xExPost.T) + U0
+    y1 = np.dot(outc_treated, x_ex_post.T) + u1
+    y0 = np.dot(outc_untreated, x_ex_post.T) + u0
 
-    Y = D*Y1 + (1 - D)*Y0
+    y = d*y1 + (1 - d)*y0
 
-    simDat[:,outcome]   = Y
-    simDat[:,treatment] = D
+    sim_dat[:, outcome] = y
+    sim_dat[:, treatment] = d
 
     # Quality checks.
-    assert (isinstance(simDat, np.ndarray))
-    assert (np.all(np.isfinite(simDat[:,all_])))
-    assert (simDat.dtype == 'float')
+    assert (isinstance(sim_dat, np.ndarray))
+    assert (np.all(np.isfinite(sim_dat[:, all_])))
+    assert (sim_dat.dtype == 'float')
 
     # Finishing.
-    return simDat
+    return sim_dat
 
-def _simulateExogenous(simDat, initDict):
-    ''' Simulate the exogenous characteristics by filling up the data frame
+def _simulate_exogenous(sim_dat, init_dict):
+    """ Simulate the exogenous characteristics by filling up the data frame
         with random deviates of the exogenous characteristics from the
         observed dataset.
-    '''
+    """
     # Antibugging.
-    assert (isinstance(initDict, dict))
-    assert (isinstance(simDat, np.ndarray))
+    assert (isinstance(init_dict, dict))
+    assert (isinstance(sim_dat, np.ndarray))
 
     # Distribute information.
-    source    = initDict['DATA']['source']
+    source = init_dict['DATA']['source']
 
-    simAgents = initDict['SIMULATION']['agents']
+    sim_agents = init_dict['SIMULATION']['agents']
 
-    all_      = initDict['DERIV']['pos']['all']
+    all_ = init_dict['DERIV']['pos']['all']
 
-    outcome   = initDict['DATA']['outcome']
+    outcome = init_dict['DATA']['outcome']
 
-    treatment = initDict['DATA']['treatment']
+    treatment = init_dict['DATA']['treatment']
 
     # Restrict to exogenous positions.
     for pos in [outcome, treatment]:
-
         all_.remove(pos)
 
     # Simulate endogenous characteristics.
-    hasSource   = (os.path.exists(source) == True)
+    has_source = (os.path.exists(source) == True)
 
-    if(hasSource):
+    if has_source:
 
-        obsDat    = np.genfromtxt(source)
+        obs_dat = np.genfromtxt(source)
 
-        obsAgents = obsDat.shape[0]
+        obs_agents = obs_dat.shape[0]
 
-        if(obsAgents == simAgents):
+        if obs_agents == sim_agents:
 
-            idx_ = range(obsAgents)
+            idx_ = range(obs_agents)
 
         else:
 
-            idx_ = np.random.randint(0, obsAgents, size = simAgents)
-
+            idx_ = np.random.randint(0, obs_agents, size = sim_agents)
 
         for pos in all_:
 
-            simDat[:,pos] = obsDat[idx_,pos]
+            sim_dat[:, pos] = obs_dat[idx_, pos]
 
     else:
 
         for pos in all_:
 
-            simDat[:,pos] = np.random.randn(simAgents)
+            sim_dat[:, pos] = np.random.randn(sim_agents)
 
     # Quality checks.
-    assert (isinstance(simDat, np.ndarray))
-    assert (np.all(np.isfinite(simDat[:,all_])))
-    assert (simDat.dtype == 'float')
+    assert (isinstance(sim_dat, np.ndarray))
+    assert (np.all(np.isfinite(sim_dat[:, all_])))
+    assert (sim_dat.dtype == 'float')
 
     # Finishing.
-    return simDat
+    return sim_dat
 
-def _writeInfo(parasObj, target, rslt, likl):
-    ''' Write out some additional infos about the simulated dataset.
-    '''
-
+def _write_info(paras_obj, target, rslt, likl):
+    """ Write out some additional infos about the simulated dataset.
+    """
     # Auxiliary objects.
-    fileName     = target.split('.')[0]
+    file_name = target.split('.')[0]
 
-    numAgents    = str(len(rslt['Y']))
+    num_agents = str(len(rslt['Y']))
 
-    numTreated   = np.sum(rslt['D'] == 1)
+    num_treated = np.sum(rslt['D'] == 1)
 
-    numUntreated = np.sum(rslt['D'] == 0)
+    num_untreated = np.sum(rslt['D'] == 0)
 
-    fval         = str(likl)
+    fval = str(likl)
 
     # Write out structural parameters.
-    paras = parasObj.getValues(version = 'internal', which = 'all')
+    paras = paras_obj.getValues(version='internal', which='all')
 
-    np.savetxt(fileName + '.paras.grmpy.out', paras, fmt = '%15.10f')
+    np.savetxt(file_name + '.paras.grmpy.out', paras, fmt='%15.10f')
 
     # Write out information on agent experiences.
-    with open(fileName + '.infos.grmpy.out', 'w') as file_:
+    with open(file_name + '.infos.grmpy.out', 'w') as file_:
 
         file_.write('\n Simulated Economy\n\n')
 
-        file_.write('   Number of Observations: ' + numAgents + '\n')
+        file_.write('   Number of Observations: ' + num_agents + '\n')
 
         file_.write('   Function Value:         ' + fval + '\n\n')
 
-        string  = '''{0[0]:<10} {0[1]:>12}\n'''
+        string = '''{0[0]:<10} {0[1]:>12}\n'''
 
         file_.write('   Choices:  \n\n')
 
-        file_.write(string.format(['     Treated  ', numTreated]))
+        file_.write(string.format(['     Treated  ', num_treated]))
 
-        file_.write(string.format(['     Untreated', numUntreated]))
+        file_.write(string.format(['     Untreated', num_untreated]))
 
         file_.write('\n\n')
 
-
-        string  = '''{0[0]:<10} {0[1]:15.5f}\n'''
+        string = '''{0[0]:<10} {0[1]:15.5f}\n'''
 
         file_.write('   Outcomes:  \n\n')
 
         file_.write(string.format(['     Treated  ', np.mean(rslt['Y'][rslt['D'] == 1])]))
 
         file_.write(string.format(['     Untreated', np.mean(rslt['Y'][rslt['D'] == 0])]))
-
 
         file_.write('\n\n')

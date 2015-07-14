@@ -59,7 +59,7 @@ def test_B():
     try:
 
         # Estimate
-        estimate(useSimulation=True, init='test.grm.ini')
+        estimate(use_simulation=True, init='test.grm.ini')
 
     except TimedOutError:
 
@@ -80,7 +80,7 @@ def test_C():
     simulate('test.grm.ini')
 
     # Estimate
-    estimate(useSimulation=True, init='test.grm.ini')
+    estimate(use_simulation=True, init='test.grm.ini')
 
     # Finishing
     return True
@@ -113,7 +113,7 @@ def test_D():
         simulate('test.grm.ini')
 
         # Estimate
-        rslt = estimate(useSimulation=True, init='test.grm.ini')
+        rslt = estimate(use_simulation=True, init='test.grm.ini')
 
         rslt = rslt.getAttr('maxRslt')
 

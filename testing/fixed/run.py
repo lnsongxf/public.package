@@ -43,7 +43,7 @@ class TestEstimationRuns(object):
         # Run command
         init_file = 'dat/testInit_A.ini'
         
-        grmpy.estimate(init_file, resume=False, useSimulation=False)
+        grmpy.estimate(init_file, resume=False, use_simulation=False)
 
         # Assessment of results
         rslt_dict = pkl.load(open('rslt.grmpy.pkl', 'rb'))
@@ -63,7 +63,7 @@ class TestEstimationRuns(object):
         # Run command.
         init_file = 'dat/testInit_B.ini'
         
-        grmpy.estimate(init_file, resume=False, useSimulation=False)
+        grmpy.estimate(init_file, resume=False, use_simulation=False)
 
         # Assessment of results.
         rslt_dict = pkl.load(open('rslt.grmpy.pkl', 'rb'))
@@ -81,7 +81,7 @@ class TestEstimationRuns(object):
         # Run command
         init_file = 'dat/testInit_C.ini'
         
-        grmpy.estimate(init_file, resume = False, useSimulation = False)
+        grmpy.estimate(init_file, resume = False, use_simulation = False)
 
         # Assessment of results
         rslt_dict = pkl.load(open('rslt.grmpy.pkl', 'rb'))

@@ -13,7 +13,7 @@ import grmpy.user._createRequest    as auxRequest
 
 ''' Main function.
 '''
-def initialize(initFile, useSimulation = False, isSimulation = False):
+def initialize(initFile, use_simulation = False, is_simulation = False):
     ''' Read initialization file and construct the objects required for the 
         estimation runs.
     '''
@@ -24,7 +24,7 @@ def initialize(initFile, useSimulation = False, isSimulation = False):
     initDict = auxDict.processInput(initFile)
     
     # Use SIMULATION info.
-    if(useSimulation):
+    if(use_simulation):
         
         initDict['DATA']['source'] = initDict['SIMULATION']['target']
         
@@ -33,7 +33,7 @@ def initialize(initFile, useSimulation = False, isSimulation = False):
     # Construct objects.
     modelObj   = auxModel.constructModel(initDict)
     
-    parasObj   = auxParas.constructParas(initDict, modelObj, isSimulation)
+    parasObj   = auxParas.constructParas(initDict, modelObj, is_simulation)
     
     requestObj = auxRequest.constructRequest(initDict)
     

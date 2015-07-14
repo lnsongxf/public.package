@@ -12,6 +12,7 @@ def _updateParameters(parasObj):
     '''
     # Antibugging.
     assert (parasObj.getStatus() == True)
+    assert (os.path.isfile('info.grmpy.out'))
 
     # Update.
     hasStep = (os.path.isfile('info.grmpy.out'))
