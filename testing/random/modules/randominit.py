@@ -191,11 +191,11 @@ def _randomDict(dict_  = {}):
             if(flag == 'COST'): dict_[flag]['coeff'] += [[pos, constr, valCost]]
 
 
-    ''' DIST
+    ''' RHO
     '''
-    dict_['DIST'] = {}
-    dict_['DIST']['rho_untreated'] = [constraints.pop(), np.random.uniform(-0.98, 0.98)]
-    dict_['DIST']['rho_treated'] = [constraints.pop(), np.random.uniform(-0.98, 0.98)]
+    dict_['RHO'] = {}
+    dict_['RHO']['untreated'] = [constraints.pop(), np.random.uniform(-0.98, 0.98)]
+    dict_['RHO']['treated'] = [constraints.pop(), np.random.uniform(-0.98, 0.98)]
     
     
     ''' ESTIMATION
@@ -329,16 +329,16 @@ def _printDict(dict_):
 
 
 
-        ''' DIST
+        ''' RHO
         '''
         
         str_ = ' {0:<15} {1}{2:<5} \n'
 
-        file_.write('DIST' +'\n\n')
+        file_.write('RHO' +'\n\n')
 
-        for key_ in ['rho_treated', 'rho_untreated']:
+        for key_ in ['treated', 'untreated']:
 
-            constr, value = dict_['DIST'][key_]
+            constr, value = dict_['RHO'][key_]
 
             file_.write(str_.format('   ' + key_, constr, value))
         

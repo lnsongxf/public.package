@@ -14,7 +14,7 @@ def checkInput(initDict):
     assert (isinstance(initDict, dict))
     
     # Check keys.
-    keys = set(['DATA', 'BENE', 'COST', 'DIST', 'ESTIMATION', 'SIMULATION', 'DERIV'])
+    keys = set(['DATA', 'BENE', 'COST', 'RHO', 'ESTIMATION', 'SIMULATION', 'DERIV'])
     
     assert (keys == set(initDict.keys()))
     
@@ -28,7 +28,7 @@ def checkInput(initDict):
     
     _checkSIMULATION(initDict)
 
-    _checkDIST(initDict)
+    _checkRHO(initDict)
     
     _checkMSC(initDict)
     
@@ -336,20 +336,20 @@ def _checkDATA(initDict):
     # Finishing.
     return True 
     
-def _checkDIST(initDict):
-    ''' Check DIST block.
+def _checkRHO(initDict):
+    ''' Check RHO block.
     '''
     assert (isinstance(initDict, dict))
 
     # Check keys.
     keys = set(['treated', 'untreated'])
     
-    assert (keys == set(initDict['DIST']['rho'].keys()))
+    assert (keys == set(initDict['RHO'].keys()))
         
     # Distribute elements.
-    rhoU1V = initDict['DIST']['rho']['treated']
+    rhoU1V = initDict['RHO']['treated']
     
-    rhoU0V = initDict['DIST']['rho']['untreated']
+    rhoU0V = initDict['RHO']['untreated']
 
     # Checks.
     for obj in [rhoU1V, rhoU0V]:
@@ -447,7 +447,7 @@ def _checkSIMULATION(initDict):
     
     # Check keys.
     keys = set(['agents', 'seed', 'target'])
-    
+
     assert (keys == set(initDict['SIMULATION'].keys()))
     
     # Distribute elements.

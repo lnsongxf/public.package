@@ -55,9 +55,9 @@ def processInput(initFile):
     
                 initDict = _processCOST(initDict, currentLine)
             
-            if(keyword ==  'DIST'):
+            if(keyword ==  'RHO'):
                 
-                initDict = _processDIST(initDict, currentLine)
+                initDict = _processRHO(initDict, currentLine)
     
             if(keyword == 'ESTIMATION'):
                 
@@ -281,9 +281,9 @@ def _constructDictionary():
 
     initDict['DATA']         = {}
         
-    initDict['DIST']        = {}
-    initDict['DIST']['rho_treated']         = {}
-    initDict['DIST']['rho_untreated']       = {}
+    initDict['RHO']        = {}
+    initDict['RHO']['treated']         = {}
+    initDict['RHO']['untreated']       = {}
 
     initDict['ESTIMATION'] = {}
     
@@ -438,8 +438,8 @@ def _processCOST(initDict, currentLine):
     # Finishing.
     return initDict
 
-def _processDIST(initDict, currentLine):
-    ''' Process DIST block.
+def _processRHO(initDict, currentLine):
+    ''' Process RHO block.
     '''
     # Antibugging.
     assert (isinstance(initDict, dict))
@@ -447,22 +447,19 @@ def _processDIST(initDict, currentLine):
     assert (len(currentLine) == 2)
     
     # Process information.   
-    assert (currentLine[0] in ['rho_untreated', 'rho_treated'])
+    assert (currentLine[0] in ['untreated', 'treated'])
 
-    name  = currentLine[0].split('_')[0]
-    which = currentLine[0].split('_')[1]
+    name = currentLine[0]
 
     isFree = (currentLine[1][0] != '!')
     value  = currentLine[1].replace('!','')
 
-    if(name not in initDict['DIST'].keys()):
+    if(name not in initDict['RHO'].keys()):
         
-        initDict['DIST'][name] = {}
-    
-    initDict['DIST'][name][which] = {}
-                  
-    initDict['DIST'][name][which]['value'] = float(value)
-    initDict['DIST'][name][which]['free']  = isFree
+        initDict['RHO'][name] = {}
+
+    initDict['RHO'][name]['value'] = float(value)
+    initDict['RHO'][name]['free']  = isFree
 
     # Finishing.
     return initDict
