@@ -14,7 +14,7 @@ files = []
 '''
 files += glob.glob('.waf*')
 
-files += glob.glob('*.grm.*')
+files += glob.glob('*.grmpy.*')
 
 files += glob.glob('.pkl*')
 

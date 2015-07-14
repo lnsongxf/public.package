@@ -88,7 +88,7 @@ class maxCls(metaCls):
         elif(algorithm == 'powell'):
             
             maxRslt = self._powell()
-        
+
         # Logging.
         self._logging(maxRslt)
         
@@ -119,7 +119,7 @@ class maxCls(metaCls):
         msg     = maxRslt['message']
         
         # Write to file.
-        file_ = open('grmToolbox.grm.log', 'a')
+        file_ = open('grmToolbox.grmpy.log', 'a')
         
         file_.write('''\n Optimization Report \n''')        
         

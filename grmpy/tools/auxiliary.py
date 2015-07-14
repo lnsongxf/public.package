@@ -24,8 +24,7 @@ def createMatrices(dataset, initDict):
     treatment = initDict['DATA']['treatment'] 
 
     common    = initDict['DERIV']['common']['pos']
-    
-    
+
     exclBeneExAnte = initDict['DERIV']['exclBene']['exAnte']['pos']
 
     exclBeneExPost = initDict['DERIV']['exclBene']['exPost']['pos']
@@ -94,11 +93,11 @@ def cleanup(resume):
     assert (resume in [True, False])
     
     # Construct files list.
-    fileList = glob.glob('*.grm.*')
+    fileList = glob.glob('*.grmpy.*')
         
     if(resume): 
         
-        for file_ in ['stepParas.grm.out']:
+        for file_ in ['stepParas.grmpy.out']:
             
             try:
                 
@@ -109,7 +108,7 @@ def cleanup(resume):
                 pass
     
     # Remove information from simulated data.
-    for file_ in ['*.infos.grm.out', '*.paras.grm.out']:
+    for file_ in ['*.infos.grmpy.out', '*.paras.grmpy.out']:
                         
         try:
             
@@ -120,8 +119,6 @@ def cleanup(resume):
             pass
     
     # Cleanup
-    if(os.path.exists('grm.rslt')): shutil.rmtree('grm.rslt')
-               
     for file_ in fileList:
 
         if 'ini' in file_:

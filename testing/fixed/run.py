@@ -46,7 +46,7 @@ class TestEstimationRuns(object):
         grmpy.estimate(init_file, resume=False, useSimulation=False)
 
         # Assessment of results
-        rslt_dict = pkl.load(open('rslt.grm.pkl', 'rb'))
+        rslt_dict = pkl.load(open('rslt.grmpy.pkl', 'rb'))
         
         max_rslt = rslt_dict['maxRslt']
         
@@ -66,7 +66,7 @@ class TestEstimationRuns(object):
         grmpy.estimate(init_file, resume=False, useSimulation=False)
 
         # Assessment of results.
-        rslt_dict = pkl.load(open('rslt.grm.pkl', 'rb'))
+        rslt_dict = pkl.load(open('rslt.grmpy.pkl', 'rb'))
 
         # Assertions.
         assert_almost_equal(rslt_dict['maxRslt']['fun'], 1.6569860751490129)
@@ -84,7 +84,7 @@ class TestEstimationRuns(object):
         grmpy.estimate(init_file, resume = False, useSimulation = False)
 
         # Assessment of results
-        rslt_dict = pkl.load(open('rslt.grm.pkl', 'rb'))
+        rslt_dict = pkl.load(open('rslt.grmpy.pkl', 'rb'))
 
         # This test only succeeds on our testing server. Otherwise, slight
         # differences in the Python version result in a failure. It only
@@ -131,7 +131,7 @@ class TestEstimationRuns(object):
         grmpy.estimate(initFile, resume=False, useSimulation=False)
 
         # Assessment of results.
-        rslt_dict = pkl.load(open('rslt.grm.pkl', 'rb'))
+        rslt_dict = pkl.load(open('rslt.grmpy.pkl', 'rb'))
 
         # This test only succeeds only when using Python 2.x.x.
         if sys.version[0] != 2:

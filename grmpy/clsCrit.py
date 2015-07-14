@@ -332,7 +332,7 @@ class critCls(metaCls):
              
             self._write('step')
         
-            file_ = open('grmToolbox.grm.log', 'a')
+            file_ = open('grmToolbox.grmpy.log', 'a')
             
             if(isStart): 
                 
@@ -367,7 +367,7 @@ class critCls(metaCls):
         paras = parasObj.getValues(version = 'internal', which = 'all')
         
         # Save.
-        np.savetxt(task + 'Paras.grm.out', paras, fmt = '%25.12f')
+        np.savetxt(task + 'Paras.grmpy.out', paras, fmt = '%25.12f')
         
     def _checkIntegrity(self):
         ''' Check integrity.

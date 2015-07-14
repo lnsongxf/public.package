@@ -191,7 +191,7 @@ class results(metaCls):
         
         if(isRelevant):
 
-            with open('rslt.grm.log', 'w') as file_:
+            with open('rslt.grmpy.log', 'w') as file_:
                 
                 ''' Marginal Effects
                 '''

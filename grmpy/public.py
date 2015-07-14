@@ -4,7 +4,6 @@
 # standard library
 import numdifftools as nd
 import numpy as np
-import pickle as pkl
 import sys
 import random
 import shutil
@@ -32,11 +31,11 @@ def clean():
     ''' Cleanup from previous estimation run.
     '''
     # Construct files list.
-    fileList = glob.glob('*.grm.*')
+    fileList = glob.glob('*.grmpy.*')
 
 
     # Remove information from simulated data.
-    for file_ in ['*.infos.grm.out', '*.paras.grm.out']:
+    for file_ in ['*.infos.grmpy.out', '*.paras.grmpy.out']:
 
         try:
 
@@ -47,8 +46,6 @@ def clean():
             pass
 
     # Cleanup
-    if(os.path.exists('grm.rslt')): shutil.rmtree('grm.rslt')
-
     for file_ in fileList:
 
         try:
@@ -72,7 +69,7 @@ def estimate(init = 'init.ini', resume = False, useSimulation = False):
     if(resume):
 
         # Antibugging.
-        assert (os.path.isfile('stepParas.grm.out'))
+        assert (os.path.isfile('stepParas.grmpy.out'))
 
         # Update parameter objects.
         parasObj = _updateParameters(parasObj)
@@ -81,9 +78,8 @@ def estimate(init = 'init.ini', resume = False, useSimulation = False):
 
         paras = parasObj.getValues(version = 'internal', which = 'all')
 
-        np.savetxt('stepParas.grm.out', paras, fmt = '%25.12f')
+        np.savetxt('stepParas.grmpy.out', paras, fmt = '%25.12f')
 
-    # Run optimization.
     # Initialize container
     grmObj = grmCls()
 
@@ -136,7 +132,7 @@ def estimate(init = 'init.ini', resume = False, useSimulation = False):
             hess     = ndObj(xopt)
             covMat   = np.linalg.pinv(hess)
 
-        pkl.dump(covMat, open('covMat.grm.pkl', 'wb'))
+        pkl.dump(covMat, open('covMat.grmpy.pkl', 'wb'))
 
     # Construct result class.
     rslt = results()
@@ -149,50 +145,13 @@ def estimate(init = 'init.ini', resume = False, useSimulation = False):
 
     rslt.lock()
 
-    rslt.store('rslt.grm.pkl')
+    rslt.store('rslt.grmpy.pkl')
 
     return rslt
-
-def perturb(scale = 0.1, seed = 123, init = 'init.ini', update = False, useSimulation = False):
-    ''' Perturb current values of structural parameters.
-    '''
-    #Process initialization file.
-    _, parasObj, _, _ = initialize(init, useSimulation=useSimulation)
-
-    ''' Update parameter object.
-    '''
-    if(update):
-
-        # Antibugging.
-        assert (os.path.isfile('stepParas.grm.out'))
-
-        # Update parameter objects.
-        parasObj = _updateParameters(parasObj)
-
-    ''' Perturb external values.
-    '''
-    np.random.seed(seed)
-
-    baseValues = parasObj.getValues('external', 'free')
-
-    perturb    = (np.random.sample(len(baseValues)) - 0.5)*scale
-
-    evalPoints = baseValues + perturb
-
-    ''' Transform evaluation points.
-    '''
-    parasObj.update(evalPoints, 'external', 'free')
-
-    evalPoints = parasObj.getValues('internal', 'all')
-
-    ''' Finishing.
-    '''
-    np.savetxt('stepParas.grm.out',  evalPoints, fmt = '%15.10f')
 
 def test():
     """ Run nose tester.
     """
-
     base = os.getcwd()
 
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
@@ -203,7 +162,6 @@ def test():
 
     os.chdir(base)
 
-''' Simulation '''
 def simulate(init = 'init.ini', update = False):
     ''' Simulate dataset for grmToolbox.
     '''
@@ -272,11 +230,11 @@ def _updateParameters(parasObj):
     assert (parasObj.getStatus() == True)
 
     # Update.
-    hasStep = (os.path.isfile('stepParas.grm.out'))
+    hasStep = (os.path.isfile('stepParas.grmpy.out'))
 
     if(hasStep):
 
-        internalValues = np.array(np.genfromtxt('stepParas.grm.out'), dtype = 'float', ndmin = 1)
+        internalValues = np.array(np.genfromtxt('stepParas.grmpy.out'), dtype = 'float', ndmin = 1)
 
         parasObj.update(internalValues, version = 'internal', which = 'all')
 
@@ -314,8 +272,8 @@ def _getLikelihood(init):
     likl = evaluate(x, critObj)
 
     # Cleanup.
-    for file_ in ['grmToolbox.grm.log', 'stepParas.grm.out', \
-                  'startParas.grm.out']:
+    for file_ in ['grmToolbox.grmpy.log', 'stepParas.grmpy.out', \
+                  'startParas.grmpy.out']:
 
         os.remove(file_)
 
@@ -495,10 +453,10 @@ def _writeInfo(parasObj, target, rslt, likl):
     # Write out structural parameters.
     paras = parasObj.getValues(version = 'internal', which = 'all')
 
-    np.savetxt(fileName + '.paras.grm.out', paras, fmt = '%15.10f')
+    np.savetxt(fileName + '.paras.grmpy.out', paras, fmt = '%15.10f')
 
     # Write out information on agent experiences.
-    with open(fileName + '.infos.grm.out', 'w') as file_:
+    with open(fileName + '.infos.grmpy.out', 'w') as file_:
 
         file_.write('\n Simulated Economy\n\n')
 

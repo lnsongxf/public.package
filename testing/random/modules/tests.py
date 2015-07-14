@@ -10,6 +10,7 @@ import os
 # project library
 from modules.randominit import *
 from modules.exceptions import TimedOutError
+from modules.auxiliary import perturb
 
 # Setting up signal handler
 def signal_handler(signum, frame):
