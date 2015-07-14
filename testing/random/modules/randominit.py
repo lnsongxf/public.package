@@ -338,11 +338,11 @@ def _printDict(dict_):
         ''' DIST
         '''
         
-        str_ = ' {0:<10} {1}{2:<5} \n'
+        str_ = ' {0:<15} {1}{2:<5} \n'
 
         file_.write('DIST' +'\n\n')
 
-        for key_ in ['row_treated', 'rho_untreated']:
+        for key_ in ['rho_treated', 'rho_untreated']:
 
             constr, value = dict_['DIST'][key_]
 

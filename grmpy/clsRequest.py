@@ -29,7 +29,6 @@ class requestCls(metaCls):
         self.attr['alpha']           = None  
 
         self.attr['withMarginalEffects']     = None        
-        self.attr['withConditionalEffects']  = None
         self.attr['withAverageEffects']      = None
                 
         # Status
@@ -50,9 +49,6 @@ class requestCls(metaCls):
         # Algorithm.
         assert (self.attr['algorithm'] in ['bfgs', 'powell'])
 
-        # withConditionalAverageEffects. 
-        assert (self.attr['withConditionalEffects'] in [True, False])   
-        
         # withAverageEffects. 
         assert (self.attr['withAverageEffects'] in [True, False])       
 

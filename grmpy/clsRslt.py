@@ -47,12 +47,6 @@ class results(metaCls):
         self.attr['cte']           = None      
         self.attr['ste']           = None      
 
-        self.attr['bteExPostCond'] = None
-        self.attr['bteExAnteCond'] = None
-        
-        self.attr['cteCond']       = None      
-        self.attr['steCond']       = None      
-
         # Status indicator
         self.isLocked = False
 
@@ -193,7 +187,7 @@ class results(metaCls):
         surpEstimation          = parasObj.getAttr('surpEstimation')
         
         # Write results.
-        isRelevant = (withMarginalEffects or withAverageEffects or withConditionalEffects)
+        isRelevant = (withMarginalEffects or withAverageEffects)
         
         if(isRelevant):
 
@@ -543,118 +537,6 @@ class results(metaCls):
                 pvalue = sum(np.sign(teList) != np.sign(estimate))/float(numDraws)
                                 
                 self.attr[parameter][subgroup]['pvalue'] = pvalue
-        
-        # Finishing.
-        return None
-        
-    def _addResultsConditionalAverageEffects(self, randomParameters):
-        ''' Add results on average effects of treatment.
-        '''
-        # Antibugging.
-        assert (self.getStatus() == True)
-        assert (isinstance(randomParameters, np.ndarray))
-        assert (np.all(np.isfinite(randomParameters)))
-        assert (randomParameters.dtype == 'float')
-        assert (randomParameters.ndim  == 2)
-    
-        # Distribute class attributes.
-        grmObj = self.getAttr('grmObj')
-        
-        requestObj  = grmObj.getAttr('requestObj')
-        modelObj    = grmObj.getAttr('modelObj')
-        parasObj    = grmObj.getAttr('parasObj')
-        
-        effectObj = effectCls()
-        
-        effectObj.lock()
-        
-        withConditionalEffects  = requestObj.getAttr('withConditionalEffects')
-        withAsymptotics         = requestObj.getAttr('withAsymptotics')
-        alpha                   = requestObj.getAttr('alpha')
-        numDraws                = requestObj.getAttr('numDraws')
-        numSims                 = requestObj.getAttr('numSims')
-
-        args = {}
-        
-        args['isConditional'] = True
-
-        args['numSims']       = numSims
-             
-        surpEstimation      = parasObj.getAttr('surpEstimation')
-        
-        # Auxiliary objects.
-        parasCopy = copy.deepcopy(parasObj)
-        
-        # Check applicability.
-        if(withConditionalEffects is False): return None
-        
-        # Simulate average effects of treatment. 
-        subgroupList  = ['average', 'treated', 'untreated']
-        parameterList = ['bteExPostCond']
-    
-        if(surpEstimation): parameterList += ['bteExAnteCond', 'cteCond', 'steCond']
-            
-        for parameter in parameterList:
-                
-            self.attr[parameter] = {}
-                
-            for subgroup in subgroupList:
-                    
-                self.attr[parameter][subgroup] = {}
-                    
-                self.attr[parameter][subgroup]['estimate'] = None
-                self.attr[parameter][subgroup]['pvalue']   = None
-                    
-                self.attr[parameter][subgroup]['confi']    = {}
-
-        # Point estimates.
-        te = effectObj.getEffects(modelObj, parasObj, 'average', args)
-            
-        for parameter in parameterList:
-                
-            for subgroup in subgroupList:
-                
-                parameter = parameter.replace('Cond', '')
-                
-                self.attr[parameter + 'Cond'][subgroup]['estimate'] = te[parameter][subgroup]
-
-        # Confidence bounds.
-        if(not withAsymptotics): return None
-        
-        rslt = []
-                
-        for randomPara in randomParameters:
-       
-            parasCopy.update(randomPara, version = 'external', which = 'free')
-                
-            rslt.append(effectObj.getEffects(modelObj, parasCopy, 'average', args))
-            
-        for parameter in parameterList:
-            
-            parameter = parameter.replace('Cond', '')
-            
-            for subgroup in subgroupList:
-                    
-                estimate = self.attr[parameter + 'Cond'][subgroup]['estimate']
-                    
-                # Collect simulations.
-                teList = []
-                    
-                for i in range(numDraws):
-                        
-                    teList.append(rslt[i][parameter][subgroup])
-                    
-                # Process confidence interval.s
-                lower, upper = scipy.stats.mstats.mquantiles(teList, \
-                                prob = [(alpha*0.5), (1.0 - alpha*0.5)], axis = 0)
-                    
-                self.attr[parameter + 'Cond'][subgroup]['confi']['upper'] = upper
-                self.attr[parameter + 'Cond'][subgroup]['confi']['lower'] = lower            
-                    
-                # Construct pvalue.
-                pvalue = sum(np.sign(teList) != np.sign(estimate))/float(numDraws)
-                                
-                self.attr[parameter + 'Cond'][subgroup]['pvalue'] = pvalue
         
         # Finishing.
         return None
