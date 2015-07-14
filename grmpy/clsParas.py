@@ -607,7 +607,7 @@ class _paraContainer(metaCls):
         hasBounds    = self.attr['hasBounds']
             
         lower, upper = self.attr['bounds']
-            
+
         # Checks.        
         if(not isFree): assert (value == arg)
             

@@ -3,17 +3,23 @@
 """
 # standard library
 import numpy as np
+import sys
+import os
 
 # project library
 import modules.tests as lib
+from modules.randominit import *
+
+# GRMPY import
+sys.path.insert(0, os.environ['GRMPY'])
+from grmpy import *
 
 ''' Request
 '''
-label, seed = 'D', 7456
+label, seed = 'B', 58906
 
 ''' Error Reproduction
 '''
-
 test = getattr(lib, 'test_' + label)
 
 np.random.seed(seed)

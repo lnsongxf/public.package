@@ -20,7 +20,7 @@ import random
 from grmpy.clsMeta import metaCls
 from grmpy.clsEffects import effectCls
 
-class results(metaCls):
+class rsltCls(metaCls):
     ''' This class contains all results provided back to the user from the 
         maximization setup.
     ''' 
@@ -79,7 +79,7 @@ class results(metaCls):
         numDraws        = requestObj.getAttr('numDraws')
         withAsymptotics = requestObj.getAttr('withAsymptotics')
 
-        # Auxiliary objects.   
+        # Auxiliary objects.
         parasCopy = copy.deepcopy(parasObj)
         
         paraObjs  = parasObj.getAttr('paraObjs')
@@ -93,7 +93,7 @@ class results(metaCls):
         externalValues   = parasObj.getValues(version = 'external', which = 'free')
          
         if(withAsymptotics):
-           
+
             randomParameters = np.random.multivariate_normal(externalValues, cov, numDraws)
         
         else:
@@ -174,7 +174,7 @@ class results(metaCls):
         surpEstimation          = parasObj.getAttr('surpEstimation')
         
         # Write results.
-        with open('rslt.grmpy.log', 'w') as file_:
+        with open('info.grmpy.out', 'a') as file_:
                 
             self._writeMarginal(file_, withAsymptotics, surpEstimation)
 
@@ -193,11 +193,6 @@ class results(metaCls):
     
         if(surpEstimation): parameterList += ['cmteExAnte', 'smteExAnte']
         
-        # Output.            
-        file_.write('\n' + ' --------------------------------------- ' + '\n' + \
-                           '  Marginal Effects of Treatment          ' + '\n' + \
-                           ' --------------------------------------- ' + '\n')
-
         for parameter in parameterList:
             
             points = self.attr[parameter]['estimate']
@@ -210,15 +205,15 @@ class results(metaCls):
         
             if(parameter == 'bmteExPost'): 
                 
-                title = ' Marginal Benefit of Treatment (ex post) '
+                title = ' MARGINAL BENEFIT OF TREATMENT (EX POST)'
             
             if(parameter == 'cmteExAnte'): 
                 
-                title = ' Marginal Cost of Treatment '
+                title = ' MARGINAL COST OF TREATMENT '
 
             if(parameter == 'smteExAnte'): 
                 
-                title = ' Marginal Surplus of Treatment '
+                title = ' MARGINAL SURPLUS OF TREATMENT '
                 
             file_.write('\n' + title + '\n')
                        

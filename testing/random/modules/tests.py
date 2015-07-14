@@ -10,7 +10,6 @@ import os
 # project library
 from modules.randominit import *
 from modules.exceptions import TimedOutError
-from modules.auxiliary import perturb
 
 # Setting up signal handler
 def signal_handler(signum, frame):
@@ -54,9 +53,6 @@ def test_B():
     # Simulation
     simulate('test.grm.ini')
 
-    # Perturb
-    perturb(scale=0.01, seed=123, init='test.grm.ini', useSimulation=True)
-
     # Set signal for five seconds.
     signal.alarm(5)
 
@@ -75,27 +71,6 @@ def test_B():
     return True
 
 def test_C():
-    """ Testing if the perturbation function works properly
-    """
-    # Generate a random initialization file.
-    generateInitFile()
-
-    # Simulation
-    simulate('test.grm.ini')
-
-    # Perturb
-    for _ in range(100):
-
-        # Draw scale
-        scale = np.random.random()
-
-        # Perturb parameter values
-        perturb(scale=scale, seed=123, init='test.grm.ini', useSimulation=True)
-
-    # Finishing
-    return True
-
-def test_D():
     """ Testing if a random estimation task can be handled without complaints from beginning till end.
     """
     # Generate a random initialization file.
@@ -104,9 +79,6 @@ def test_D():
     # Simulation
     simulate('test.grm.ini')
 
-    # Perturb
-    perturb(scale=0.01, seed=123, init='test.grm.ini', useSimulation=True)
-
     # Estimate
     estimate(useSimulation=True, init='test.grm.ini')
 
@@ -114,7 +86,7 @@ def test_D():
     return True
 
 
-def test_E():
+def test_D():
     """ Testing if the fast and slow evaluation of the criterion function result in same value.
     """
     # Get a seeed
@@ -154,7 +126,7 @@ def test_E():
     # Finishing
     return True
 
-def test_F():
+def test_E():
     """ Testing if a thousand random initialization requests can be simulated
     """
 

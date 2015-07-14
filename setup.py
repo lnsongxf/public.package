@@ -10,5 +10,5 @@ setup(
   url = 'https://github.com/grmToolbox/package', # use the URL to the github repo
   keywords = ['Generalized Roy', 'Policy Evaluation', 'Economics'], # arbitrary keywords
   classifiers = [],
-  install_requires=['numdifftools','numpy','scipy','statsmodels','nose','pandas', 'patsy'],
+  install_requires=['matplotlib','numdifftools','numpy','scipy','statsmodels','nose','pandas', 'patsy'],
 )

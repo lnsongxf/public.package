@@ -41,42 +41,6 @@ def startLogging():
 
 ''' Auxiliary functions.
 '''
-def perturb(scale = 0.1, seed = 123, init = 'init.ini', update = False, useSimulation = False):
-    ''' Perturb current values of structural parameters.
-    '''
-    #Process initialization file.
-    _, parasObj, _, _ = initialize(init, useSimulation=useSimulation)
-
-    ''' Update parameter object.
-    '''
-    if(update):
-
-        # Antibugging.
-        assert (os.path.isfile('stepParas.grmpy.out'))
-
-        # Update parameter objects.
-        parasObj = _updateParameters(parasObj)
-
-    ''' Perturb external values.
-    '''
-    np.random.seed(seed)
-
-    baseValues = parasObj.getValues('external', 'free')
-
-    perturb    = (np.random.sample(len(baseValues)) - 0.5)*scale
-
-    evalPoints = baseValues + perturb
-
-    ''' Transform evaluation points.
-    '''
-    parasObj.update(evalPoints, 'external', 'free')
-
-    evalPoints = parasObj.getValues('internal', 'all')
-
-    ''' Finishing.
-    '''
-    np.savetxt('stepParas.grmpy.out',  evalPoints, fmt = '%15.10f')
-
 def distributeInput(parser):
     ''' Check input for estimation script.
     '''

@@ -119,54 +119,6 @@ class TestEstimationRuns(object):
         # Cleanup.
         grmpy.cleanup(resume=False)
 
-    @staticmethod
-    def test_est_run_four():
-        """ Basic estimation run, Four.
-        """
-        # Run command
-        initFile = 'dat/testInit_D.ini'
-
-        grmpy.estimate(initFile, resume=False, useSimulation=False)
-
-        # Assessment of results.
-        rslt_dict = pkl.load(open('rslt.grmpy.pkl', 'rb'))
-
-        # This test only succeeds only when using Python 2.x.x.
-        if sys.version[0] != 2:
-            return True
-
-        # Assertions.
-        assert_almost_equal(rslt_dict['bteExPost']['average']['estimate'],
-        -0.14337522136788611)
-        assert_almost_equal(rslt_dict['bteExPost']['treated']['estimate'],
-        0.065536369981413087)
-        assert_almost_equal(rslt_dict['bteExPost']['untreated']['estimate'],
-        -0.30752004314233555)
-
-        assert_almost_equal(rslt_dict['bteExAnte']['average']['estimate'],
-        -0.14337522136788611)
-        assert_almost_equal(rslt_dict['bteExAnte']['treated']['estimate'],
-        0.065536369981413087)
-        assert_almost_equal(rslt_dict['bteExAnte']['untreated']['estimate'],
-        -0.30752004314233555)
-
-        assert_almost_equal(rslt_dict['cte']['average']['estimate'],
-        0.078672710078639602)
-        assert_almost_equal(rslt_dict['cte']['treated']['estimate'],
-        -0.72163877018841327)
-        assert_almost_equal(rslt_dict['cte']['untreated']['estimate'],
-        0.70748887314560982)
-
-        assert_almost_equal(rslt_dict['ste']['average']['estimate'],
-        -0.22204793144652576)
-        assert_almost_equal(rslt_dict['ste']['treated']['estimate'],
-        0.78717514016982626)
-        assert_almost_equal(rslt_dict['ste']['untreated']['estimate'],
-        -1.0150089162879454)
-
-        # Cleanup.
-        grmpy.cleanup(resume=False)
-
 if __name__ == '__main__': 
     
     runmodule()   

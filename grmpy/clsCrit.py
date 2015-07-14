@@ -21,15 +21,6 @@ class critCls(metaCls):
         
         self.attr['grmObj'] = grmObj
 
-        # Results.                
-        self.attr['currentFval'] = None
-        
-        self.attr['startFval']   = None
-        
-        self.attr['stepFval']    = None          
-        
-        self.attr['numStep']     = 0
-
         # Status.
         self.isLocked = False
     
@@ -186,10 +177,7 @@ class critCls(metaCls):
         assert (isinstance(likl, float))    
         assert (np.isfinite(likl))
          
-        # Logging.
-        if(logging): self._logging(likl)
-    
-        #Finishing.        
+        #Finishing.
         return likl    
 
     ''' Private class attributes.
@@ -298,77 +286,6 @@ class critCls(metaCls):
         # Finishing
         return likl
 
-    def _logging(self, likl):
-        ''' Logging of progress.
-        '''
-        # Antibugging.
-        assert (isinstance(likl, float))    
-        assert (np.isfinite(likl))
-   
-        # Distribute class attributes.
-        grmObj    = self.attr['grmObj']
-        
-        modelObj  = grmObj.getAttr('modelObj')
-        
-        numAgents = modelObj.getAttr('numAgents')
-        
-        # Logging.
-        self.attr['currentFval'] = likl
-                
-        isStart = (self.attr['startFval'] is None)
-
-        if(isStart):
-            
-            self.attr['startFval'] = self.attr['currentFval']
-            self.attr['stepFval']  = self.attr['currentFval']
-        
-            self._write('start')
-        
-        isStep = (self.attr['currentFval'] < self.attr['stepFval'])
-            
-        if(isStep or isStart):
-
-            self.attr['stepFval'] = self.attr['currentFval']
-             
-            self._write('step')
-        
-            file_ = open('grmToolbox.grmpy.log', 'a')
-            
-            if(isStart): 
-                
-                file_.write('\n Estimation Sample: ' + str(numAgents) + '\n')
-                
-                file_.write('\n  Start ')
-
-            else:
-            
-                file_.write('  Step ' + str(self.attr['numStep']))
-            
-            file_.write('\n\n')
-            file_.write('    Function Value: ' + str(self.attr['stepFval']))
-            file_.write('\n\n\n')
-            
-            file_.close()       
-            
-            self.attr['numStep']   += 1
-
-    def _write(self, task):
-        ''' Write information to disk.
-        '''
-        # Antibugging.
-        assert (task in ['start', 'step'])
-        
-        # Distribute class attributes.
-        grmObj = self.getAttr('grmObj')
-
-        parasObj = grmObj.getAttr('parasObj')
-
-        # Collect objects.
-        paras = parasObj.getValues(version = 'internal', which = 'all')
-        
-        # Save.
-        np.savetxt(task + 'Paras.grmpy.out', paras, fmt = '%25.12f')
-        
     def _checkIntegrity(self):
         ''' Check integrity.
         '''
@@ -379,13 +296,3 @@ class critCls(metaCls):
         assert (isinstance(self.attr['grmObj'], grmCls))
         assert (self.attr['grmObj'].getStatus() == True)
 
-        # Function values.
-        for type_ in ['currentFval', 'startFval', 'stepFval']:
-            
-            if(self.attr[type_] is not None):
-                
-                assert (isinstance(self.attr[type_], float))
-        
-        # Number of steps.
-        assert (isinstance(self.attr['numStep'], int))
-        assert (self.attr['numStep'] >= 0)

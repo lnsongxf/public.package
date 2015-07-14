@@ -1,12 +1,54 @@
-''' Module for auxiliary functions that are used throughout the grmToolbox.
-'''
+""" Module for auxiliary functions that are used throughout the grmToolbox.
+"""
+
 # standard library
-import shutil
-import glob
+import numpy as np
+import shlex
 import os
 
-import numpy            as np
 
+def _updateParameters(parasObj):
+    ''' Update parameter object if possible.
+    '''
+    # Antibugging.
+    assert (parasObj.getStatus() == True)
+
+    # Update.
+    hasStep = (os.path.isfile('info.grmpy.out'))
+
+    if(hasStep):
+
+        list_ = []
+
+        is_relevant = False
+
+        with open('info.grmpy.out', 'r') as file_:
+
+            for line in file_:
+
+                currentLine = shlex.split(line)
+
+                if len(currentLine) ==  0:
+                    continue
+
+                if len(currentLine) > 1:
+                    break
+
+                if currentLine == ['STOP']:
+                    is_relevant = True
+
+                if currentLine[0] in ['START', 'STOP']:
+                    continue
+
+                if is_relevant:
+                    list_ += [np.float_(currentLine[0])]
+
+        starting_values = np.array(list_)
+
+        parasObj.update(starting_values, version = 'internal', which = 'all')
+
+    # Finishing.
+    return parasObj
 
 def createMatrices(dataset, initDict):
     ''' Create the data matrices.
@@ -86,48 +128,3 @@ def createMatrices(dataset, initDict):
     # Finishing.
     return rslt
 
-def cleanup(resume):
-    ''' Cleanup from previous estimation run.
-    '''
-    # Antibugging.
-    assert (resume in [True, False])
-    
-    # Construct files list.
-    fileList = glob.glob('*.grmpy.*')
-        
-    if(resume): 
-        
-        for file_ in ['stepParas.grmpy.out']:
-            
-            try:
-                
-                fileList.remove(file_)
-    
-            except:
-                
-                pass
-    
-    # Remove information from simulated data.
-    for file_ in ['*.infos.grmpy.out', '*.paras.grmpy.out']:
-                        
-        try:
-            
-            fileList.remove(glob.glob(file_)[0])
-            
-        except:
-            
-            pass
-    
-    # Cleanup
-    for file_ in fileList:
-
-        if 'ini' in file_:
-            continue
-        
-        try:
-            
-            os.remove(file_)
-            
-        except OSError:
-            
-            pass
