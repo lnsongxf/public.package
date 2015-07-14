@@ -494,7 +494,7 @@ def _processESTIMATION(initDict, currentLine):
             
             flag = int(flag)
 
-    if(keyword in ['marginal', 'average', 'asymptotics']):
+    if(keyword in ['asymptotics']):
         
         assert (flag.upper() in ['TRUE', 'FALSE'])
         
@@ -511,7 +511,7 @@ def _processESTIMATION(initDict, currentLine):
         
         flag = float(flag)
 
-    if(keyword in ['simulations', 'draws']):
+    if(keyword in ['draws']):
         
         flag = int(flag)
 

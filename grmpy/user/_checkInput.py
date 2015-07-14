@@ -372,9 +372,9 @@ def _checkESTIMATION(initDict):
     assert (isinstance(initDict, dict))
     
     # Check keys.
-    keys = set(['algorithm', 'maxiter', 'start', 'gtol', 'epsilon', 'marginal',\
-                'average', 'asymptotics', 'hessian', \
-                'draws', 'simulations', 'alpha', 'differences', 'version'])
+    keys = set(['algorithm', 'maxiter', 'start', 'gtol', 'epsilon', \
+                'asymptotics', 'hessian', \
+                'draws', 'alpha', 'differences', 'version'])
 
     assert (keys == set(initDict['ESTIMATION'].keys()))
     
@@ -389,17 +389,11 @@ def _checkESTIMATION(initDict):
 
     epsilon     =  initDict['ESTIMATION']['epsilon']
 
-    marginal    =  initDict['ESTIMATION']['marginal']
-
-    average     =  initDict['ESTIMATION']['average']
-
     asymptotics =  initDict['ESTIMATION']['asymptotics']
 
     hessian     =  initDict['ESTIMATION']['hessian']
 
     draws       =  initDict['ESTIMATION']['draws']
-
-    simulations =  initDict['ESTIMATION']['simulations']
 
     alpha       =  initDict['ESTIMATION']['alpha']   
     
@@ -420,13 +414,13 @@ def _checkESTIMATION(initDict):
         assert (isinstance(obj, float))
         assert (obj > 0)
 
-    for obj in [marginal, average, asymptotics]:
+    for obj in [asymptotics]:
         
         assert (obj in [True, False])
     
     assert (hessian in ['numdiff', 'bfgs'])
     
-    for obj in [draws, simulations]:
+    for obj in [draws]:
         
         assert (isinstance(obj, int))
         assert (obj > 0)

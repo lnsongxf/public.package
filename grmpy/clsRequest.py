@@ -25,12 +25,8 @@ class requestCls(metaCls):
 
         self.attr['version']         = None
         self.attr['hessian']         = None
-        self.attr['numSims']         = None
-        self.attr['alpha']           = None  
+        self.attr['alpha']           = None
 
-        self.attr['withMarginalEffects']     = None        
-        self.attr['withAverageEffects']      = None
-                
         # Status
         self.isLocked = False
     
@@ -49,12 +45,6 @@ class requestCls(metaCls):
         # Algorithm.
         assert (self.attr['algorithm'] in ['bfgs', 'powell'])
 
-        # withAverageEffects. 
-        assert (self.attr['withAverageEffects'] in [True, False])       
-
-        # withMarginalEffects. 
-        assert (self.attr['withMarginalEffects'] in [True, False])  
-            
         # Maximum iteration.
         if(self.attr['maxiter'] is not None):
             

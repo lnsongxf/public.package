@@ -109,7 +109,7 @@ class TestEstimationRuns(object):
         assert_almost_equal(rslt_dict['smteExAnte']['confi']['lower'][50],
         -0.16744058087070901)
    
-        #Assert relationship between parameters
+        # Assert relationship between parameters
         for i in range(99):
             
             cmteExAnte = rslt_dict['cmteExAnte']['estimate'][i]

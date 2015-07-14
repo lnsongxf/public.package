@@ -33,16 +33,9 @@ def constructRequest(initDict):
     requestObj.setAttr('version', initDict['ESTIMATION']['version'])
 
     requestObj.setAttr('hessian', initDict['ESTIMATION']['hessian'])
-    
-    requestObj.setAttr('numSims', initDict['ESTIMATION']['simulations'])
-    
-    requestObj.setAttr('alpha', initDict['ESTIMATION']['alpha'])
-    
-    
-    requestObj.setAttr('withMarginalEffects', initDict['ESTIMATION']['marginal'])
 
-    requestObj.setAttr('withAverageEffects', initDict['ESTIMATION']['average'])
-    
+    requestObj.setAttr('alpha', initDict['ESTIMATION']['alpha'])
+
     requestObj.lock()
 
     # Finishing.

@@ -41,12 +41,6 @@ class results(metaCls):
         self.attr['cmteExAnte']    = None
         self.attr['smteExAnte']    = None        
 
-        self.attr['bteExPost']     = None
-        self.attr['bteExAnte']     = None
-        
-        self.attr['cte']           = None      
-        self.attr['ste']           = None      
-
         # Status indicator
         self.isLocked = False
 
@@ -146,11 +140,7 @@ class results(metaCls):
                 paraObj.setAttr('pvalue', pvalue)
             
             counter += 1
-        
-        ''' Unconditional Average Effects of Treatment. '''
-        
-        _ = self._addResultsAverageEffects(randomParameters)
-                
+
         ''' Marginal Effects of Treatment. '''
         
         _ = self._addResultsMarginalEffects(randomParameters)
@@ -180,103 +170,14 @@ class results(metaCls):
         requestObj = grmObj.getAttr('requestObj')
         parasObj   = grmObj.getAttr('parasObj')
 
-        withMarginalEffects     = requestObj.getAttr('withMarginalEffects')
-        withAverageEffects      = requestObj.getAttr('withAverageEffects')
-
         withAsymptotics         = requestObj.getAttr('withAsymptotics')
         surpEstimation          = parasObj.getAttr('surpEstimation')
         
         # Write results.
-        isRelevant = (withMarginalEffects or withAverageEffects)
-        
-        if(isRelevant):
-
-            with open('rslt.grmpy.log', 'w') as file_:
+        with open('rslt.grmpy.log', 'w') as file_:
                 
-                ''' Marginal Effects
-                '''
-                if(withMarginalEffects):    self._writeMarginal(file_, withAsymptotics, surpEstimation)
-    
-                ''' Average Effects
-                '''
-                if(withAverageEffects):     self._writeAverage(file_, withAsymptotics, surpEstimation)
+            self._writeMarginal(file_, withAsymptotics, surpEstimation)
 
-
-                            
-    def _writeAverage(self, file_, withAsymptotics, surpEstimation):
-        ''' Write results on average effects of treatment.
-        '''        
-        # Antibugging.
-        assert (surpEstimation in [True, False])
-        assert (withAsymptotics in [True, False])
-
-        # Preparation
-        struct = ''' {0[0]}    {0[1]}          {0[2]} / {0[3]}    {0[4]}\n'''
-        
-        parameterList = ['bteExPost']
-    
-        if(surpEstimation): parameterList += ['bteExAnte', 'cte', 'ste']
-
-        # Output.            
-        file_.write('\n' + ' --------------------------------------- ' + '\n' + \
-                           '  Average Effects of Treatment           ' + '\n' + \
-                           ' --------------------------------------- ' + '\n')
-
-        for parameter in parameterList:
-            
-            if(parameter == 'bteExPost'): 
-                
-                title = ' Average Benefits of Treatment (ex post) '
-
-            if(parameter == 'bteExAnte'): 
-                
-                title = ' Average Benefits of Treatment (ex ante) '
-                
-            if(parameter == 'cte'): 
-                
-                title = ' Average Cost of Treatment '
-            
-            if(parameter == 'ste'): 
-                
-                title = ' Average Surplus of Treatment  '
-                            
-            file_.write('\n' + title + '\n')
-    
-            file_.write('\n' + ' Group     Estimate    Confidence Interval  p-value' + '\n\n')
-            
-            
-            for subgroup in ['average', 'treated', 'untreated']:
-            
-                rslt = self.attr[parameter][subgroup]
-            
-                est    = '{0:5.2f}'.format(rslt['estimate'])
-
-                upper  = '---'
-                lower  = '---'
-
-                pvalue = '---'
-                
-                if(subgroup == 'average'):
-                    
-                    label = 'Average  '
-                    
-                if(subgroup == 'treated'):
-                    
-                    label = 'Treated  '                
-
-                if(subgroup == 'untreated'):
-                    
-                    label = 'Untreated'
-                    
-                if(withAsymptotics):
-                    
-                    upper = '{0:5.2f}'.format(rslt['confi']['upper'])
-                    lower = '{0:5.2f}'.format(rslt['confi']['lower'])
-                    
-                    pvalue = '{0:5.2f}'.format(rslt['pvalue'])
-
-                file_.write(struct.format([label, est, lower, upper, pvalue]))
-                        
     def _writeMarginal(self, file_, withAsymptotics, surpEstimation):
         ''' Write results on marginal effects of treatment.
         '''
@@ -356,8 +257,7 @@ class results(metaCls):
         modelObj    = grmObj.getAttr('modelObj')
         parasObj    = grmObj.getAttr('parasObj')
                 
-        withMarginalEffects = requestObj.getAttr('withMarginalEffects')
-        withAsymptotics     = requestObj.getAttr('withAsymptotics') 
+        withAsymptotics     = requestObj.getAttr('withAsymptotics')
         alpha               = requestObj.getAttr('alpha')
 
         surpEstimation      = parasObj.getAttr('surpEstimation')
@@ -369,10 +269,7 @@ class results(metaCls):
         # Auxiliary objects.
         parasCopy = copy.deepcopy(parasObj)
         
-        # Check applicability.
-        if(withMarginalEffects is False): return None
-        
-        # Initialize parameters. 
+        # Initialize parameters.
         parameterList = ['bmteExPost']
 
         if(surpEstimation): parameterList += ['smteExAnte', 'cmteExAnte']
@@ -430,114 +327,6 @@ class results(metaCls):
                 self.attr[parameter]['confi']['upper'].append(upper)
                 self.attr[parameter]['confi']['lower'].append(lower)
                 
-        # Finishing.
-        return None
-
-    def _addResultsAverageEffects(self, randomParameters):
-        ''' Add results on average effects of treatment.
-        '''
-        # Antibugging.
-        assert (self.getStatus() == True)
-        assert (isinstance(randomParameters, np.ndarray))
-        assert (np.all(np.isfinite(randomParameters)))
-        assert (randomParameters.dtype == 'float')
-        assert (randomParameters.ndim  == 2)
-
-        # Distribute class attributes.
-        grmObj = self.getAttr('grmObj')
-        
-        requestObj  = grmObj.getAttr('requestObj')
-        modelObj    = grmObj.getAttr('modelObj')
-        parasObj    = grmObj.getAttr('parasObj')
-        
-        effectObj = effectCls()
-        
-        effectObj.lock()
-
-        withAverageEffects  = requestObj.getAttr('withAverageEffects')
-        withAsymptotics     = requestObj.getAttr('withAsymptotics')
-        alpha               = requestObj.getAttr('alpha')
-        numDraws            = requestObj.getAttr('numDraws')
-        numSims             = requestObj.getAttr('numSims')
-
-        args = {}
-        
-        args['isConditional'] = False
-
-        args['numSims']       = numSims
-                
-        surpEstimation      = parasObj.getAttr('surpEstimation')
-                
-        # Auxiliary objects.
-        parasCopy = copy.deepcopy(parasObj)
-        
-        # Check applicability.
-        if(withAverageEffects is False): return None
-        
-        # Simulate average effects of treatment. 
-        subgroupList  = ['average', 'treated', 'untreated']
-        parameterList = ['bteExPost']
-    
-        if(surpEstimation): parameterList += ['bteExAnte', 'cte', 'ste']
-            
-        for parameter in parameterList:
-                
-            self.attr[parameter] = {}
-                
-            for subgroup in subgroupList:
-                    
-                self.attr[parameter][subgroup] = {}
-                    
-                self.attr[parameter][subgroup]['estimate'] = None
-                self.attr[parameter][subgroup]['pvalue']   = None
-                    
-                self.attr[parameter][subgroup]['confi']    = {}
-
-        # Point estimates.
-        te = effectObj.getEffects(modelObj, parasObj, 'average', args)
-            
-        for parameter in parameterList:
-                
-            for subgroup in subgroupList:
-                    
-                self.attr[parameter][subgroup]['estimate'] = te[parameter][subgroup]
-
-        # Confidence bounds.
-        if(not withAsymptotics): return None
-        
-        rslt = []
-                
-        for randomPara in randomParameters:
-       
-            parasCopy.update(randomPara, version = 'external', which = 'free')
-                
-            rslt.append(effectObj.getEffects(modelObj, parasCopy, 'average', args))
-            
-        for parameter in parameterList:
-                    
-            for subgroup in subgroupList:
-                    
-                estimate = self.attr[parameter][subgroup]['estimate']
-                    
-                # Collect simulations.
-                teList = []
-                    
-                for i in range(numDraws):
-                        
-                    teList.append(rslt[i][parameter][subgroup])
-                    
-                # Process confidence interval.s
-                lower, upper = scipy.stats.mstats.mquantiles(teList, \
-                                prob = [(alpha*0.5), (1.0 - alpha*0.5)], axis = 0)
-                    
-                self.attr[parameter][subgroup]['confi']['upper'] = upper
-                self.attr[parameter][subgroup]['confi']['lower'] = lower            
-                    
-                # Construct pvalue.
-                pvalue = sum(np.sign(teList) != np.sign(estimate))/float(numDraws)
-                                
-                self.attr[parameter][subgroup]['pvalue'] = pvalue
-        
         # Finishing.
         return None
 
