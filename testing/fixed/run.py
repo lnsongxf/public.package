@@ -98,9 +98,9 @@ class TestEstimationRuns(object):
         assert_almost_equal(rslt_dict['bmteExPost']['estimate'][50],
         -0.10666320040952278)
         assert_almost_equal(rslt_dict['bmteExPost']['confi']['upper'][50],
-        -0.079594731462436979)
+        -0.079594731462436979gi)
         assert_almost_equal(rslt_dict['bmteExPost']['confi']['lower'][50],
-        -0.1358041329192142)
+        -0.1345556517240841)
    
         assert_almost_equal(rslt_dict['smteExAnte']['estimate'][50],
         -0.13443516496559108)
