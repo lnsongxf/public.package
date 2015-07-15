@@ -1,6 +1,6 @@
-''' Interface for all routines related to the processing of the 
+""" Interface for all routines related to the processing of the
     initialization file.
-'''
+"""
 
 # standard library
 import numpy as np
@@ -8,600 +8,565 @@ import shlex
 import os
 
 # project library
-import create_model as auxModel
-import create_paras as auxParas
-from grmpy.tools.user.check_input import checkInput
+from create_model import *
+from create_paras import *
+from check_input import *
 
 ''' Main function.
 '''
-def initialize(initFile, use_simulation = False, is_simulation = False):
-    ''' Read initialization file and construct the objects required for the 
+def initialize(init_file, use_simulation = False, is_simulation = False):
+    """ Read initialization file and construct the objects required for the
         estimation runs.
-    '''
-    # Antibugging.
-    assert (os.path.exists(initFile))
+    """
+    # Antibugging
+    assert (os.path.exists(init_file))
     
-    # Process initialization file.
-    initDict = processInput(initFile)
+    # Process initialization file
+    init_dict = process_input(init_file)
     
-    # Use SIMULATION info.
-    if(use_simulation):
-        
-        initDict['DATA']['source'] = initDict['SIMULATION']['target']
-        
-        initDict['DATA']['agents'] = initDict['SIMULATION']['agents']
+    # Use SIMULATION info
+    if use_simulation:
+        init_dict['DATA']['source'] = init_dict['SIMULATION']['target']
+        init_dict['DATA']['agents'] = init_dict['SIMULATION']['agents']
     
-    # Construct objects.
-    modelObj   = auxModel.constructModel(initDict)
-    
-    parasObj   = auxParas.constructParas(initDict, modelObj, is_simulation)
+    # Construct objects
+    model_obj = construct_model(init_dict)
+    paras_obj = constructParas(init_dict, model_obj, is_simulation)
 
-    # Quality checks.
-    for obj in [modelObj, parasObj]:
-
-        assert (obj.get_status() == True)
+    # Quality checks
+    for obj in [model_obj, paras_obj]:
+        assert (obj.get_status() is True)
     
     # Finishing
-    return modelObj, parasObj, initDict
+    return model_obj, paras_obj, init_dict
 
-def processInput(initFile):
-    ''' Create dictionary from information in initialization file.
-    '''
+def process_input(init_file):
+    """ Create dictionary from information in initialization file.
+    """
     # Antibugging.
-    assert (os.path.exists(initFile))
+    assert (os.path.exists(init_file))
 
-    initDict = _constructDictionary()
+    init_dict = _construct_dictionary()
 
-    with open(initFile, 'r') as initFile:
+    with open(init_file, 'r') as init_file:
 
-        for line in initFile:
+        for line in init_file:
 
-            currentLine = shlex.split(line)
+            current_line = shlex.split(line)
 
             ''' Preprocessing.
             '''
-            isEmpty, isKeyword = _processCases(currentLine)
+            is_empty, is_keyword = _process_cases(current_line)
 
-            if(isEmpty):
-
+            if is_empty:
                 continue
 
-            elif(isKeyword):
-
-                keyword = currentLine[0]
-
+            elif is_keyword:
+                keyword = current_line[0]
                 continue
 
             ''' Process major blocks.
             '''
-            if(keyword ==  'DATA'):
+            if keyword ==  'DATA':
 
-                initDict = _processDATA(initDict, currentLine)
+                init_dict = _process_data(init_dict, current_line)
 
-            if(keyword == 'BENE'):
+            if keyword == 'BENE':
 
-                initDict = _processBENE(initDict, currentLine)
+                init_dict = _process_bene(init_dict, current_line)
 
-            if(keyword == 'COST'):
+            if keyword == 'COST':
 
-                initDict = _processCOST(initDict, currentLine)
+                init_dict = _process_cost(init_dict, current_line)
 
-            if(keyword ==  'RHO'):
+            if keyword ==  'RHO':
 
-                initDict = _processRHO(initDict, currentLine)
+                init_dict = _process_rho(init_dict, current_line)
 
-            if(keyword == 'ESTIMATION'):
+            if keyword == 'ESTIMATION':
 
-                initDict = _processESTIMATION(initDict, currentLine)
+                init_dict = _process_estimation(init_dict, current_line)
 
-            if(keyword == 'SIMULATION'):
+            if keyword == 'SIMULATION':
 
-                initDict = _processSIMULATION(initDict, currentLine)
+                init_dict = _process_simulation(init_dict, current_line)
 
     # Add derived information.
-    initDict = _addDERIV(initDict)
+    init_dict = _add_deriv(init_dict)
 
     # Check quality.
-    assert (checkInput(initDict) == True)
+    assert (check_input(init_dict) == True)
 
     # Type transformation.
-    initDict = _typeTransformations(initDict)
+    init_dict = _type_transformations(init_dict)
 
     # Finishing.
-    return initDict
+    return init_dict
 
 ''' Private auxiliary functions.
 '''
-def _addDERIV(initDict):
-    ''' Add useful derived information for easy access.
-    '''
-    # Antibugging.
-    assert (isinstance(initDict, dict))
+def _add_deriv(init_dict):
+    """ Add useful derived information for easy access.
+    """
+    # Antibugging
+    assert (isinstance(init_dict, dict))
 
-    # Additional information.
-    initDict['DERIV'] = {}
+    # Additional information
+    init_dict['DERIV'] = {}
 
     ''' All and maximum position of covariates.
     '''
-    # Initialization.
-    initDict['DERIV']['pos'] = {}
+    # Initialization
+    init_dict['DERIV']['pos'] = {}
 
-    initDict['DERIV']['pos']['max'] = None
+    init_dict['DERIV']['pos']['max'] = None
 
-    initDict['DERIV']['pos']['all'] = None
+    init_dict['DERIV']['pos']['all'] = None
 
-    # Distribute source information.
-    Ypos = initDict['DATA']['outcome']
+    # Distribute source information
+    y_pos = init_dict['DATA']['outcome']
 
-    Dpos = initDict['DATA']['treatment']
+    d_pos = init_dict['DATA']['treatment']
 
+    b_pos = init_dict['BENE']['TREATED']['coeffs']['pos']
 
-    Bpos = initDict['BENE']['TREATED']['coeffs']['pos']
-
-    Gpos = initDict['COST']['coeffs']['pos']
+    g_pos = init_dict['COST']['coeffs']['pos']
 
     # Construct derived information
-    all_ = list(set([Ypos] + [Dpos] + Bpos + Gpos))
+    all_ = list(set([y_pos] + [d_pos] + b_pos + g_pos))
 
     max_ = int(max(all_))
 
-    # Collect.
-    initDict['DERIV']['pos']['max'] = max_
+    # Collect
+    init_dict['DERIV']['pos']['max'] = max_
 
-    initDict['DERIV']['pos']['all'] = all_
+    init_dict['DERIV']['pos']['all'] = all_
 
     ''' Position and number of exclusions and common elements.
     '''
-    # Initialization.
-    initDict['DERIV']['common'] = {}
+    # Initialization
+    init_dict['DERIV']['common'] = {}
 
-    initDict['DERIV']['common']['pos'] = []
+    init_dict['DERIV']['common']['pos'] = []
 
-    initDict['DERIV']['common']['num'] = None
+    init_dict['DERIV']['common']['num'] = None
 
+    init_dict['DERIV']['excl_bene'] = {}
 
-    initDict['DERIV']['exclBene'] = {}
+    init_dict['DERIV']['excl_bene']['ex_ante'] = {}
 
-    initDict['DERIV']['exclBene']['exAnte'] = {}
+    init_dict['DERIV']['excl_bene']['ex_post'] = {}
 
-    initDict['DERIV']['exclBene']['exPost'] = {}
+    init_dict['DERIV']['excl_bene']['ex_post']['pos'] = []
 
+    init_dict['DERIV']['excl_bene']['ex_post']['num'] = None
 
-    initDict['DERIV']['exclBene']['exPost']['pos'] = []
+    init_dict['DERIV']['excl_bene']['ex_ante']['pos'] = []
 
-    initDict['DERIV']['exclBene']['exPost']['num'] = None
+    init_dict['DERIV']['excl_bene']['ex_ante']['num'] = None
 
+    init_dict['DERIV']['excl_cost'] = {}
 
-    initDict['DERIV']['exclBene']['exAnte']['pos'] = []
+    init_dict['DERIV']['excl_cost']['pos'] = {}
 
-    initDict['DERIV']['exclBene']['exAnte']['num'] = None
+    init_dict['DERIV']['excl_cost']['num'] = None
 
+    # Distribute source information
+    bene = dict()
 
-    initDict['DERIV']['exclCost'] = {}
+    bene['pos'] = np.array(init_dict['BENE']['TREATED']['coeffs']['pos'])
 
-    initDict['DERIV']['exclCost']['pos'] = {}
+    bene['info'] = np.array(init_dict['BENE']['TREATED']['coeffs']['info'])
 
-    initDict['DERIV']['exclCost']['num'] = None
+    cost = dict()
 
-    # Distribute source information.
-    bene = {}
+    cost['pos'] = np.array(init_dict['COST']['coeffs']['pos'])
 
-    bene['pos']  = np.array(initDict['BENE']['TREATED']['coeffs']['pos'])
-
-    bene['info'] = np.array(initDict['BENE']['TREATED']['coeffs']['info'])
-
-
-    cost = {}
-
-    cost['pos']  = np.array(initDict['COST']['coeffs']['pos'])
-
-    # Construct auxiliary objects.
-    noCovariates = (len(bene['info']) == 0)
+    # Construct auxiliary objects
+    no_covariates = (len(bene['info']) == 0)
 
     # Construct derived information
-    initDict['DERIV']['common']['pos'] = \
+    init_dict['DERIV']['common']['pos'] = \
         list(set(bene['pos']).intersection(cost['pos']))
 
-    if(noCovariates):
-
-        initDict['DERIV']['exclBene']['exAnte']['pos'] = []
+    if no_covariates:
+        init_dict['DERIV']['excl_bene']['ex_ante']['pos'] = []
 
     else:
 
-        initDict['DERIV']['exclBene']['exAnte']['pos'] = \
+        init_dict['DERIV']['excl_bene']['ex_ante']['pos'] = \
             list(set(bene['pos'][bene['info']]).difference(cost['pos']))
 
-    initDict['DERIV']['exclBene']['exPost']['pos'] = \
+    init_dict['DERIV']['excl_bene']['ex_post']['pos'] = \
         list(set(bene['pos']).difference(cost['pos']))
 
-    initDict['DERIV']['exclCost']['pos'] = \
+    init_dict['DERIV']['excl_cost']['pos'] = \
         list(set(cost['pos']).difference(bene['pos']))
 
+    init_dict['DERIV']['common']['num'] = \
+        len(init_dict['DERIV']['common']['pos'])
 
-    initDict['DERIV']['common']['num'] = \
-        len(initDict['DERIV']['common']['pos'])
+    init_dict['DERIV']['excl_bene']['ex_ante']['num'] = \
+        len(init_dict['DERIV']['excl_bene']['ex_ante']['pos'])
 
-    initDict['DERIV']['exclBene']['exAnte']['num'] = \
-        len(initDict['DERIV']['exclBene']['exAnte']['pos'])
+    init_dict['DERIV']['excl_bene']['ex_post']['num'] = \
+        len(init_dict['DERIV']['excl_bene']['ex_post']['pos'])
 
-    initDict['DERIV']['exclBene']['exPost']['num'] = \
-        len(initDict['DERIV']['exclBene']['exPost']['pos'])
-
-    initDict['DERIV']['exclCost']['num'] = \
-        len(initDict['DERIV']['exclCost']['pos'])
+    init_dict['DERIV']['excl_cost']['num'] = \
+        len(init_dict['DERIV']['excl_cost']['pos'])
 
     # Finishing.
-    return initDict
+    return init_dict
 
-def _typeTransformations(initDict):
-    ''' Type transformations
-    '''
-    # Antibugging.
-    assert (isinstance(initDict, dict))
+def _type_transformations(init_dict):
+    """ Type transformations
+    """
+    # Antibugging
+    assert (isinstance(init_dict, dict))
 
     # Type conversions.
     for subgroup in ['TREATED', 'UNTREATED']:
+        init_dict['BENE'][subgroup]['coeffs']['info'] = \
+            np.array(init_dict['BENE'][subgroup]['coeffs']['info'])
 
-        initDict['BENE'][subgroup]['coeffs']['info'] = \
-            np.array(initDict['BENE'][subgroup]['coeffs']['info'])
+    # Finishing
+    return init_dict
 
-    # Finishing.
-    return initDict
+def _construct_dictionary():
+    """ Construct dictionary from initialization file.
+    """
 
-def _constructDictionary():
-    ''' Construct dictionary from initialization file.
-    '''
+    # Initialize dictionary keys
+    init_dict = dict()
 
-    # Initialize dictionary keys.
-    initDict = {}
+    init_dict['BENE'] = {}
+    init_dict['COST'] = {}
 
-    initDict['BENE'] = {}
-    initDict['COST'] = {}
+    init_dict['COST']['coeffs'] = {}
+    init_dict['COST']['int'] = {}
+    init_dict['COST']['sd'] = {}
 
-    initDict['COST']['coeffs'] = {}
-    initDict['COST']['int']    = {}
-    initDict['COST']['sd']     = {}
-
-    initDict['COST']['coeffs']['values'] = []
-    initDict['COST']['coeffs']['pos']    = []
-    initDict['COST']['coeffs']['free']  = []
+    init_dict['COST']['coeffs']['values'] = []
+    init_dict['COST']['coeffs']['pos'] = []
+    init_dict['COST']['coeffs']['free'] = []
 
 
-    initDict['COST']['sd']['values'] = []
-    initDict['COST']['sd']['free'] = []
+    init_dict['COST']['sd']['values'] = []
+    init_dict['COST']['sd']['free'] = []
 
-    initDict['COST']['int']['values'] = []
-    initDict['COST']['int']['free'] = []
+    init_dict['COST']['int']['values'] = []
+    init_dict['COST']['int']['free'] = []
 
-    initDict['BENE']['TREATED']   = {}
-    initDict['BENE']['UNTREATED'] = {}
+    init_dict['BENE']['TREATED'] = {}
+    init_dict['BENE']['UNTREATED'] = {}
 
-    initDict['BENE']['TREATED']   = {}
+    init_dict['BENE']['TREATED'] = {}
 
-    initDict['BENE']['TREATED']['coeffs'] = {}
-    initDict['BENE']['TREATED']['sd']     = {}
+    init_dict['BENE']['TREATED']['coeffs'] = {}
+    init_dict['BENE']['TREATED']['sd'] = {}
 
-    initDict['BENE']['TREATED']['coeffs']['values'] = []
-    initDict['BENE']['TREATED']['coeffs']['pos']    = []
-    initDict['BENE']['TREATED']['coeffs']['info']   = []
-    initDict['BENE']['TREATED']['coeffs']['free']  = []
+    init_dict['BENE']['TREATED']['coeffs']['values'] = []
+    init_dict['BENE']['TREATED']['coeffs']['pos'] = []
+    init_dict['BENE']['TREATED']['coeffs']['info'] = []
+    init_dict['BENE']['TREATED']['coeffs']['free'] = []
 
-    initDict['BENE']['TREATED']['int']     = {}
-    initDict['BENE']['TREATED']['int']['values'] = []
-    initDict['BENE']['TREATED']['int']['free']  = []
+    init_dict['BENE']['TREATED']['int'] = {}
+    init_dict['BENE']['TREATED']['int']['values'] = []
+    init_dict['BENE']['TREATED']['int']['free'] = []
 
-    initDict['BENE']['TREATED']['sd']     = {}
-    initDict['BENE']['TREATED']['sd']['values'] = []
-    initDict['BENE']['TREATED']['sd']['free']  = []
+    init_dict['BENE']['TREATED']['sd'] = {}
+    init_dict['BENE']['TREATED']['sd']['values'] = []
+    init_dict['BENE']['TREATED']['sd']['free'] = []
 
-    initDict['BENE']['UNTREATED']['coeffs'] = {}
-    initDict['BENE']['UNTREATED']['sd']     = {}
+    init_dict['BENE']['UNTREATED']['coeffs'] = {}
+    init_dict['BENE']['UNTREATED']['sd'] = {}
 
-    initDict['BENE']['UNTREATED']['coeffs']['values'] = []
-    initDict['BENE']['UNTREATED']['coeffs']['pos']    = []
-    initDict['BENE']['UNTREATED']['coeffs']['info']    = []
-    initDict['BENE']['UNTREATED']['coeffs']['free']  = []
+    init_dict['BENE']['UNTREATED']['coeffs']['values'] = []
+    init_dict['BENE']['UNTREATED']['coeffs']['pos'] = []
+    init_dict['BENE']['UNTREATED']['coeffs']['info'] = []
+    init_dict['BENE']['UNTREATED']['coeffs']['free'] = []
 
-    initDict['BENE']['UNTREATED']['int']     = {}
-    initDict['BENE']['UNTREATED']['int']['values'] = []
-    initDict['BENE']['UNTREATED']['int']['free']  = []
+    init_dict['BENE']['UNTREATED']['int'] = {}
+    init_dict['BENE']['UNTREATED']['int']['values'] = []
+    init_dict['BENE']['UNTREATED']['int']['free'] = []
 
-    initDict['BENE']['UNTREATED']['sd']     = {}
-    initDict['BENE']['UNTREATED']['sd']['values'] = []
-    initDict['BENE']['UNTREATED']['sd']['free']   = []
+    init_dict['BENE']['UNTREATED']['sd'] = {}
+    init_dict['BENE']['UNTREATED']['sd']['values'] = []
+    init_dict['BENE']['UNTREATED']['sd']['free'] = []
 
-    initDict['DATA']         = {}
+    init_dict['DATA'] = {}
 
-    initDict['RHO']        = {}
-    initDict['RHO']['treated']         = {}
-    initDict['RHO']['untreated']       = {}
+    init_dict['RHO'] = {}
+    init_dict['RHO']['treated'] = {}
+    init_dict['RHO']['untreated'] = {}
 
-    initDict['ESTIMATION'] = {}
+    init_dict['ESTIMATION'] = {}
 
-    initDict['SIMULATION']   = {}
+    init_dict['SIMULATION'] = {}
 
-    return initDict
+    return init_dict
 
-def _processCases(currentLine):
-    ''' Process special cases of empty list and keywords.
-    '''
-    def _checkEmpty(currentLine):
-        ''' Check whether the list is empty.
-        '''
+def _process_cases(current_line):
+    """ Process special cases of empty list and keywords.
+    """
+    def _check_empty(current_line):
+        """ Check whether the list is empty.
+        """
+        # Antibugging
+        assert (isinstance(current_line, list))
+
+        # Evaluate list
+        is_empty = (len(current_line) == 0)
+
+        # Check integrity
+        assert (isinstance(is_empty, bool))
+
+        # Finishing 
+        return is_empty
+
+    def _check_keyword(current_line):
+        """ Check for keyword.
+        """
         # Antibugging.
-        assert (isinstance(currentLine, list))
+        assert (isinstance(current_line, list))
 
         # Evaluate list.
-        isEmpty = (len(currentLine) == 0)
+        is_keyword = False
 
-        # Check integrity.
-        assert (isinstance(isEmpty, bool))
+        if len(current_line) > 0:
 
-        # Finishing.
-        return isEmpty
+            is_keyword = (current_line[0].isupper())
 
-    def _checkKeyword(currentLine):
-        ''' Check for keyword.
-        '''
-        # Antibugging.
-        assert (isinstance(currentLine, list))
+        # Check integrity
+        assert (isinstance(is_keyword, bool))
 
-        # Evaluate list.
-        isKeyword = False
-
-        if(len(currentLine) > 0):
-
-            isKeyword = (currentLine[0].isupper())
-
-        # Check integrity.
-        assert (isinstance(isKeyword, bool))
-
-        # Finishing.
-        return isKeyword
+        # Finishing
+        return is_keyword
 
     ''' Main Function.
     '''
-    # Antibugging.
-    assert (isinstance(currentLine, list))
+    # Antibugging
+    assert (isinstance(current_line, list))
 
     # Determine indicators.
-    isEmpty   = _checkEmpty(currentLine)
+    is_empty = _check_empty(current_line)
 
-    isKeyword = _checkKeyword(currentLine)
+    is_keyword = _check_keyword(current_line)
 
-    # Finishing.
-    return isEmpty, isKeyword
+    # Finishing
+    return is_empty, is_keyword
 
 ''' Processing of major blocks.
 '''
-def _processBENE(initDict, currentLine):
-    ''' Process BENE block.
-    '''
-    # Antibugging.
-    assert (isinstance(initDict, dict))
-    assert (isinstance(currentLine, list))
+def _process_bene(init_dict, current_line):
+    """ Process BENE block.
+    """
+    # Antibugging
+    assert (isinstance(init_dict, dict))
+    assert (isinstance(current_line, list))
 
-    # Process information.
-    type_ = currentLine[0]
+    # Process information
+    type_ = current_line[0]
 
     assert (type_ in ['coeff', 'int', 'sd'])
 
-    if(type_ == 'coeff'):
+    if type_ == 'coeff':
 
-        pos = currentLine[1]
+        pos = current_line[1]
 
-        assert (len(currentLine) == 5)
+        assert (len(current_line) == 5)
 
-        assert (currentLine[4].upper() in ['TRUE', 'FALSE'])
+        assert (current_line[4].upper() in ['TRUE', 'FALSE'])
 
-        info  = (currentLine[4].upper() == 'TRUE')
+        info = (current_line[4].upper() == 'TRUE')
 
-        isFree = (currentLine[2][0] != '!')
-        value  = currentLine[2].replace('!','')
+        is_free = (current_line[2][0] != '!')
+        value = current_line[2].replace('!','')
 
-        initDict['BENE']['TREATED']['coeffs']['values'] += [float(value)]
-        initDict['BENE']['TREATED']['coeffs']['free']   += [isFree]
+        init_dict['BENE']['TREATED']['coeffs']['values'] += [float(value)]
+        init_dict['BENE']['TREATED']['coeffs']['free'] += [is_free]
 
-        isFree = (currentLine[3][0] != '!')
-        value  = currentLine[3].replace('!','')
+        is_free = (current_line[3][0] != '!')
+        value = current_line[3].replace('!','')
 
-        initDict['BENE']['UNTREATED']['coeffs']['values'] += [float(value)]
-        initDict['BENE']['UNTREATED']['coeffs']['free']   += [isFree]
+        init_dict['BENE']['UNTREATED']['coeffs']['values'] += [float(value)]
+        init_dict['BENE']['UNTREATED']['coeffs']['free'] += [is_free]
 
         for subgroup in ['TREATED', 'UNTREATED']:
+            init_dict['BENE'][subgroup]['coeffs']['info'] += [info]
+            init_dict['BENE'][subgroup]['coeffs']['pos'] += [int(pos)]
 
-            initDict['BENE'][subgroup]['coeffs']['info']  += [info]
-            initDict['BENE'][subgroup]['coeffs']['pos']   += [int(pos)]
+    if type_ in ['sd', 'int']:
 
-    if(type_ in ['sd', 'int']):
+        assert (len(current_line) == 3)
 
-        assert (len(currentLine) == 3)
+        is_free = (current_line[1][0] != '!')
+        value = current_line[1].replace('!','')
 
-        isFree = (currentLine[1][0] != '!')
-        value  = currentLine[1].replace('!','')
+        init_dict['BENE']['TREATED'][type_]['values'] += [float(value)]
+        init_dict['BENE']['TREATED'][type_]['free'] += [is_free]
 
-        initDict['BENE']['TREATED'][type_]['values'] += [float(value)]
-        initDict['BENE']['TREATED'][type_]['free']   += [isFree]
+        is_free = (current_line[2][0] != '!')
+        value = current_line[2].replace('!','')
 
-        isFree = (currentLine[2][0] != '!')
-        value  = currentLine[2].replace('!','')
-
-        initDict['BENE']['UNTREATED'][type_]['values'] += [float(value)]
-        initDict['BENE']['UNTREATED'][type_]['free']   += [isFree]
+        init_dict['BENE']['UNTREATED'][type_]['values'] += [float(value)]
+        init_dict['BENE']['UNTREATED'][type_]['free'] += [is_free]
 
     # Finishing.
-    return initDict
+    return init_dict
 
-def _processCOST(initDict, currentLine):
-    ''' Process COST block.
-    '''
-    # Antibugging.
-    assert (isinstance(initDict, dict))
-    assert (isinstance(currentLine, list))
+def _process_cost(init_dict, current_line):
+    """ Process COST block.
+    """
+    # Antibugging
+    assert (isinstance(init_dict, dict))
+    assert (isinstance(current_line, list))
 
-    # Process information.
-    type_ = currentLine[0]
+    # Process information
+    type_ = current_line[0]
 
     assert (type_ in ['coeff', 'int', 'sd'])
 
-    if(type_ == 'coeff'):
+    if type_ == 'coeff':
 
-        assert (len(currentLine) == 3)
+        assert (len(current_line) == 3)
 
-        pos    = currentLine[1]
-        isFree = (currentLine[2][0] != '!')
-        value  = currentLine[2].replace('!','')
+        pos = current_line[1]
+        is_free = (current_line[2][0] != '!')
+        value = current_line[2].replace('!','')
 
-        initDict['COST']['coeffs']['values'] += [float(value)]
-        initDict['COST']['coeffs']['pos']    += [int(pos)]
-        initDict['COST']['coeffs']['free']   += [isFree]
+        init_dict['COST']['coeffs']['values'] += [float(value)]
+        init_dict['COST']['coeffs']['pos'] += [int(pos)]
+        init_dict['COST']['coeffs']['free'] += [is_free]
 
-    if(type_ in ['sd', 'int']):
+    if type_ in ['sd', 'int']:
 
-        assert (len(currentLine) == 2)
+        assert (len(current_line) == 2)
 
-        isFree = (currentLine[1][0] != '!')
-        value  = currentLine[1].replace('!','')
+        is_free = (current_line[1][0] != '!')
+        value = current_line[1].replace('!','')
 
-        initDict['COST'][type_]['values'] += [float(value)]
-        initDict['COST'][type_]['free']   += [isFree]
-
-    # Finishing.
-    return initDict
-
-def _processRHO(initDict, currentLine):
-    ''' Process RHO block.
-    '''
-    # Antibugging.
-    assert (isinstance(initDict, dict))
-    assert (isinstance(currentLine, list))
-    assert (len(currentLine) == 2)
-
-    # Process information.
-    assert (currentLine[0] in ['untreated', 'treated'])
-
-    name = currentLine[0]
-
-    isFree = (currentLine[1][0] != '!')
-    value  = currentLine[1].replace('!','')
-
-    if(name not in initDict['RHO'].keys()):
-
-        initDict['RHO'][name] = {}
-
-    initDict['RHO'][name]['value'] = float(value)
-    initDict['RHO'][name]['free']  = isFree
+        init_dict['COST'][type_]['values'] += [float(value)]
+        init_dict['COST'][type_]['free'] += [is_free]
 
     # Finishing.
-    return initDict
+    return init_dict
 
-def _processESTIMATION(initDict, currentLine):
-    ''' Process ESTIMATION block.
-    '''
+def _process_rho(init_dict, current_line):
+    """ Process RHO block.
+    """
     # Antibugging.
-    assert (isinstance(initDict, dict))
-    assert (isinstance(currentLine, list))
-    assert (len(currentLine) == 2)
+    assert (isinstance(init_dict, dict))
+    assert (isinstance(current_line, list))
+    assert (len(current_line) == 2)
 
     # Process information.
-    keyword = currentLine[0]
-    flag    = currentLine[1]
+    assert (current_line[0] in ['untreated', 'treated'])
+
+    name = current_line[0]
+
+    is_free = (current_line[1][0] != '!')
+    value = current_line[1].replace('!','')
+
+    if name not in init_dict['RHO'].keys():
+
+        init_dict['RHO'][name] = {}
+
+    init_dict['RHO'][name]['value'] = float(value)
+    init_dict['RHO'][name]['free'] = is_free
+
+    # Finishing.
+    return init_dict
+
+def _process_estimation(init_dict, current_line):
+    """ Process ESTIMATION block.
+    """
+    # Antibugging.
+    assert (isinstance(init_dict, dict))
+    assert (isinstance(current_line, list))
+    assert (len(current_line) == 2)
+
+    # Process information.
+    keyword = current_line[0]
+    flag = current_line[1]
 
     # Special treatments.
-    if(keyword in ['gtol', 'epsilon']):
-
+    if keyword in ['gtol', 'epsilon']:
         flag = float(flag)
 
-    if(keyword == 'maxiter'):
-
-        if(flag.upper() == 'NONE'):
-
+    if keyword == 'maxiter':
+        if flag.upper() == 'NONE':
             flag = None
-
         else:
-
             flag = int(flag)
 
-    if(keyword in ['asymptotics']):
-
+    if keyword in ['asymptotics']:
         assert (flag.upper() in ['TRUE', 'FALSE'])
-
-        if(flag.upper() == 'TRUE'):
-
+        if flag.upper() == 'TRUE':
             flag = True
-
         else:
-
             flag = False
 
     # Special treatments.
-    if(keyword == 'alpha'):
-
+    if keyword == 'alpha':
         flag = float(flag)
 
-    if(keyword in ['draws']):
-
+    if keyword in ['draws']:
         flag = int(flag)
 
     # Construct dictionary.
-    initDict['ESTIMATION'][keyword] = flag
+    init_dict['ESTIMATION'][keyword] = flag
 
     # Finishing.
-    return initDict
+    return init_dict
 
-def _processSIMULATION(initDict, currentLine):
-    ''' Process SIMULATION block.
-    '''
-    # Antibugging.
-    assert (isinstance(initDict, dict))
-    assert (isinstance(currentLine, list))
-    assert (len(currentLine) == 2)
+def _process_simulation(init_dict, current_line):
+    """ Process SIMULATION block.
+    """
+    # Antibugging
+    assert (isinstance(init_dict, dict))
+    assert (isinstance(current_line, list))
+    assert (len(current_line) == 2)
 
-    # Process information.
-    keyword = currentLine[0]
-    flag    = currentLine[1]
+    # Process information
+    keyword = current_line[0]
+    flag = current_line[1]
 
-    # Special treatments.
-    if(keyword in ['agents', 'seed']):
-
+    # Special treatments
+    if keyword in ['agents', 'seed']:
         flag = int(flag)
 
     # Construct dictionary.
-    initDict['SIMULATION'][keyword] = flag
+    init_dict['SIMULATION'][keyword] = flag
 
     # Finishing.
-    return initDict
+    return init_dict
 
-def _processDATA(initDict, currentLine):
-    ''' Process DATA block.
-    '''
-    # Antibugging.
-    assert (isinstance(initDict, dict))
-    assert (isinstance(currentLine, list))
-    assert (len(currentLine) == 2)
+def _process_data(init_dict, current_line):
+    """ Process DATA block.
+    """
+    # Antibugging
+    assert (isinstance(init_dict, dict))
+    assert (isinstance(current_line, list))
+    assert (len(current_line) == 2)
 
-    # Process information.
-    keyword = currentLine[0]
-    flag    = currentLine[1]
+    # Process information
+    keyword = current_line[0]
+    flag = current_line[1]
 
-    # Special treatments.
-    if(keyword in ['outcome', 'treatment']):
-
+    # Special treatments
+    if keyword in ['outcome', 'treatment']:
         flag = int(flag)
 
-    if(keyword == 'agents'):
-
-        if(flag.upper() == 'NONE'):
-
+    if keyword == 'agents':
+        if flag.upper() == 'NONE':
             flag = None
-
         else:
-
             flag = int(flag)
 
-    # Construct dictionary.
-    initDict['DATA'][keyword] = flag
+    # Construct dictionary
+    init_dict['DATA'][keyword] = flag
 
     # Finishing.
-    return initDict
+    return init_dict
 

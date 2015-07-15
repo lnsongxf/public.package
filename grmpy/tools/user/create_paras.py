@@ -90,9 +90,9 @@ def _initializeParameters(initDict, modelObj):
         # Distribute information.
         common         = initDict['DERIV']['common']['pos']
         
-        exclBeneExPost = initDict['DERIV']['exclBene']['exPost']['pos']
+        exclBeneExPost = initDict['DERIV']['excl_bene']['ex_post']['pos']
     
-        exclCost       = initDict['DERIV']['exclCost']['pos']
+        exclCost       = initDict['DERIV']['excl_cost']['pos']
         
         # Initialize container.
         dict_ = {}

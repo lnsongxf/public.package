@@ -111,7 +111,7 @@ def _create_mock(init):
     """ Create a mock dataset which allows for use of existing routines
         in the case of a missing source dataset.
     """
-    init_dict = processInput(init)
+    init_dict = process_input(init)
 
     is_mock = (os.path.exists(init_dict['DATA']['source']) == False)
 

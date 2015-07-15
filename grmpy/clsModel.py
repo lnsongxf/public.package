@@ -33,11 +33,11 @@ class modelCls(MetaCls):
         self.attr['Z']       = None
 
 
-        self.attr['numCovarsExclBeneExPost'] = None
+        self.attr['num_covars_excl_bene_ex_post'] = None
 
-        self.attr['numCovarsExclBeneExAnte'] = None
+        self.attr['num_covars_excl_bene_ex_ante'] = None
 
-        self.attr['numCovarsExclCost']       = None
+        self.attr['num_covars_excl_cost']       = None
         
         # Endogenous objects.
         self.attr['P']       = None
@@ -67,7 +67,7 @@ class modelCls(MetaCls):
         self.attr['gtol']            = None
         self.attr['maxiter']         = None
 
-        self.attr['withAsymptotics'] = None
+        self.attr['with_asymptotics'] = None
         self.attr['numDraws']        = None
 
         self.attr['version']         = None
@@ -104,7 +104,7 @@ class modelCls(MetaCls):
             
         # Surplus estimation.
         self.attr['surpEstimation'] = \
-            (self.attr['numCovarsExclBeneExAnte'] > 0)
+            (self.attr['num_covars_excl_bene_ex_ante'] > 0)
         
     def _getCommonSupport(self):
         ''' Calculate common support.

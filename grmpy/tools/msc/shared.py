@@ -67,11 +67,11 @@ def create_matrices(dataset, init_dict):
 
     common = init_dict['DERIV']['common']['pos']
 
-    excl_bene_ex_ante = init_dict['DERIV']['exclBene']['exAnte']['pos']
+    excl_bene_ex_ante = init_dict['DERIV']['excl_bene']['ex_ante']['pos']
 
-    excl_bene_ex_post = init_dict['DERIV']['exclBene']['exPost']['pos']
+    excl_bene_ex_post = init_dict['DERIV']['excl_bene']['ex_post']['pos']
 
-    excl_cost = init_dict['DERIV']['exclCost']['pos']
+    excl_cost = init_dict['DERIV']['excl_cost']['pos']
 
     # Construct auxiliary information 
     num_agents = dataset.shape[0]

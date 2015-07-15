@@ -26,8 +26,8 @@ class parasCls(MetaCls):
         self.attr['numFree']    = 0
         self.attr['factor']     = None
 
-        self.attr['numCovarsExclBeneExAnte'] = modelObj.get_attr('numCovarsExclBeneExAnte')
-        self.attr['numCovarsExclCost']       = modelObj.get_attr('numCovarsExclCost')
+        self.attr['num_covars_excl_bene_ex_ante'] = modelObj.get_attr('num_covars_excl_bene_ex_ante')
+        self.attr['num_covars_excl_cost']       = modelObj.get_attr('num_covars_excl_cost')
 
         self.attr['withoutPrediction']       = modelObj.get_attr('withoutPrediction')
         self.attr['surpEstimation']          = modelObj.get_attr('surpEstimation')
@@ -195,8 +195,9 @@ class parasCls(MetaCls):
         
         if(type_ == 'choice'):
             
-            numCovarsExclCost       = self.get_attr('numCovarsExclCost')
-            numCovarExclBeneExAnte  = self.get_attr('numCovarsExclBeneExAnte')
+            numCovarsExclCost       = self.get_attr('num_covars_excl_cost')
+            numCovarExclBeneExAnte  = self.get_attr(
+                'num_covars_excl_bene_ex_ante')
             
             coeffsBeneExAnte = self.getParameters('bene', 'exAnte')   
             coeffsCost       = self.getParameters('cost', None)   

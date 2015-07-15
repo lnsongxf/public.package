@@ -1,83 +1,80 @@
-''' Module that checks the user input after processing of the initialization 
+""" Module that checks the user input after processing of the initialization
     file.
-'''
+"""
 
 # standard library
 import numpy as np
 
 ''' Main function.
 '''
-def checkInput(initDict):
-    ''' Check the input from the initialization file.
-    '''
+def check_input(init_dict):
+    """ Check the input from the initialization file.
+    """
     # Antibugging.
-    assert (isinstance(initDict, dict))
+    assert (isinstance(init_dict, dict))
     
     # Check keys.
     keys = set(['DATA', 'BENE', 'COST', 'RHO', 'ESTIMATION', 'SIMULATION', 'DERIV'])
     
-    assert (keys == set(initDict.keys()))
+    assert (keys == set(init_dict.keys()))
     
     ''' Check subgroups.
     '''
-    _checkEQN(initDict)
+    _check_eqn(init_dict)
     
-    _checkDATA(initDict)
+    _check_data(init_dict)
 
-    _checkESTIMATION(initDict)
+    _check_estimation(init_dict)
     
-    _checkSIMULATION(initDict)
+    _check_simulation(init_dict)
 
-    _checkRHO(initDict)
+    _check_rho(init_dict)
     
-    _checkMSC(initDict)
+    _check_msc(init_dict)
     
-    _checkDERIV(initDict)
-    
-    # CHECK DATA?
+    _check_deriv(init_dict)
+
+    # Finishing
     return True
 
 ''' Private auxiliary functions.
 ''' 
-def _checkDERIV(initDict):
-    ''' Check derived information.
-    '''
-    assert (isinstance(initDict, dict))    
+def _check_deriv(init_dict):
+    """ Check derived information.
+    """
+    assert (isinstance(init_dict, dict))
 
     ''' Positions.
     '''
-    # Distribute.
-    all_ = initDict['DERIV']['pos']['all']
+    # Distribute
+    all_ = init_dict['DERIV']['pos']['all']
 
-    max_ = initDict['DERIV']['pos']['max']
+    max_ = init_dict['DERIV']['pos']['max']
     
-    # Checks.
+    # Checks
     assert (isinstance(max_, int))
     assert (max_ > 0)
-    
     assert (isinstance(all_, list))
     assert (np.all(np.isfinite(all_)))
     assert (all(isinstance(pos, int) for pos in all_))
     
     ''' Exclusions.
     '''
-    # Benefit shifters.
-    for info in ['exPost', 'exAnte']:
+    # Benefit shifters
+    for info in ['ex_post', 'ex_ante']:
         
-        list_ = initDict['DERIV']['exclBene'][info]['pos']
+        list_ = init_dict['DERIV']['excl_bene'][info]['pos']
         
-        num = initDict['DERIV']['exclBene'][info]['num']
+        num = init_dict['DERIV']['excl_bene'][info]['num']
         
         assert (isinstance(list_, list))
         assert (isinstance(num, int))
-
         assert (all(isinstance(pos, np.int64) for pos in list_))
         assert (num >= 0)
     
-    # Cost shifters.
-    list_ = initDict['DERIV']['exclCost']['pos']
-        
-    num   = initDict['DERIV']['exclCost']['num']
+    # Cost shifters
+    list_ = init_dict['DERIV']['excl_cost']['pos']
+    num = init_dict['DERIV']['excl_cost']['num']
         
     assert (isinstance(list_, list))
     assert (isinstance(num, int))
@@ -86,9 +83,9 @@ def _checkDERIV(initDict):
     assert (num >= 0)
 
     # Common elements.
-    list_ = initDict['DERIV']['common']['pos']
+    list_ = init_dict['DERIV']['common']['pos']
     
-    pos   = initDict['DERIV']['common']['num']  
+    pos = init_dict['DERIV']['common']['num']
     
     assert (isinstance(list_, list))
     assert (isinstance(num, int))
@@ -99,107 +96,99 @@ def _checkDERIV(initDict):
     # Finishing.
     return True
 
-def _checkMSC(initDict):
-    ''' Check selected additional constraints.
-    '''
-    assert (isinstance(initDict, dict))    
+
+def _check_msc(init_dict):
+    """ Check selected additional constraints.
+    """
+    assert (isinstance(init_dict, dict))
     
     ''' Check that the covariates in the treated and untreated state are
         identical.
     '''
-    treated   = set(initDict['BENE']['TREATED']['coeffs']['pos'])
-    untreated = set(initDict['BENE']['UNTREATED']['coeffs']['pos'])
+    treated = set(init_dict['BENE']['TREATED']['coeffs']['pos'])
+    untreated = set(init_dict['BENE']['UNTREATED']['coeffs']['pos'])
     
     assert (treated == untreated)
     
-    treated   = initDict['BENE']['TREATED']['coeffs']['info']
-    untreated = initDict['BENE']['UNTREATED']['coeffs']['info']
-    numInfo   = len(treated)
+    treated = init_dict['BENE']['TREATED']['coeffs']['info']
+    untreated = init_dict['BENE']['UNTREATED']['coeffs']['info']
+    numInfo = len(treated)
     
     assert (all((treated[i] == untreated[i]) for i in range(numInfo)))
     
     ''' Check that there are no duplicates in either benefit or cost equation.
     '''
-    treated   = initDict['BENE']['TREATED']['coeffs']['pos']
-    untreated = initDict['BENE']['UNTREATED']['coeffs']['pos']
-    cost      = initDict['BENE']['UNTREATED']['coeffs']['pos']
+    treated = init_dict['BENE']['TREATED']['coeffs']['pos']
+    untreated = init_dict['BENE']['UNTREATED']['coeffs']['pos']
+    cost = init_dict['BENE']['UNTREATED']['coeffs']['pos']
     
     for obj in [treated, untreated, cost]:
-        
         assert (len(obj) == len(set(obj)))
     
     ''' Check identification.
     '''
-    isFree = initDict['COST']['sd']['free'][0]
+    is_free = init_dict['COST']['sd']['free'][0]
     
-    if(isFree):
-        
-        assert (initDict['DERIV']['exclBene']['exAnte']['num'] > 0)
+    if is_free:
+        assert (init_dict['DERIV']['excl_bene']['ex_ante']['num'] > 0)
 
     ''' Check that outcome and treated are not columns in either benefit or
         cost equations.
     '''
-    treated   = set(initDict['BENE']['TREATED']['coeffs']['pos'])
-    untreated = set(initDict['BENE']['UNTREATED']['coeffs']['pos'])
-    cost      = set(initDict['BENE']['UNTREATED']['coeffs']['pos'])
+    treated = set(init_dict['BENE']['TREATED']['coeffs']['pos'])
+    untreated = set(init_dict['BENE']['UNTREATED']['coeffs']['pos'])
+    cost = set(init_dict['BENE']['UNTREATED']['coeffs']['pos'])
     
-    Y = set([initDict['DATA']['outcome']])
-    
-    D = set([initDict['DATA']['treatment']])
+    y = set([init_dict['DATA']['outcome']])
+    d = set([init_dict['DATA']['treatment']])
 
     for obj in [treated, untreated, cost]:
         
-        assert (len(obj.intersection(Y)) == 0)
-        assert (len(obj.intersection(D)) == 0)
+        assert (len(obj.intersection(y)) == 0)
+        assert (len(obj.intersection(d)) == 0)
 
     ''' Check that at least one regressor in choice, either ex ante benefit
         or cost shifters.
     '''
-    bene = len(initDict['BENE']['TREATED']['coeffs']['pos'])
-
-    cost = len(initDict['COST']['coeffs']['pos'])
+    bene = len(init_dict['BENE']['TREATED']['coeffs']['pos'])
+    cost = len(init_dict['COST']['coeffs']['pos'])
     
-    noBenefitShifters = (bene == 0)
+    no_benefit_shifters = (bene == 0)
+    no_cost_shifters = (cost == 0)
     
-    noCostShifters    = (cost == 0)
-    
-    if(noBenefitShifters):
-        
+    if no_benefit_shifters:
         assert (cost > 0)
         
-    if(noCostShifters):
-        
-        info = sum(initDict['BENE']['TREATED']['coeffs']['info'])
-        
+    if no_cost_shifters:
+        info = sum(init_dict['BENE']['TREATED']['coeffs']['info'])
         assert (info > 0)
 
     ''' Check that no covariates that are unknown to the agent at the time of
         the treatment decision are specified as cost shifters.
     '''   
-    info = np.array(initDict['BENE']['TREATED']['coeffs']['info'])
+    info = np.array(init_dict['BENE']['TREATED']['coeffs']['info'])
     
-    benefitShifters = (len(info) > 0)
+    benefit_shifters = (len(info) > 0)
     
-    if(benefitShifters):
+    if benefit_shifters:
        
-        pos     = np.array(initDict['BENE']['TREATED']['coeffs']['pos'])
- 
+        pos = np.array(init_dict['BENE']['TREATED']['coeffs']['pos'])
         unknown = set(pos[info == False])
-        
-        pos     = set(initDict['COST']['coeffs']['pos'])
+        pos = set(init_dict['COST']['coeffs']['pos'])
      
         assert (len(unknown.intersection(pos)) == 0)
         
-    # Finishing.
+    # Finishing
     return True
 
-def _checkEQN(initDict):
-    ''' Check EQN block.
-    '''
-    assert (isinstance(initDict, dict))
+
+def _check_eqn(init_dict):
+    """ Check EQN block.
+    """
+    assert (isinstance(init_dict, dict))
 
     # Check keys.
-    assert (set(['TREATED', 'UNTREATED']) == set(initDict['BENE'].keys()))
+    assert (set(['TREATED', 'UNTREATED']) == set(init_dict['BENE'].keys()))
     
     ''' BENE.
     '''
@@ -209,46 +198,42 @@ def _checkEQN(initDict):
 
             positions = None            
             
-            values    = None
+            values = None
             
-            infos     = None
+            infos = None
             
-            free      = None
+            free = None
             
-            if(subgroup == 'coeffs'):
+            if subgroup == 'coeffs':
                 
-                positions = initDict['BENE'][group][subgroup]['pos']
+                positions = init_dict['BENE'][group][subgroup]['pos']
                 
-                values    = initDict['BENE'][group][subgroup]['values']
+                values = init_dict['BENE'][group][subgroup]['values']
                 
-                infos     = initDict['BENE'][group][subgroup]['info']
+                infos = init_dict['BENE'][group][subgroup]['info']
                 
-                free      = initDict['BENE'][group][subgroup]['free']
+                free = init_dict['BENE'][group][subgroup]['free']
                 
-            if(subgroup in ['sd', 'int']):
+            if subgroup in ['sd', 'int']:
                 
-                values    = initDict['BENE'][group][subgroup]['values']
+                values = init_dict['BENE'][group][subgroup]['values']
                 
-                free      = initDict['BENE'][group][subgroup]['free']
+                free = init_dict['BENE'][group][subgroup]['free']
                 
-            # Position.
-            if(positions is not None):
-                
+            # Position
+            if positions is not None:
                 assert (isinstance(positions, list))             
                 assert (all(isinstance(pos, int) for pos in positions))
                 assert ((pos >= 0) for pos in positions)
    
-            # Values.
-            if(values is not None):
-                
+            # Values
+            if values is not None :
                 assert (isinstance(values, list))             
                 assert (all(isinstance(value, float) for value in values))
             
-            # Information and Free.
+            # Information and Free
             for objs in [infos, free]:
-                
-                if(objs is not None):
-                
+                if objs is not None:
                     assert (isinstance(objs, list))             
                     assert (all(isinstance(obj, bool) for obj in objs))    
 
@@ -256,118 +241,103 @@ def _checkEQN(initDict):
     '''
     for subgroup in ['coeffs', 'sd', 'int']:
 
-        positions = None            
-        
-        values    = None
-       
-        free      = None
+        positions = None
+        values = None
+        free = None
             
-        if(subgroup == 'coeffs'):
+        if subgroup == 'coeffs':
+            positions = init_dict['COST'][subgroup]['pos']
+            values = init_dict['COST'][subgroup]['values']
+            free = init_dict['COST'][subgroup]['free']
                 
-            positions = initDict['COST'][subgroup]['pos']
+        if subgroup in ['sd', 'int']:
+            values = init_dict['COST'][subgroup]['values']
+            free = init_dict['COST'][subgroup]['free']
                 
-            values    = initDict['COST'][subgroup]['values']
-                
-            free      = initDict['COST'][subgroup]['free']
-                
-        if(subgroup in ['sd', 'int']):
-                
-            values    = initDict['COST'][subgroup]['values']
-                
-            free      = initDict['COST'][subgroup]['free']
-                
-        # Position.
-        if(positions is not None):
-                
+        # Position
+        if positions is not None:
             assert (isinstance(positions, list))             
             assert (all(isinstance(pos, int) for pos in positions))
             assert ((pos >= 0) for pos in positions)
    
-        # Values.
-        if(values is not None):
-                
+        # Values
+        if values is not None:
             assert (isinstance(values, list))             
             assert (all(isinstance(value, float) for value in values))
             
-        # Free.
-        if(free is not None):
-                
+        # Free
+        if free is not None:
             assert (isinstance(free, list))             
             assert (all(isinstance(obj, bool) for obj in free))                
     
-    # Finishing.
+    # Finishing
     return True
-          
-def _checkDATA(initDict):
-    ''' Check DATA block.
-    '''
-    assert (isinstance(initDict, dict))
+
+
+def _check_data(init_dict):
+    """ Check DATA block.
+    """
+    assert (isinstance(init_dict, dict))
 
     # Check keys.
     keys = set(['source', 'agents', 'outcome', 'treatment'])
 
-    assert (keys == set(initDict['DATA'].keys()))
+    assert (keys == set(init_dict['DATA'].keys()))
 
     # Distribute elements.
-    source    = initDict['DATA']['source'] 
-    
-    agents    = initDict['DATA']['agents']  
-    
-    outcome   = initDict['DATA']['outcome']  
-
-    treatment = initDict['DATA']['treatment']  
+    source = init_dict['DATA']['source']
+    agents = init_dict['DATA']['agents']
+    outcome = init_dict['DATA']['outcome']
+    treatment = init_dict['DATA']['treatment']
 
     # Checks.
     assert (isinstance(source, str))
     
-    if(agents is not None):
-
+    if agents is not None:
         assert (isinstance(agents, int))
         assert (agents > 0)
     
     for obj in [outcome, treatment]:
-        
         assert (isinstance(obj, int))
         assert (obj >= 0)
         
-    # Implications.
+    # Implications
     assert (outcome != treatment)
         
-    # Finishing.
+    # Finishing
     return True 
-    
-def _checkRHO(initDict):
-    ''' Check RHO block.
-    '''
+
+
+def _check_rho(initDict):
+    """ Check RHO block.
+    """
     assert (isinstance(initDict, dict))
 
-    # Check keys.
+    # Check keys
     keys = set(['treated', 'untreated'])
     
     assert (keys == set(initDict['RHO'].keys()))
         
     # Distribute elements.
-    rhoU1V = initDict['RHO']['treated']
-    
-    rhoU0V = initDict['RHO']['untreated']
+    rho_u1_v = initDict['RHO']['treated']
+    rho_u0_v = initDict['RHO']['untreated']
 
     # Checks.
-    for obj in [rhoU1V, rhoU0V]:
-        
-        value  = obj['value']
-        isFree = obj['free']
+    for obj in [rho_u1_v, rho_u0_v]:
+        value = obj['value']
+        is_free = obj['free']
         
         assert (isinstance(value, float))
         assert (-1.00 < value < 1.00)
-        
-        assert (isFree in [True, False])
+        assert (is_free in [True, False])
         
     # Finishing.
     return True
-        
-def _checkESTIMATION(initDict):
-    ''' Check ESTIMATION block.
-    '''
+
+
+def _check_estimation(initDict):
+    """ Check ESTIMATION block.
+    """
     # Antibugging.
     assert (isinstance(initDict, dict))
     
@@ -379,32 +349,23 @@ def _checkESTIMATION(initDict):
     assert (keys == set(initDict['ESTIMATION'].keys()))
     
     # Distribute elements.
-    algorithm   =  initDict['ESTIMATION']['algorithm']
+    algorithm = initDict['ESTIMATION']['algorithm']
+    maxiter = initDict['ESTIMATION']['maxiter']
+    start = initDict['ESTIMATION']['start']
+    gtol = initDict['ESTIMATION']['gtol']
+    epsilon = initDict['ESTIMATION']['epsilon']
+    asymptotics = initDict['ESTIMATION']['asymptotics']
+    hessian = initDict['ESTIMATION']['hessian']
+    draws = initDict['ESTIMATION']['draws']
+    alpha = initDict['ESTIMATION']['alpha']
+    differences = initDict['ESTIMATION']['differences']
     
-    maxiter     =  initDict['ESTIMATION']['maxiter']
-
-    start       =  initDict['ESTIMATION']['start']   
-
-    gtol        =  initDict['ESTIMATION']['gtol']
-
-    epsilon     =  initDict['ESTIMATION']['epsilon']
-
-    asymptotics =  initDict['ESTIMATION']['asymptotics']
-
-    hessian     =  initDict['ESTIMATION']['hessian']
-
-    draws       =  initDict['ESTIMATION']['draws']
-
-    alpha       =  initDict['ESTIMATION']['alpha']   
-    
-    differences =  initDict['ESTIMATION']['differences']   
-    
-    # Checks.
+    # Checks
     assert (start in ['manual', 'auto'])
     
     assert (algorithm in ['bfgs', 'powell'])
     
-    if(maxiter is not None):
+    if maxiter is not None:
         
         assert (isinstance(maxiter, int))
         assert (maxiter >= 0)
@@ -431,33 +392,33 @@ def _checkESTIMATION(initDict):
     assert (differences in ['one-sided', 'two-sided'])
     
     # Implications.
-    if(algorithm == 'powell'): assert (hessian == 'numdiff')
+    if algorithm == 'powell':
+        assert (hessian == 'numdiff')
 
     if (maxiter == 0) and (asymptotics is True):
         assert (hessian == 'numdiff')
 
-    # Finishing.
-    return True  
+    # Finishing
+    return True
+
+
+def _check_simulation(init_dict):
+    """ Check SIMULATION block.
+    '"""
+    # Antibugging
+    assert (isinstance(init_dict, dict))
     
-def _checkSIMULATION(initDict):
-    ''' Check SIMULATION block.
-    '''
-    # Antibugging.
-    assert (isinstance(initDict, dict))
-    
-    # Check keys.
+    # Check keys
     keys = set(['agents', 'seed', 'target'])
 
-    assert (keys == set(initDict['SIMULATION'].keys()))
+    assert (keys == set(init_dict['SIMULATION'].keys()))
     
-    # Distribute elements.
-    agents = initDict['SIMULATION']['agents']
+    # Distribute elements
+    agents = init_dict['SIMULATION']['agents']
+    seed = init_dict['SIMULATION']['seed']
+    target = init_dict['SIMULATION']['target']
     
-    seed   = initDict['SIMULATION']['seed']
-    
-    target = initDict['SIMULATION']['target']
-    
-    # Checks.
+    # Checks
     assert (isinstance(agents, int))
     assert (agents > 0)
     
@@ -466,6 +427,5 @@ def _checkSIMULATION(initDict):
     
     assert (isinstance(target, str))
     
-    # Finishing.
+    # Finishing
     return True
-    

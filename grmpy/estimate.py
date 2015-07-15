@@ -47,7 +47,7 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
     # Distribute class attributes.
     hessian = model_obj.get_attr('hessian')
 
-    with_asymptotics = model_obj.get_attr('withAsymptotics')
+    with_asymptotics = model_obj.get_attr('with_asymptotics')
 
     # Distribute auxiliary objects.
     max_obj = MaxCls(model_obj, paras_obj)

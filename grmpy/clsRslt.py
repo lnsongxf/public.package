@@ -70,7 +70,7 @@ class RsltCls(MetaCls):
         
         alpha = model_obj.get_attr('alpha')
         num_draws = model_obj.get_attr('numDraws')
-        with_asymptotics = model_obj.get_attr('withAsymptotics')
+        with_asymptotics = model_obj.get_attr('with_asymptotics')
 
         # Auxiliary objects.
         paras_copy = copy.deepcopy(paras_obj)
@@ -162,7 +162,7 @@ class RsltCls(MetaCls):
         paras_obj = self.get_attr('paras_obj')
         model_obj = self.get_attr('model_obj')
 
-        with_asymptotics = model_obj.get_attr('withAsymptotics')
+        with_asymptotics = model_obj.get_attr('with_asymptotics')
         surp_estimation = paras_obj.get_attr('surpEstimation')
         
         # Write results.
@@ -231,7 +231,7 @@ class RsltCls(MetaCls):
         model_obj = self.get_attr('model_obj')
         paras_obj = self.get_attr('paras_obj')
                 
-        with_asymptotics = model_obj.get_attr('withAsymptotics')
+        with_asymptotics = model_obj.get_attr('with_asymptotics')
         alpha = model_obj.get_attr('alpha')
         surp_estimation = paras_obj.get_attr('surpEstimation')
 
