@@ -17,7 +17,7 @@ except:
 from grmpy.tools.auxiliary import _updateParameters
 from grmpy.user.init_interface import initialize
 from grmpy.clsMax import _scipyWrapperFunction
-from grmpy.clsRslt import rsltCls
+from grmpy.clsRslt import RsltCls
 from grmpy.clsGrm import grmCls
 from grmpy.clsMax import maxCls
 
@@ -86,13 +86,13 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
         cov_mat = _add_asymptotics(max_rslt, max_obj, hessian)
 
     # Construct result class.
-    rslt = rsltCls()
+    rslt = RsltCls()
 
-    rslt.setAttr('grmObj', grm_obj)
+    rslt.setAttr('grm_obj', grm_obj)
 
-    rslt.setAttr('maxRslt', max_rslt)
+    rslt.setAttr('max_rslt', max_rslt)
 
-    rslt.setAttr('covMat', cov_mat)
+    rslt.setAttr('cov_mat', cov_mat)
 
     rslt.lock()
 

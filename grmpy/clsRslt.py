@@ -1,19 +1,16 @@
-''' Module that contains the result class for the grmEstimatorToolbox.
-'''
+""" Module that contains the results class
+"""
 
 # standard library
-import numpy    as np
-
-import pickle as pkl
-
 try:
    import cPickle as pkl
 except:
    import pickle as pkl
 
+import numpy as np
+import random
 import scipy
 import copy
-import random
 
 # project library
 from grmpy.clsMeta import metaCls
@@ -21,109 +18,108 @@ from grmpy.clsMeta import metaCls
 from grmpy.clsModel import modelCls
 from grmpy.clsParas import parasCls
 
-class rsltCls(metaCls):
-    ''' This class contains all results provided back to the user from the 
+class RsltCls(metaCls):
+    """ This class contains all results provided back to the user from the
         maximization setup.
-    ''' 
+    """
     def __init__(self):
         
         # Attach attributes.
-        self.attr = {}
+        self.attr = dict()
         
         # Attributes.
-        self.attr['grmObj']  = None
-        self.attr['maxRslt'] = None
-        self.attr['covMat']  = None
-      
-        self.attr['paraObjs'] = None
+        self.attr['grm_obj'] = None
+        self.attr['max_rslt'] = None
+        self.attr['cov_mat'] = None
+        self.attr['para_objs'] = None
       
         # Constructed objects.
-        self.attr['bmteExPost']    = None
-        self.attr['cmteExAnte']    = None
-        self.attr['smteExAnte']    = None        
+        self.attr['bmte_ex_post'] = None
+        self.attr['cmte_ex_ante'] = None
+        self.attr['smte_ex_ante'] = None
 
         # Status indicator
         self.isLocked = False
 
-
     ''' Public methods
     '''
-    def store(self, fileName):
-        ''' Store class instance.
-        '''
+    def store(self, file_name):
+        """ Store class instance.
+        """
         # Antibugging.
         assert (self.getStatus() == True)
-        assert (isinstance(fileName, str))
+        assert (isinstance(file_name, str))
 
         # Store.
-        pkl.dump(self.attr, open(fileName, 'wb'))
+        pkl.dump(self.attr, open(file_name, 'wb'))
 
     ''' Calculate derived attributes.
     '''
-    def _derivedAttributes(self):
-        ''' Construct derived objects.
-        '''
+    def _derived_attributes(self):
+        """ Construct derived objects.
+        """
         # Antibugging.
         assert (self.getStatus() == True)
 
         # Distribute class attributes.
-        grmObj = self.getAttr('grmObj')
-        covMat = self.getAttr('covMat')
+        grm_obj = self.getAttr('grm_obj')
+        cov_mat = self.getAttr('cov_mat')
         
-        requestObj = grmObj.getAttr('requestObj')
-        modelObj   = grmObj.getAttr('modelObj')
-        parasObj   = grmObj.getAttr('parasObj')
+        request_obj = grm_obj.getAttr('requestObj')
+        model_obj = grm_obj.getAttr('modelObj')
+        paras_obj = grm_obj.getAttr('parasObj')
        
-        numAgents  = modelObj.getAttr('numAgents')
+        num_agents = model_obj.getAttr('numAgents')
         
-        alpha           = requestObj.getAttr('alpha')
-        numDraws        = requestObj.getAttr('numDraws')
-        withAsymptotics = requestObj.getAttr('withAsymptotics')
+        alpha = request_obj.getAttr('alpha')
+        num_draws = request_obj.getAttr('numDraws')
+        with_asymptotics = request_obj.getAttr('withAsymptotics')
 
         # Auxiliary objects.
-        parasCopy = copy.deepcopy(parasObj)
+        paras_copy = copy.deepcopy(paras_obj)
         
-        paraObjs  = parasObj.getAttr('paraObjs')
+        para_objs  = paras_obj.getAttr('paraObjs')
         
-        scale     = 1.0/numAgents
-        cov       = scale*covMat
+        scale = 1.0 / num_agents
+        cov = scale * cov_mat
         
         # Sampling.
         np.random.seed(123), random.seed(456)
         
-        externalValues   = parasObj.getValues(version = 'external', which = 'free')
+        external_values = paras_obj.getValues(version='external', which='free')
          
-        if(withAsymptotics):
+        if with_asymptotics:
 
-            randomParameters = np.random.multivariate_normal(externalValues, cov, numDraws)
-        
+            random_parameters = np.random.multivariate_normal(external_values,
+                                                              cov, num_draws)
+
         else:
             
-            randomParameters = np.zeros((len(externalValues), numDraws))
+            random_parameters = np.zeros((len(external_values), num_draws))
         
         ''' Core Structural Parameters.
         '''
         counter = 0
         
-        for paraObj in paraObjs:
+        for para_obj in para_objs:
             
-            if((paraObj.getAttr('isFree') == False) or (not withAsymptotics)):
+            if (para_obj.getAttr('isFree') == False) or (not with_asymptotics):
                 
-                paraObj.setAttr('confi', ('---', '---'))
+                para_obj.setAttr('confi', ('---', '---'))
 
-                paraObj.setAttr('pvalue', '---')
+                para_obj.setAttr('pvalue', '---')
                                 
             else:
                 
                 rslt = []
                 
-                for randomPara in randomParameters:
+                for random_para in random_parameters:
    
-                    parasCopy.update(randomPara, version = 'external', which = 'free')
+                    paras_copy.update(random_para, version='external', which='free')
        
-                    paraCopy = parasCopy.getParameter(counter)
+                    para_copy = paras_copy.getParameter(counter)
        
-                    rslt.append(paraCopy.getAttr('value'))           
+                    rslt.append(para_copy.getAttr('value'))
                 
                 # Confidence intervals.
                 lower, upper = scipy.stats.mstats.mquantiles(rslt, \
@@ -131,179 +127,167 @@ class rsltCls(metaCls):
                 
                 confi  = (lower, upper)
 
-                paraObj.setAttr('confi', confi)
+                para_obj.setAttr('confi', confi)
 
                 # p values.
-                estimate = paraObj.getAttr('value')
+                estimate = para_obj.getAttr('value')
                 
-                pvalue = sum(np.sign(rslt) != np.sign(estimate))/float(numDraws)
+                pvalue = sum(np.sign(rslt) != np.sign(estimate))/float(num_draws)
                                 
-                paraObj.setAttr('pvalue', pvalue)
+                para_obj.setAttr('pvalue', pvalue)
             
             counter += 1
 
         ''' Marginal Effects of Treatment. '''
         
-        _ = self._addResultsMarginalEffects(randomParameters)
+        self._add_results(random_parameters)
         
         ''' Store to file. '''
         
-        _ = self._writeFile()
+        self._write_file()
         
         ''' Store update parameter objects.'''
         
-        self.attr['parasObj'] = parasObj
+        self.attr['parasObj'] = paras_obj
 
-        self.attr['paras'] = parasObj.getValues('internal', 'all')
+        self.attr['paras'] = paras_obj.getValues('internal', 'all')
 
         # Cleanup.
         self.attr.pop('grmObj', None)
         self.attr.pop('parasObj', None)
 
-    def _writeFile(self):
-        ''' Write results to file.
-        '''
+    def _write_file(self):
+        """ Write results to file.
+        """
         # Antibugging.
         assert (self.getStatus() == True)
         
         # Preparations
-        grmObj     = self.getAttr('grmObj')
-        requestObj = grmObj.getAttr('requestObj')
-        parasObj   = grmObj.getAttr('parasObj')
+        grm_obj = self.getAttr('grmObj')
+        request_obj = grm_obj.getAttr('requestObj')
+        paras_obj = grm_obj.getAttr('parasObj')
 
-        withAsymptotics         = requestObj.getAttr('withAsymptotics')
-        surpEstimation          = parasObj.getAttr('surpEstimation')
+        with_asymptotics = request_obj.getAttr('withAsymptotics')
+        surp_estimation = paras_obj.getAttr('surpEstimation')
         
         # Write results.
         with open('info.grmpy.out', 'a') as file_:
-                
-            self._writeMarginal(file_, withAsymptotics, surpEstimation)
 
-    def _writeMarginal(self, file_, withAsymptotics, surpEstimation):
-        ''' Write results on marginal effects of treatment.
-        '''
-        # Antibugging.
-        assert (surpEstimation in [True, False])
-        assert (withAsymptotics in [True, False])
+            # Preparation
+            struct = '''   {0[0]}        {0[1]}          {0[2]} / {0[3]}\n'''
+            idx = np.arange(0.01, 1.00, 0.01)
 
-         # Preparation
-        struct = '''   {0[0]}        {0[1]}          {0[2]} / {0[3]}\n'''
-        idx    = np.arange(0.01, 1.00, 0.01)
-    
-        parameterList = ['bmteExPost']
-    
-        if(surpEstimation): parameterList += ['cmteExAnte', 'smteExAnte']
-        
-        for parameter in parameterList:
-            
-            points = self.attr[parameter]['estimate']
-            
-            if(withAsymptotics):
-                
-                upperBound = self.attr[parameter]['confi']['upper']
-    
-                lowerBound = self.attr[parameter]['confi']['lower']
-        
-            if(parameter == 'bmteExPost'): 
-                
-                title = ' MARGINAL BENEFIT OF TREATMENT (EX POST)'
-            
-            if(parameter == 'cmteExAnte'): 
-                
-                title = ' MARGINAL COST OF TREATMENT '
+            parameter_list = ['bmteExPost']
 
-            if(parameter == 'smteExAnte'): 
-                
-                title = ' MARGINAL SURPLUS OF TREATMENT '
-                
-            file_.write('\n' + title + '\n')
-                       
-            file_.write('\n' + '   Point     Estimate    Confidence Interval' + '\n\n')
-               
-            for i in range(99):
-                
-                u     = '{0:5.2f}'.format(idx[i])
-                est   = '{0:5.2f}'.format(points[i])
-                
-                upper = '---'
-                lower = '---'
-                
-                if(withAsymptotics):
-                    
-                    upper = '{0:5.2f}'.format(upperBound[i])
-                    lower = '{0:5.2f}'.format(lowerBound[i])
-                    
-                file_.write(struct.format([u, est, lower, upper]))
-                
-    def _addResultsMarginalEffects(self, randomParameters):
-        ''' Add results on marginal effects of treatment.
-        '''
-        
+            if(surp_estimation): parameter_list += ['cmteExAnte', 'smteExAnte']
+
+            for parameter in parameter_list:
+
+                points = self.attr[parameter]['estimate']
+
+                if(with_asymptotics):
+
+                    upper_bound = self.attr[parameter]['confi']['upper']
+
+                    lower_bound = self.attr[parameter]['confi']['lower']
+
+                if parameter == 'bmteExPost':
+
+                    title = ' MARGINAL BENEFIT OF TREATMENT (EX POST)'
+
+                if parameter == 'cmteExAnte':
+
+                    title = ' MARGINAL COST OF TREATMENT '
+
+                if parameter == 'smteExAnte':
+
+                    title = ' MARGINAL SURPLUS OF TREATMENT '
+
+                file_.write('\n' + title + '\n')
+
+                file_.write('\n' + '   Point     Estimate    Confidence Interval' + '\n\n')
+
+                for i in range(99):
+
+                    u = '{0:5.2f}'.format(idx[i])
+                    est = '{0:5.2f}'.format(points[i])
+
+                    upper = '---'
+                    lower = '---'
+
+                    if with_asymptotics:
+
+                        upper = '{0:5.2f}'.format(upper_bound[i])
+                        lower = '{0:5.2f}'.format(lower_bound[i])
+
+                    file_.write(struct.format([u, est, lower, upper]))
+
+    def _add_results(self, random_parameters):
+        """ Add results on marginal effects of treatment.
+        """
         # Antibugging.
         assert (self.getStatus() == True)
-        assert (isinstance(randomParameters, np.ndarray))
-        assert (np.all(np.isfinite(randomParameters)))
-        assert (randomParameters.dtype == 'float')
-        assert (randomParameters.ndim  == 2)
+        assert (isinstance(random_parameters, np.ndarray))
+        assert (np.all(np.isfinite(random_parameters)))
+        assert (random_parameters.dtype == 'float')
+        assert (random_parameters.ndim  == 2)
     
         # Distribute class attributes.
-        grmObj = self.getAttr('grmObj')
+        grm_obj = self.getAttr('grm_obj')
         
-        requestObj  = grmObj.getAttr('requestObj')
-        modelObj    = grmObj.getAttr('modelObj')
-        parasObj    = grmObj.getAttr('parasObj')
+        request_obj = grm_obj.getAttr('requestObj')
+        model_obj = grm_obj.getAttr('modelObj')
+        paras_obj = grm_obj.getAttr('parasObj')
                 
-        withAsymptotics     = requestObj.getAttr('withAsymptotics')
-        alpha               = requestObj.getAttr('alpha')
-
-        surpEstimation      = parasObj.getAttr('surpEstimation')
+        with_asymptotics = request_obj.getAttr('withAsymptotics')
+        alpha = request_obj.getAttr('alpha')
+        surp_estimation = paras_obj.getAttr('surpEstimation')
 
         # Auxiliary objects.
-        parasCopy = copy.deepcopy(parasObj)
+        paras_copy = copy.deepcopy(paras_obj)
         
         # Initialize parameters.
-        parameterList = ['bmteExPost']
+        parameter_list = ['bmteExPost']
 
-        if(surpEstimation): parameterList += ['smteExAnte', 'cmteExAnte']
+        if surp_estimation:
+            parameter_list += ['smteExAnte', 'cmteExAnte']
         
-        for parameter in parameterList:
-
+        for parameter in parameter_list:
             self.attr[parameter] = {}
-            
             self.attr[parameter]['estimate'] = None
-        
-            self.attr[parameter]['confi']    = {}
+            self.attr[parameter]['confi'] = {}
 
         # Point estimates.
         args = {}
                 
-        for parameter in parameterList:
+        for parameter in parameter_list:
             
             args['which'] = parameter
 
             self.attr[parameter]['estimate'] = \
-                self._construct_marginal_effects(modelObj, parasObj, args)
+                self._construct_marginal_effects(model_obj, paras_obj, args)
         
         # Confidence bounds.
-        if(not withAsymptotics): return None
+        if not with_asymptotics:
+            return None
         
         rslt = {}
         
         args = {}
         
-        for parameter in parameterList:
+        for parameter in parameter_list:
             
             args['which'] = parameter
             
             # Simulation.
             rslt[parameter] = []
             
-            for randomPara in randomParameters:
+            for randomPara in random_parameters:
    
-                parasCopy.update(randomPara, version = 'external', which = 'free')
+                paras_copy.update(randomPara, version = 'external', which = 'free')
    
                 rslt[parameter].append(
-                    self._construct_marginal_effects(modelObj, parasCopy, args))
+                    self._construct_marginal_effects(model_obj, paras_copy, args))
             
             # Type conversion.
             rslt[parameter] = np.array(rslt[parameter])
@@ -315,7 +299,7 @@ class rsltCls(metaCls):
             for i in range(99):
                 
                 lower, upper = scipy.stats.mstats.mquantiles(rslt[parameter][:,i], \
-                                prob = [(alpha*0.5), (1.0 - alpha*0.5)], axis = 0)
+                                prob=[(alpha*0.5), (1.0 - alpha*0.5)], axis = 0)
             
                 self.attr[parameter]['confi']['upper'].append(upper)
                 self.attr[parameter]['confi']['lower'].append(lower)
@@ -402,11 +386,3 @@ class rsltCls(metaCls):
 
         # Finishing.
         return rslt
-
-    ''' Private methods.
-    '''
-    def _checkIntegrity(self):
-        ''' Check integrity of class instance.
-        '''
-        # Finishing.
-        return True
