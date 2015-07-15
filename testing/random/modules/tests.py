@@ -88,7 +88,8 @@ def test_C():
 
 
 def test_D():
-    """ Testing if the fast and slow evaluation of the criterion function result in same value.
+    """ Testing if the fast and slow evaluation of the criterion function
+    result in same value.
     """
     # Initialize containers
     fval = None

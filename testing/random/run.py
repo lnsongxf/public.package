@@ -18,8 +18,8 @@ from modules.auxiliary import *
 import modules.tests as lib
 
 # virtual environment
-if not hasattr(sys, 'real_prefix'):
-   raise AssertionError('Please use a virtual environment for testing')
+#if not hasattr(sys, 'real_prefix'):
+#   raise AssertionError('Please use a virtual environment for testing')
 
 PYTHON_VERSION = sys.version_info[0]
 
