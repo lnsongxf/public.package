@@ -20,7 +20,7 @@ def constructParas(initDict, modelObj, isSimulation):
     '''
     # Antibugging.
     assert (isinstance(initDict, dict))
-    assert (modelObj.getStatus() == True)
+    assert (modelObj.get_status() == True)
 
     # Distribute auxiliary objects.
     start = initDict['ESTIMATION']['start']
@@ -34,7 +34,7 @@ def constructParas(initDict, modelObj, isSimulation):
         parasObj = _autoStart(parasObj, modelObj)
                 
     # Quality.
-    assert (parasObj.getStatus() == True)
+    assert (parasObj.get_status() == True)
 
     # Finishing.
     return parasObj
@@ -171,7 +171,7 @@ def _initializeParameters(initDict, modelObj):
     ''' 
     # Antibugging.
     assert (isinstance(initDict, dict))
-    assert (modelObj.getStatus() == True)
+    assert (modelObj.get_status() == True)
 
     # Distribute information
     numCovarsExPost = len(initDict['BENE']['TREATED']['coeffs']['pos'])
@@ -273,7 +273,7 @@ def _autoStart(parasObj, modelObj):
         ''' Get starting values.
         '''
         # Antibugging.
-        assert (modelObj.getStatus() == True)
+        assert (modelObj.get_status() == True)
         assert (which in ['treated', 'untreated', 'cost'])
         
         # Data selection.
@@ -342,10 +342,10 @@ def _autoStart(parasObj, modelObj):
     '''
     # Antibugging.
     assert (isinstance(parasObj, parasCls))
-    assert (parasObj.getStatus() == True)
+    assert (parasObj.get_status() == True)
 
     assert (isinstance(modelObj, modelCls))
-    assert (modelObj.getStatus() == True)
+    assert (modelObj.get_status() == True)
     
     # Benefits.
     for subgroup in ['treated', 'untreated']:
@@ -407,7 +407,7 @@ def _autoStart(parasObj, modelObj):
     
 
     # Quality.
-    assert (parasObj.getStatus() == True)
+    assert (parasObj.get_status() == True)
     
     # Finishing.
     return parasObj

@@ -11,7 +11,7 @@ def _updateParameters(parasObj):
     ''' Update parameter object if possible.
     '''
     # Antibugging.
-    assert (parasObj.getStatus() == True)
+    assert (parasObj.get_status() == True)
     assert (os.path.isfile('info.grmpy.out'))
 
     # Update.

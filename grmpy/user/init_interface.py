@@ -9,7 +9,6 @@ import os
 import grmpy.user._createDictionary as auxDict
 import grmpy.user._createModel      as auxModel
 import grmpy.user._createParas      as auxParas
-import grmpy.user._createRequest    as auxRequest
 
 ''' Main function.
 '''
@@ -38,7 +37,7 @@ def initialize(initFile, use_simulation = False, is_simulation = False):
     # Quality checks.
     for obj in [modelObj, parasObj]:
 
-        assert (obj.getStatus() == True)
+        assert (obj.get_status() == True)
     
     # Finishing
     return modelObj, parasObj, initDict

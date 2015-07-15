@@ -18,7 +18,6 @@ from grmpy.tools.auxiliary import _updateParameters
 from grmpy.user.init_interface import initialize
 from grmpy.clsMax import _scipyWrapperFunction
 from grmpy.clsRslt import RsltCls
-from grmpy.clsGrm import grmCls
 from grmpy.clsMax import maxCls
 
 ''' Main function
@@ -41,27 +40,16 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
     # Note starting values
     _write_starting_values(paras)
 
-    # Initialize container
-    grm_obj = grmCls()
-
-    grm_obj.setAttr('modelObj', model_obj)
-
-    grm_obj.setAttr('parasObj', paras_obj)
-
-    grm_obj.lock()
-
     # Set random seed.
     np.random.seed(123)
 
     # Distribute class attributes.
-    modelObj = grm_obj.getAttr('modelObj')
+    hessian = model_obj.getAttr('hessian')
 
-    hessian = modelObj.getAttr('hessian')
-
-    with_asymptotics = modelObj.getAttr('withAsymptotics')
+    with_asymptotics = model_obj.getAttr('withAsymptotics')
 
     # Distribute auxiliary objects.
-    max_obj = maxCls(grm_obj)
+    max_obj = maxCls(model_obj, paras_obj)
 
     max_obj.lock()
 
@@ -86,7 +74,9 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
     # Construct result class.
     rslt = RsltCls()
 
-    rslt.setAttr('grm_obj', grm_obj)
+    rslt.setAttr('model_obj', model_obj)
+
+    rslt.setAttr('paras_obj', paras_obj)
 
     rslt.setAttr('max_rslt', max_rslt)
 

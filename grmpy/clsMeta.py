@@ -16,7 +16,7 @@ class metaCls(object):
     
     ''' Meta methods.
     '''
-    def getStatus(self):
+    def get_status(self):
         ''' Get status of class instance.
         '''
         
@@ -26,7 +26,7 @@ class metaCls(object):
         ''' Lock class instance.
         '''
         # Antibugging.
-        assert (self.getStatus() == False)
+        assert (self.get_status() == False)
 
         # Update class attributes.
         self.isLocked = True
@@ -40,7 +40,7 @@ class metaCls(object):
         ''' Unlock class instance.
         '''
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
 
         # Update class attributes.
         self.isLocked = False
@@ -49,7 +49,7 @@ class metaCls(object):
         ''' Get attributes.
         '''
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
         assert (self._checkKey(key) == True)
         
         # Finishing.
@@ -59,7 +59,7 @@ class metaCls(object):
         ''' Get attributes.
         '''
         # Antibugging.
-        assert (self.getStatus() == False)
+        assert (self.get_status() == False)
         assert (self._checkKey(key) == True)
         
         # Finishing.
@@ -69,7 +69,7 @@ class metaCls(object):
         ''' Store class instance.
         '''
         # Antibugging.
-        assert (self.getStatus() == True)      
+        assert (self.get_status() == True)
         assert (isinstance(fileName, str))
         
         # Store.

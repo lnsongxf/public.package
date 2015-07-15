@@ -15,7 +15,7 @@ class parasCls(metaCls):
         
         # Antibugging.
         assert (isinstance(modelObj, modelCls))
-        assert (modelObj.getStatus() == True)
+        assert (modelObj.get_status() == True)
         
         # Attach attributes.
         self.attr = {}
@@ -115,7 +115,7 @@ class parasCls(metaCls):
             parameters not just the true ones. 
         '''
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
         assert (count < self.getAttr('numParas'))
         
         # Algorithm.
@@ -136,7 +136,6 @@ class parasCls(metaCls):
         ''' Get parameter groups.
         '''
         # Antibugging.
-        #assert (self.getStatus() == True)
         assert (self._checkRequest(type_, subgroup, isObj) == True)
             
         # Collect request.
@@ -232,7 +231,7 @@ class parasCls(metaCls):
         ''' Get all free parameter values.
         '''    
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
         assert (self._checkIntegrity() == True)
         assert (version in ['external', 'internal'])
         assert (which in ['free', 'all'])
@@ -281,7 +280,7 @@ class parasCls(metaCls):
         ''' Update all free parameters.
         '''
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
         assert (self._checkIntegrity() == True)
         assert (version in ['external', 'internal'])
         assert (which in ['free', 'all'])
@@ -328,7 +327,7 @@ class parasCls(metaCls):
         '''
         # Antibugging.
         assert (isinstance(paraObj, _paraContainer))
-        assert (paraObj.getStatus() == True)
+        assert (paraObj.get_status() == True)
         assert (isinstance(internalValue, float))
         assert (np.isfinite(internalValue))
         
@@ -376,7 +375,7 @@ class parasCls(metaCls):
         '''
         # Antibugging.
         assert (isinstance(paraObj, _paraContainer))
-        assert (paraObj.getStatus() == True)
+        assert (paraObj.get_status() == True)
         assert (isinstance(externalValue, float))
         assert (np.isfinite(externalValue))
         
@@ -429,7 +428,7 @@ class parasCls(metaCls):
         '''
         # Antibugging.
         assert (isinstance(paraObj, _paraContainer))
-        assert (paraObj.getStatus() == True)
+        assert (paraObj.get_status() == True)
         assert (isinstance(internalValue, float))
         assert (np.isfinite(internalValue))
                 
@@ -465,7 +464,7 @@ class parasCls(metaCls):
             at the time of treatment decision. 
         '''
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
 
         # Distribute class attributes.
         withoutPrediction = self.getAttr('withoutPrediction')
@@ -532,9 +531,6 @@ class parasCls(metaCls):
     def _checkRequest(self, type_, subgroup, obj):
         ''' Check the validity of the parameter request.
         '''
-        # Antibugging.
-        #assert (self.getStatus() == True)
-     
         # Check type.
         assert (type_ in ['outc', 'cost', 'rho', 'sd', \
                           'var', 'cov', 'bene', 'choice'])

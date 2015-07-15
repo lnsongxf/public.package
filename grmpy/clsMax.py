@@ -8,17 +8,26 @@ from   scipy.optimize  import  fmin_bfgs, fmin_powell
 # project library
 from grmpy.clsMeta import metaCls
 from grmpy.clsCrit import critCls
-
+from grmpy.clsModel import modelCls
+from grmpy.clsParas import parasCls
 
 class maxCls(metaCls):
     
-    def __init__(self, grmObj):
-        
-        self.attr = {}
-        
-        # Distribute class attributes.
-        self.attr['grmObj']  = grmObj
-        
+    def __init__(self, model_obj, paras_obj):
+
+        # Antibugging.
+        assert (isinstance(model_obj, modelCls))
+        assert (isinstance(paras_obj, parasCls))
+
+        assert (model_obj.get_status() == True)
+        assert (paras_obj.get_status() == True)
+
+        self.attr = dict()
+
+        self.attr['model_obj'] = model_obj
+
+        self.attr['paras_obj'] = paras_obj
+
         # Results container.
         self.attr['maxRslt'] = None
                 
@@ -29,13 +38,14 @@ class maxCls(metaCls):
         ''' Construct derived attributes.
         '''
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
         
         # Distribute class attributes.
-        grmObj = self.getAttr('grmObj')
-        
+        model_obj = self.getAttr('model_obj')
+        paras_obj = self.getAttr('paras_obj')
+
         # Criterion function.
-        critFunc = critCls(grmObj)
+        critFunc = critCls(model_obj, paras_obj)
         
         critFunc.lock()            
     
@@ -45,25 +55,23 @@ class maxCls(metaCls):
         ''' Maximization
         '''
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
         
         # Distribute class attributes.
-        grmObj     = self.getAttr('grmObj')
-
         critFunc   = self.getAttr('critFunc')
 
-        parasObj   = grmObj.getAttr('parasObj')
+        paras_obj   = self.getAttr('paras_obj')
 
-        model_obj = grmObj.getAttr('modelObj')
+        model_obj = self.getAttr('model_obj')
 
-        algorithm  = model_obj.attr['algorithm']
+        algorithm  = model_obj.getAttr('algorithm')
         
         maxiter    = model_obj.getAttr('maxiter')
         
         # Maximization.
         if(maxiter == 0):
             
-            x        = parasObj.getValues('external', 'free')
+            x        = paras_obj.getValues('external', 'free')
             
             
             maxRslt = {}
@@ -96,21 +104,19 @@ class maxCls(metaCls):
         ''' Method that performs the Powell maximization.
         '''
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
 
         # Distribute class attributes.
-        grmObj = self.getAttr('grmObj')
+        model_obj = self.getAttr('model_obj')
 
-        model_obj = grmObj.getAttr('modelObj')
-
-        parasObj   = grmObj.getAttr('parasObj')
+        paras_obj   = self.getAttr('paras_obj')
                 
         maxiter    = model_obj.getAttr('maxiter')
 
         critFunc   = self.getAttr('critFunc')
         
         # Staring values.
-        startingValues = parasObj.getValues(version = 'external', which = 'free')
+        startingValues = paras_obj.getValues(version = 'external', which = 'free')
         
         rslt = fmin_powell(
                 
@@ -157,14 +163,12 @@ class maxCls(metaCls):
         ''' Method that performs a BFGS maximization.
         '''
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
 
         # Distribute class attributes.
-        grmObj = self.getAttr('grmObj')
+        model_obj = self.getAttr('model_obj')
 
-        model_obj = grmObj.getAttr('modelObj')
-
-        parasObj   = grmObj.getAttr('parasObj')
+        paras_obj   = self.getAttr('paras_obj')
         
         maxiter    = model_obj.getAttr('maxiter')
         
@@ -175,7 +179,7 @@ class maxCls(metaCls):
         critFunc   = self.getAttr('critFunc')
                 
         # Staring values.
-        startingValues = parasObj.getValues(version = 'external', which = 'free')
+        startingValues = paras_obj.getValues(version = 'external', which = 'free')
         
         # Maximization.
         rslt = fmin_bfgs(
@@ -233,7 +237,7 @@ def _scipyWrapperGradient(x, critFunc):
     assert (x.ndim == 1)
     
     assert (isinstance(critFunc, critCls))
-    assert (critFunc.getStatus() == True)
+    assert (critFunc.get_status() == True)
 
     # Evaluate gradient.
     grad = critFunc.evaluate(x, 'gradient')
@@ -255,7 +259,7 @@ def _scipyWrapperFunction(x, critFunc):
     assert (x.ndim == 1)
     
     assert (isinstance(critFunc, critCls))
-    assert (critFunc.getStatus() == True)
+    assert (critFunc.get_status() == True)
     
     # Evaluate likelihood.
     likl = critFunc.evaluate(x, 'function')

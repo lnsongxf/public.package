@@ -7,28 +7,34 @@ from    scipy.stats     import  norm
 
 # project library
 from grmpy.clsMeta import metaCls
-from grmpy.clsGrm import grmCls
+from grmpy.clsModel import modelCls
+from grmpy.clsParas import parasCls
 
 class critCls(metaCls):
     
-    def __init__(self, grmObj):
+    def __init__(self, model_obj, paras_obj):
 
         # Antibugging.
-        assert (isinstance(grmObj, grmCls))
-        assert (grmObj.getStatus() == True)
+        assert (isinstance(model_obj, modelCls))
+        assert (isinstance(paras_obj, parasCls))
 
-        self.attr = {}
+        assert (model_obj.get_status() == True)
+        assert (paras_obj.get_status() == True)
+
+        self.attr = dict()
         
-        self.attr['grmObj'] = grmObj
+        self.attr['model_obj'] = model_obj
+
+        self.attr['paras_obj'] = paras_obj
 
         # Status.
         self.isLocked = False
     
     def update(self, x):
-        ''' Update parameter object.
-        '''
+        """ Update parameter object.
+        """
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
         
         assert (isinstance(x, np.ndarray))
         assert (np.all(np.isfinite(x)))
@@ -36,24 +42,19 @@ class critCls(metaCls):
         assert (x.ndim == 1)
             
         # Distribute class attributes.
-        grmObj   = self.getAttr('grmObj')
+        paras_obj = self.getAttr('paras_obj')
         
-        parasObj = grmObj.getAttr('parasObj')        
-        
-        parasObj.update(x, version = 'external', which = 'free')
+        paras_obj.update(x, version='external', which='free')
     
     def evaluate(self, x, type_):
-        ''' Wrapper for function evaluate.
-        '''
-        
-        if(type_ == 'function'):
-            
+        """ Wrapper for function evaluate.
+        """
+        if type_ == 'function':
             rslt = self._evaluateFunction(x)
-            
-        elif(type_ == 'gradient'):
-            
+        elif type_ == 'gradient':
             rslt = self._evaluateGradient(x)
-            
+
+        # Finishing
         return rslt
 
     ''' Private methods for the calculation of the gradient.
@@ -62,7 +63,7 @@ class critCls(metaCls):
         ''' Numerical approximation of gradient.
         '''
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
         
         assert (isinstance(x, np.ndarray))
         assert (np.all(np.isfinite(x)))
@@ -70,17 +71,15 @@ class critCls(metaCls):
         assert (x.ndim == 1)
         
         # Distribute class attributes.
-        grmObj = self.getAttr('grmObj')
-        
-        model_obj = grmObj.getAttr('modelObj')
+        model_obj = self.getAttr('model_obj')
 
-        parasObj   = grmObj.getAttr('parasObj')
+        paras_obj   = self.getAttr('paras_obj')
       
         epsilon     = model_obj.getAttr('epsilon')
         differences = model_obj.getAttr('differences')
          
         # Auxiliary statistics.
-        numFree = parasObj.getAttr('numFree')
+        numFree = paras_obj.getAttr('numFree')
         
         # Antibugging.
         assert (x.shape == (numFree, ))
@@ -135,7 +134,7 @@ class critCls(metaCls):
         ''' Negative log-likelihood function of the grmEstimatorToolbox.
         '''    
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
         
         assert (isinstance(x, np.ndarray))
         assert (np.all(np.isfinite(x)))
@@ -143,13 +142,9 @@ class critCls(metaCls):
         assert (x.ndim == 1)
         
         # Distribute class attributes.
-        grmObj = self.getAttr('grmObj')
-        
-        modelObj = grmObj.getAttr('modelObj')
-        
-        parasObj = grmObj.getAttr('parasObj')
+        paras_obj = self.getAttr('paras_obj')
 
-        model_obj = grmObj.getAttr('modelObj')
+        model_obj = self.getAttr('model_obj')
 
         # Auxiliary objects
         version = model_obj.getAttr('version')
@@ -160,11 +155,11 @@ class critCls(metaCls):
         # Likelihood calculation.
         if version == 'slow':
 
-            likl = self._evaluateFunction_slow(parasObj, modelObj)
+            likl = self._evaluateFunction_slow(paras_obj, model_obj)
 
         elif version == 'fast':
 
-            likl = self._evaluateFunction_fast(parasObj, modelObj)
+            likl = self._evaluateFunction_fast(paras_obj, model_obj)
 
         else:
 
@@ -285,14 +280,3 @@ class critCls(metaCls):
 
         # Finishing
         return likl
-
-    def _checkIntegrity(self):
-        ''' Check integrity.
-        '''
-        # Antibugging.
-        assert (self.getStatus() == True)
-        
-        # GrmObject.
-        assert (isinstance(self.attr['grmObj'], grmCls))
-        assert (self.attr['grmObj'].getStatus() == True)
-

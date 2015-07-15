@@ -10,10 +10,8 @@ import os
 from grmpy.clsMax import _scipyWrapperFunction as evaluate
 from grmpy.user.init_interface import initialize
 from grmpy.tools.auxiliary import createMatrices
-from grmpy.clsGrm import grmCls
 from grmpy.clsCrit import critCls
 from grmpy.user._createDictionary import processInput
-from grmpy.clsGrm import grmCls
 from grmpy.tools.auxiliary import _updateParameters
 
 
@@ -95,15 +93,7 @@ def _get_likelihood(init):
     model_obj, paras_obj, _ = initialize(init, True)
 
     # Initialize container.
-    grm_obj = grmCls()
-
-    grm_obj.setAttr('modelObj', model_obj)
-
-    grm_obj.setAttr('parasObj', paras_obj)
-
-    grm_obj.lock()
-
-    crit_obj = critCls(grm_obj)
+    crit_obj = critCls(model_obj, paras_obj)
 
     crit_obj.lock()
 
@@ -154,7 +144,7 @@ def _simulate_endogenous(sim_dat, paras_obj, init_dict):
     # Antibugging.
     assert (isinstance(init_dict, dict))
     assert (isinstance(sim_dat, np.ndarray))
-    assert (paras_obj.getStatus() == True)
+    assert (paras_obj.get_status() == True)
 
     # Distribute information.
     sim_agents = init_dict['SIMULATION']['agents']

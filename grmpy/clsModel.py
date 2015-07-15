@@ -110,7 +110,7 @@ class modelCls(metaCls):
         ''' Calculate common support.
         '''
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
         
         # Distribute attributes.
         D = self.getAttr('D') 
@@ -138,7 +138,7 @@ class modelCls(metaCls):
         ''' Check integrity of class instance.
         '''
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
         
         # Outcome and treatment variable.
         for type_ in ['Y', 'D']:

@@ -28,7 +28,9 @@ class RsltCls(metaCls):
         self.attr = dict()
         
         # Attributes.
-        self.attr['grm_obj'] = None
+        self.attr['paras_obj'] = None
+        self.attr['model_obj'] = None
+
         self.attr['max_rslt'] = None
         self.attr['cov_mat'] = None
         self.attr['para_objs'] = None
@@ -47,7 +49,7 @@ class RsltCls(metaCls):
         """ Store class instance.
         """
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
         assert (isinstance(file_name, str))
 
         # Store.
@@ -59,14 +61,13 @@ class RsltCls(metaCls):
         """ Construct derived objects.
         """
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
 
         # Distribute class attributes.
-        grm_obj = self.getAttr('grm_obj')
         cov_mat = self.getAttr('cov_mat')
         
-        model_obj = grm_obj.getAttr('modelObj')
-        paras_obj = grm_obj.getAttr('parasObj')
+        model_obj = self.getAttr('modelObj')
+        paras_obj = self.getAttr('parasObj')
        
         num_agents = model_obj.getAttr('numAgents')
         
@@ -152,19 +153,17 @@ class RsltCls(metaCls):
         self.attr['paras'] = paras_obj.getValues('internal', 'all')
 
         # Cleanup.
-        self.attr.pop('grmObj', None)
         self.attr.pop('parasObj', None)
 
     def _write_file(self):
         """ Write results to file.
         """
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
         
         # Preparations
-        grm_obj = self.getAttr('grmObj')
-        paras_obj = grm_obj.getAttr('parasObj')
-        model_obj = grm_obj.getAttr('modelobj')
+        paras_obj = self.getAttr('paras_obj')
+        model_obj = self.getAttr('model_obj')
 
         with_asymptotics = model_obj.getAttr('withAsymptotics')
         surp_estimation = paras_obj.getAttr('surpEstimation')
@@ -225,17 +224,15 @@ class RsltCls(metaCls):
         """ Add results on marginal effects of treatment.
         """
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
         assert (isinstance(random_parameters, np.ndarray))
         assert (np.all(np.isfinite(random_parameters)))
         assert (random_parameters.dtype == 'float')
         assert (random_parameters.ndim  == 2)
     
         # Distribute class attributes.
-        grm_obj = self.getAttr('grm_obj')
-        
-        model_obj = grm_obj.getAttr('modelObj')
-        paras_obj = grm_obj.getAttr('parasObj')
+        model_obj = self.getAttr('modelObj')
+        paras_obj = self.getAttr('parasObj')
                 
         with_asymptotics = model_obj.getAttr('withAsymptotics')
         alpha = model_obj.getAttr('alpha')
@@ -309,11 +306,11 @@ class RsltCls(metaCls):
         """ Get effects.
         """
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() == True)
         assert (isinstance(model_obj, modelCls))
-        assert (model_obj.getStatus() == True)
+        assert (model_obj.get_status() == True)
         assert (isinstance(paras_obj, parasCls))
-        assert (paras_obj.getStatus() == True)
+        assert (paras_obj.get_status() == True)
 
         # Distribute class attributes.
         x_ex_post_eval = model_obj.getAttr('xExPostEval')
