@@ -1,190 +1,98 @@
-''' Module that holds the effects class.  
-'''
+""" Module that holds the effects class.
+"""
 # standard library
 import numpy as np
-
-import scipy
 import random
+import scipy
 
 # project library
 from grmpy.clsMeta import metaCls
 from grmpy.clsModel import modelCls
 from grmpy.clsParas import parasCls
 
-class effectCls(metaCls):
-    ''' Lightweight class for the simulation of treatment effect parameters.
-    '''
+class EffectCls(metaCls):
+    """ Lightweight class for construction of the marginal effect parameters.
+    """
     def __init__(self):
         
         self.isLocked = False
     
-    def getEffects(self, modelObj, parasObj, type_, args):
-        ''' Get effects.
-        '''
+    def get_effects(self, model_obj, paras_obj, args):
+        """ Get effects.
+        """
         # Antibugging.
         assert (self.getStatus() == True)
-        
-        assert (isinstance(modelObj, modelCls))
-        assert (modelObj.getStatus() == True)
-        
-        assert (isinstance(parasObj, parasCls))
-        assert (parasObj.getStatus() == True)
+        assert (isinstance(model_obj, modelCls))
+        assert (model_obj.getStatus() == True)
+        assert (isinstance(paras_obj, parasCls))
+        assert (paras_obj.getStatus() == True)
 
-        rslt = self.getTreatmentParameter(modelObj, parasObj, args['which'])
-        
-        # Finishing.
-        return rslt
-    
-    ''' Private  methods.
-    '''
-    def getTreatmentParameter(self, modelObj, parasObj, which):
-        ''' Construct marginal effect parameters.
-        '''
-        # Antibugging.
-        assert (self.getStatus() == True)
-        assert (which in ['smteExAnte', 'cmteExAnte', 'bmteExPost'])
-        
-        assert (isinstance(modelObj, modelCls))
-        assert (modelObj.getStatus() == True)
-        
-        assert (isinstance(parasObj, parasCls))
-        assert (parasObj.getStatus() == True)
-        
         # Distribute class attributes.
-        xExPostEval = modelObj.getAttr('xExPostEval')                
-        zEval       = modelObj.getAttr('zEval')
-        cEval       = modelObj.getAttr('cEval')
-                
+        x_ex_post_eval = model_obj.getAttr('xExPostEval')
+        z_eval = model_obj.getAttr('zEval')
+        c_eval = model_obj.getAttr('cEval')
+
         # Marginal benefit of treatment.
-        rhoU1V = parasObj.getParameters('rho', 'U1,V')
-        rhoU0V = parasObj.getParameters('rho', 'U0,V')
-        
-        coeffsBeneExPost = parasObj.getParameters('bene', 'exPost')     
-        coeffsCost       = parasObj.getParameters('cost', None) 
-        coeffsChoc       = parasObj.getParameters('choice', None) 
-                  
-        sdV  = parasObj.getParameters('sd', 'V')        
-        sdU1 = parasObj.getParameters('sd', 'U1')            
-        sdU0 = parasObj.getParameters('sd', 'U0')    
+        rho_u1_v = paras_obj.getParameters('rho', 'U1,V')
+        rho_u0_v = paras_obj.getParameters('rho', 'U0,V')
 
-        bmteLevel = np.dot(coeffsBeneExPost, xExPostEval)
-        smteLevel = np.dot(coeffsChoc, zEval)
-        cmteLevel = np.dot(coeffsCost, cEval)
-        
-        bmteExPost = np.tile(np.nan, (99))
-        cmteExAnte = np.tile(np.nan, (99))
-        smteExAnte = np.tile(np.nan, (99))
-                
-        evalPoints = np.round(np.arange(0.01, 1.0, 0.01), decimals = 2)
-        quantiles  = scipy.stats.norm.ppf(evalPoints, loc = 0, scale = sdV)
-        
+        coeffs_bene_ex_post = paras_obj.getParameters('bene', 'exPost')
+        coeffs_cost = paras_obj.getParameters('cost', None)
+        coeffs_choc = paras_obj.getParameters('choice', None)
+
+        sd_v = paras_obj.getParameters('sd', 'V')
+        sd_u1 = paras_obj.getParameters('sd', 'U1')
+        sd_u0 = paras_obj.getParameters('sd', 'U0')
+
+        bmte_level = np.dot(coeffs_bene_ex_post, x_ex_post_eval)
+        smte_level = np.dot(coeffs_choc, z_eval)
+        cmte_level = np.dot(coeffs_cost, c_eval)
+
+        bmte_ex_post = np.tile(np.nan, 99)
+        cmte_ex_post = np.tile(np.nan, 99)
+        smte_ex_ante = np.tile(np.nan, 99)
+
+        eval_points = np.round(np.arange(0.01, 1.0, 0.01), decimals=2)
+        quantiles = scipy.stats.norm.ppf(eval_points, loc=0, scale=sd_v)
+
         # Construct marginal benefit of treatment (ex post)
-        bmteSlopes = ((sdU1/sdV)*rhoU1V - (sdU0/sdV)*rhoU0V)*quantiles
-        smteSlopes = -quantiles
-        cmteSlopes = (((sdU1/sdV)*rhoU1V - (sdU0/sdV)*rhoU0V) + 1.0)*quantiles
+        bmte_slopes = ((sd_u1/sd_v)*rho_u1_v - (sd_u0/sd_v)*rho_u0_v)*quantiles
+        smte_slopes = -quantiles
+        cmte_slopes = (((sd_u1/sd_v)*rho_u1_v - (sd_u0/sd_v)*rho_u0_v) +
+                       1.0)*quantiles
 
         # Construct marginal benefit of treatment (ex post)
         for i in range(99):
-            
-            bmteExPost[i] = bmteLevel + bmteSlopes[i]
-                    
-        # Construct marginal surplus of treatment (ex ante).        
+
+            bmte_ex_post[i] = bmte_level + bmte_slopes[i]
+
+        # Construct marginal surplus of treatment (ex ante).
         for i in range(99):
-                
-            smteExAnte[i] = smteLevel + smteSlopes[i]
-    
+
+            smte_ex_ante[i] = smte_level + smte_slopes[i]
+
         # Construct marginal cost of treatment (ex ante).
         for i in range(99):
-                
-            cmteExAnte[i] = cmteLevel + cmteSlopes[i]
-            
-        if(which == 'bmteExPost'):
-        
-            rslt = bmteExPost
-        
-        elif(which == 'cmteExAnte'):
-            
-            rslt = cmteExAnte
-            
-        elif(which == 'smteExAnte'):
-            
-            rslt = smteExAnte
-    
+
+            cmte_ex_post[i] = cmte_level + cmte_slopes[i]
+
+        if args['which'] == 'bmteExPost':
+
+            rslt = bmte_ex_post
+
+        elif args['which'] == 'cmteExAnte':
+
+            rslt = cmte_ex_post
+
+        elif args['which'] == 'smteExAnte':
+
+            rslt = smte_ex_ante
+
         # Quality checks.
         assert (isinstance(rslt, np.ndarray))
         assert (np.all(np.isfinite(rslt)))
         assert (rslt.dtype == 'float')
         assert (rslt.shape == (99, ))
-    
-        # Finishing.    
-        return rslt
 
-    ''' Auxiliary methods.
-    '''
-    def _getMarginalEffects(self, evalPoint, xExPostEval, xExAnteEval, 
-                           zEval, cEval, parasObj):
-        ''' Get the marginal effect parameters for a particular point of 
-            evaluation and location. 
-        '''    
-        # Antibugging.
-        assert (self.getStatus() == True)
-        
-        assert (isinstance(evalPoint, float))
-        assert (0.0 < evalPoint < 1.00)
-        
-        assert (isinstance(xExPostEval, np.ndarray))
-        assert (np.all(np.isfinite(xExPostEval)))
-        
-        assert (isinstance(xExAnteEval, np.ndarray))
-        assert (np.all(np.isfinite(xExAnteEval)))
-        
-        assert (isinstance(zEval, np.ndarray))
-        assert (np.all(np.isfinite(zEval)))
-    
-        assert (isinstance(cEval, np.ndarray))
-        assert (np.all(np.isfinite(cEval)))    
-        
-        # Distribute class attributes.
-        rhoU1V = parasObj.getParameters('rho', 'U1,V')
-        rhoU0V = parasObj.getParameters('rho', 'U0,V')
-                
-        coeffsBeneExPost = parasObj.getParameters('bene', 'exPost')     
-        coeffsBeneExAnte = parasObj.getParameters('bene', 'exAnte')    
-        coeffsChoc       = parasObj.getParameters('choice', None) 
-        coeffsCost       = parasObj.getParameters('cost', None) 
-                
-        sdV  = parasObj.getParameters('sd', 'V')        
-        sdU1 = parasObj.getParameters('sd', 'U1')            
-        sdU0 = parasObj.getParameters('sd', 'U0')    
-        
-        bmteExPostLevel = np.dot(coeffsBeneExPost, xExPostEval)
-        bmteExAnteLevel = np.dot(coeffsBeneExAnte, xExAnteEval)
-        
-        smteLevel = np.dot(coeffsChoc, zEval)
-        cmteLevel = np.dot(coeffsCost, cEval)
-                    
-        quantile  = scipy.stats.norm.ppf(evalPoint, loc = 0, scale = sdV)
-                
-        # Construct marginal benefit of treatment (ex post)
-        bmteSlope = ((sdU1/sdV)*rhoU1V - (sdU0/sdV)*rhoU0V)*quantile
-        smteSlope = -quantile
-        cmteSlope = (((sdU1/sdV)*rhoU1V - (sdU0/sdV)*rhoU0V) + 1.0)*quantile
-    
-        # Construct marginal effects of treatment.
-        bmteExPost = bmteExPostLevel + bmteSlope
-        bmteExAnte = bmteExAnteLevel + bmteSlope    
-    
-        smteExAnte = smteLevel + smteSlope 
-        cmteExAnte = cmteLevel + cmteSlope
-    
-        # Quality checks.
-        for obj in [bmteExPost, bmteExAnte, cmteExAnte, smteExAnte]:
-            
-            assert (isinstance(obj, float))
-            assert (np.isfinite(obj))
-        
-        assert (np.round(smteExAnte - (bmteExAnte - cmteExAnte), \
-                    decimals = 10) == 0.0)
-            
-        # Finishing.    
-        return bmteExPost, bmteExAnte, cmteExAnte, smteExAnte
+        # Finishing.
+        return rslt

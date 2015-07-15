@@ -18,7 +18,7 @@ import random
 
 # project library
 from grmpy.clsMeta import metaCls
-from grmpy.clsEffects import effectCls
+from grmpy.clsEffects import EffectCls
 
 class rsltCls(metaCls):
     ''' This class contains all results provided back to the user from the 
@@ -257,7 +257,7 @@ class rsltCls(metaCls):
 
         surpEstimation      = parasObj.getAttr('surpEstimation')
         
-        effectObj = effectCls()
+        effectObj = EffectCls()
         
         effectObj.lock()
         
@@ -285,7 +285,7 @@ class rsltCls(metaCls):
             args['which'] = parameter
 
             self.attr[parameter]['estimate'] = \
-                effectObj.getEffects(modelObj, parasObj, 'marginal', args)
+                effectObj.get_effects(modelObj, parasObj, args)
         
         # Confidence bounds.
         if(not withAsymptotics): return None
@@ -305,7 +305,8 @@ class rsltCls(metaCls):
    
                 parasCopy.update(randomPara, version = 'external', which = 'free')
    
-                rslt[parameter].append(effectObj.getEffects(modelObj, parasCopy, 'marginal', args))
+                rslt[parameter].append(
+                    effectObj.get_effects(modelObj, parasCopy, args))
             
             # Type conversion.
             rslt[parameter] = np.array(rslt[parameter])
