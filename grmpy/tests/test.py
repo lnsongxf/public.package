@@ -13,7 +13,7 @@ TEST_PATH = os.getcwd()
 from nose.core import runmodule
 from nose.tools import *
 
-# Pythonpath
+# PYTHONPATH
 dir_ = FILE_PATH.replace('/tests', '')
 sys.path.insert(0, dir_)
 

@@ -7,7 +7,7 @@ import numpy as np
 
 # project library
 from grmpy.clsModel import modelCls
-from grmpy.tools.shared import createMatrices
+from grmpy.tools.msc import *
 
 
 ''' Main function.
@@ -29,20 +29,19 @@ def constructModel(initDict):
     # Construct data array.
     dataset = _processDataset(initDict)
     
-    rslt    = createMatrices(dataset, initDict)
+    rslt    = create_matrices(dataset, initDict)
 
     # Initialize model object.
     modelObj = modelCls()
-    
     
     modelObj.set_attr('Y', rslt['Y'])
     
     modelObj.set_attr('D', rslt['D'])
     
     
-    modelObj.set_attr('xExPost', rslt['xExPost'])
+    modelObj.set_attr('x_ex_post', rslt['x_ex_post'])
     
-    modelObj.set_attr('xExAnte', rslt['xExAnte'])
+    modelObj.set_attr('x_ex_ante', rslt['x_ex_ante'])
         
     
     modelObj.set_attr('G', rslt['G'])

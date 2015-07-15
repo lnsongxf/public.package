@@ -1,28 +1,28 @@
-''' Module for the management of the maximization algorithms.
-'''
+""" Module for the management of the maximization algorithms.
+"""
 
 # standard library.
-import numpy as np
-from   scipy.optimize  import  fmin_bfgs, fmin_powell
+from scipy.optimize import fmin_bfgs, fmin_powell
 
 # project library
+from grmpy.tools.optimization.wrappers import *
 from grmpy.clsMeta import MetaCls
-from grmpy.tools.optimization.clsCrit import critCls
 from grmpy.clsModel import modelCls
 from grmpy.clsParas import parasCls
 
-from grmpy.tools.optimization.wrappers import *
+from clsCrit import CritCls
 
-class maxCls(MetaCls):
+
+class MaxCls(MetaCls):
     
     def __init__(self, model_obj, paras_obj):
 
-        # Antibugging.
+        # Antibugging
         assert (isinstance(model_obj, modelCls))
         assert (isinstance(paras_obj, parasCls))
 
-        assert (model_obj.get_status() == True)
-        assert (paras_obj.get_status() == True)
+        assert (model_obj.get_status() is True)
+        assert (paras_obj.get_status() is True)
 
         self.attr = dict()
 
@@ -30,199 +30,173 @@ class maxCls(MetaCls):
 
         self.attr['paras_obj'] = paras_obj
 
-        # Results container.
-        self.attr['maxRslt'] = None
+        # Results container
+        self.attr['max_rslt'] = None
                 
-        # Status.
+        # Status
         self.is_locked = False
     
     def derived_attributes(self):
-        ''' Construct derived attributes.
-        '''
-        # Antibugging.
-        assert (self.get_status() == True)
+        """ Construct derived attributes.
+        """
+        # Antibugging
+        assert (self.get_status() is True)
         
-        # Distribute class attributes.
+        # Distribute class attributes
         model_obj = self.get_attr('model_obj')
         paras_obj = self.get_attr('paras_obj')
 
-        # Criterion function.
-        critFunc = critCls(model_obj, paras_obj)
+        # Criterion function
+        crit_func = CritCls(model_obj, paras_obj)
         
-        critFunc.lock()            
+        crit_func.lock()
     
-        self.attr['critFunc'] = critFunc
+        self.attr['crit_func'] = crit_func
     
     def maximize(self):
-        ''' Maximization
-        '''
-        # Antibugging.
-        assert (self.get_status() == True)
+        """ Maximization
+        """
+        # Antibugging
+        assert (self.get_status() is True)
         
-        # Distribute class attributes.
-        critFunc   = self.get_attr('critFunc')
+        # Distribute class attributes
+        crit_func = self.get_attr('crit_func')
 
-        paras_obj   = self.get_attr('paras_obj')
+        paras_obj = self.get_attr('paras_obj')
 
         model_obj = self.get_attr('model_obj')
 
-        algorithm  = model_obj.get_attr('algorithm')
+        algorithm = model_obj.get_attr('algorithm')
         
-        maxiter    = model_obj.get_attr('maxiter')
+        maxiter = model_obj.get_attr('maxiter')
         
-        # Maximization.
-        if(maxiter == 0):
+        # Maximization
+        if maxiter == 0:
             
-            x        = paras_obj.getValues('external', 'free')
+            x = paras_obj.getValues('external', 'free')
             
+            max_rslt = dict()
             
-            maxRslt = {}
+            max_rslt['fun'] = scipy_wrapper_function(x, crit_func)
             
-            maxRslt['fun']     = scipy_wrapper_function(x, critFunc)
+            max_rslt['grad'] = scipy_wrapper_gradient(x, crit_func)
             
-            maxRslt['grad']    = scipy_wrapper_gradient(x, critFunc)
-            
-            maxRslt['xopt']    = x
+            max_rslt['xopt'] = x
                         
-            maxRslt['success'] = False
+            max_rslt['success'] = False
     
             # Message:
-            maxRslt['message'] = 'Single function evaluation at starting values.'
+            max_rslt['message'] = 'Single function evaluation at ' \
+                                 'starting values.'
                 
-        elif(algorithm == 'bfgs'):
+        elif algorithm == 'bfgs':
             
-            maxRslt = self._bfgs()
+            max_rslt = self._bfgs()
             
-        elif(algorithm == 'powell'):
+        elif algorithm == 'powell':
             
-            maxRslt = self._powell()
+            max_rslt = self._powell()
 
         # Finishing.
-        return maxRslt
+        return max_rslt
         
     ''' Private Methods.
     '''
     def _powell(self):
-        ''' Method that performs the Powell maximization.
-        '''
-        # Antibugging.
-        assert (self.get_status() == True)
+        """ Method that performs the Powell maximization.
+        """
+        # Antibugging
+        assert (self.get_status() is True)
 
-        # Distribute class attributes.
+        # Distribute class attributes
         model_obj = self.get_attr('model_obj')
 
-        paras_obj   = self.get_attr('paras_obj')
+        paras_obj = self.get_attr('paras_obj')
                 
-        maxiter    = model_obj.get_attr('maxiter')
+        maxiter = model_obj.get_attr('maxiter')
 
-        critFunc   = self.get_attr('critFunc')
+        crit_func = self.get_attr('crit_func')
         
-        # Staring values.
-        startingValues = paras_obj.getValues(version = 'external', which = 'free')
+        # Staring values
+        startingValues = paras_obj.getValues(version='external', which='free')
         
-        rslt = fmin_powell(
-                
-                func        = scipy_wrapper_function,
-                x0          = startingValues, 
-                args        = (critFunc, ), 
-                xtol        = 0.0000000001,
-                ftol        = 0.0000000001,
-                maxiter     = maxiter,
-                maxfun      = None,
-                full_output = True,
-                disp        = 1,
-                callback    = None
-                              
-            )
+        rslt = fmin_powell(func=scipy_wrapper_function, x0=startingValues,
+                           args=(crit_func, ), xtol=0.0000000001,
+                           ftol=0.0000000001, maxiter=maxiter, maxfun=None,
+                           full_output=True, disp=1, callback=None)
         
-        # Prepare result dictionary.
-        maxRslt = {}
+        # Prepare result dictionary
+        max_rslt = dict()
         
-        maxRslt['xopt']    = rslt[0]
-        maxRslt['fun']     = rslt[1]
-        maxRslt['grad']    = None
-        maxRslt['success'] = (rslt[5] == 0)
+        max_rslt['xopt'] = rslt[0]
+        max_rslt['fun'] = rslt[1]
+        max_rslt['grad'] = None
+        max_rslt['success'] = (rslt[5] == 0)
         
-        # Message.
-        maxRslt['message']  = rslt[5]
+        # Message
+        max_rslt['message'] = rslt[5]
         
-        if(maxRslt['message'] == 1):
+        if max_rslt['message'] == 1:
+            max_rslt['message'] = 'Maximum number of function evaluations.'
+
+        if max_rslt['message'] == 0:
+            max_rslt['message'] = 'None'
             
-            maxRslt['message'] = 'Maximum number of function evaluations.'
-            
-        if(maxRslt['message'] == 0):
-            
-            maxRslt['message'] = 'None'
-            
-        if(maxRslt['message'] == 2):
-            
-            maxRslt['message'] = 'Maximum number of iterations.'       
+        if max_rslt['message'] == 2:
+            max_rslt['message'] = 'Maximum number of iterations.'       
             
         # Finishing.
-        return maxRslt
+        return max_rslt
         
     def _bfgs(self):
-        ''' Method that performs a BFGS maximization.
-        '''
-        # Antibugging.
-        assert (self.get_status() == True)
+        """ Method that performs a BFGS maximization.
+        """
+        # Antibugging
+        assert (self.get_status() is True)
 
-        # Distribute class attributes.
+        # Distribute class attributes
         model_obj = self.get_attr('model_obj')
 
-        paras_obj   = self.get_attr('paras_obj')
+        paras_obj = self.get_attr('paras_obj')
         
-        maxiter    = model_obj.get_attr('maxiter')
+        maxiter = model_obj.get_attr('maxiter')
         
-        gtol       = model_obj.get_attr('gtol')
+        gtol = model_obj.get_attr('gtol')
         
-        epsilon    = model_obj.get_attr('epsilon')
+        epsilon = model_obj.get_attr('epsilon')
 
-        critFunc   = self.get_attr('critFunc')
+        crit_func = self.get_attr('crit_func')
                 
-        # Staring values.
-        startingValues = paras_obj.getValues(version = 'external', which = 'free')
+        # Staring values
+        starting_values = paras_obj.getValues(version='external', which='free')
         
-        # Maximization.
-        rslt = fmin_bfgs(
-                    
-                f           = scipy_wrapper_function,
-                fprime      = scipy_wrapper_gradient,
-                x0          = startingValues,
-                args        = (critFunc, ), 
-                gtol        = gtol,
-                epsilon     = epsilon,
-                maxiter     = maxiter, 
-                full_output = True,
-                disp        = 1,
-                retall      = 0,
-                callback    = None
-                
-            )
+        # Maximization
+        rslt = fmin_bfgs(f=scipy_wrapper_function,
+                         fprime=scipy_wrapper_gradient, x0=starting_values,
+                         args=(crit_func,), gtol=gtol, epsilon=epsilon,
+                         maxiter=maxiter, full_output=True, disp=1, retall=0,
+                         callback=None)
         
-        # Prepare result dictionary.
-        maxRslt = {}
+        # Prepare result dictionary
+        max_rslt = dict()
        
-        maxRslt['xopt']    = rslt[0]
-        maxRslt['fun']     = rslt[1]
-        maxRslt['grad']    = rslt[2]
-        maxRslt['covMat']  = rslt[3]
-        maxRslt['success'] = (rslt[6] == 0)
+        max_rslt['xopt'] = rslt[0]
+        max_rslt['fun'] = rslt[1]
+        max_rslt['grad'] = rslt[2]
+        max_rslt['covMat'] = rslt[3]
+        max_rslt['success'] = (rslt[6] == 0)
 
         # Message:
-        maxRslt['message'] = rslt[6]
+        max_rslt['message'] = rslt[6]
         
-        if(maxRslt['message'] == 1):
+        if max_rslt['message'] == 1:
+            max_rslt['message'] = 'Maximum number of function evaluations.'
             
-            maxRslt['message'] = 'Maximum number of function evaluations.'
+        if max_rslt['message'] == 0:
+            max_rslt['message'] = 'None'
             
-        if(maxRslt['message'] == 0):
-            
-            maxRslt['message'] = 'None'
-            
-        if(maxRslt['message'] == 2):
-            
-            maxRslt['message'] = 'Gradient and/or function calls not changing.'
+        if max_rslt['message'] == 2:
+            max_rslt['message'] = 'Gradient and/or function calls not changing.'
             
         # Finishing.
-        return maxRslt
+        return max_rslt

@@ -282,7 +282,7 @@ def _autoStart(parasObj, modelObj):
         D = modelObj.get_attr('D')
         
         
-        X = modelObj.get_attr('xExPost')
+        X = modelObj.get_attr('x_ex_post')
         
         G = modelObj.get_attr('G')
         

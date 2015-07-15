@@ -57,13 +57,13 @@ def simulate(init='init.ini', update=False):
 
     ''' Update for prediction step.
     '''
-    rslt = createMatrices(sim_dat, init_dict)
+    rslt = create_matrices(sim_dat, init_dict)
 
     paras_obj.unlock()
 
-    paras_obj.set_attr('xExAnte', rslt['xExAnte'])
+    paras_obj.set_attr('x_ex_ante', rslt['x_ex_ante'])
 
-    paras_obj.set_attr('xExPost', rslt['xExPost'])
+    paras_obj.set_attr('x_ex_post', rslt['x_ex_post'])
 
     paras_obj.lock()
 
@@ -89,7 +89,7 @@ def _get_likelihood(init):
     model_obj, paras_obj, _ = initialize(init, True)
 
     # Initialize container.
-    crit_obj = critCls(model_obj, paras_obj)
+    crit_obj = CritCls(model_obj, paras_obj)
 
     crit_obj.lock()
 
@@ -169,9 +169,9 @@ def _simulate_endogenous(sim_dat, paras_obj, init_dict):
     u1, u0, V = np.random.multivariate_normal(mean, cov_mat, sim_agents).T
 
     # Create data matrices.
-    rslt = createMatrices(sim_dat, init_dict)
+    rslt = create_matrices(sim_dat, init_dict)
 
-    x_ex_post = rslt['xExPost']
+    x_ex_post = rslt['x_ex_post']
 
     z = rslt['Z']
 

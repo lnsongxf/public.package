@@ -1,4 +1,4 @@
-""" Module for auxiliary functions that are used throughout the grmToolbox.
+""" Module for auxiliary functions that are used throughout the GRMPY package.
 """
 
 # standard library
@@ -7,17 +7,17 @@ import shlex
 import os
 
 
-def updateParameters(parasObj):
-    ''' Update parameter object if possible.
-    '''
-    # Antibugging.
-    assert (parasObj.get_status() == True)
+def update_parameters(paras_obj):
+    """ Update parameter object if possible.
+    """
+    # Antibugging 
+    assert (paras_obj.get_status() is True)
     assert (os.path.isfile('info.grmpy.out'))
 
-    # Update.
-    hasStep = (os.path.isfile('info.grmpy.out'))
+    # Update
+    has_step = (os.path.isfile('info.grmpy.out'))
 
-    if(hasStep):
+    if has_step:
 
         list_ = []
 
@@ -27,104 +27,91 @@ def updateParameters(parasObj):
 
             for line in file_:
 
-                currentLine = shlex.split(line)
+                current_line = shlex.split(line)
 
-                if len(currentLine) ==  0:
+                if len(current_line) ==  0:
                     continue
 
-                if len(currentLine) > 1:
+                if len(current_line) > 1:
                     break
 
-                if currentLine == ['STOP']:
+                if current_line == ['STOP']:
                     is_relevant = True
 
-                if currentLine[0] in ['START', 'STOP']:
+                if current_line[0] in ['START', 'STOP']:
                     continue
 
                 if is_relevant:
-                    list_ += [np.float_(currentLine[0])]
+                    list_ += [np.float_(current_line[0])]
 
         starting_values = np.array(list_)
 
-        parasObj.update(starting_values, version = 'internal', which = 'all')
+        paras_obj.update(starting_values, version='internal', which='all')
 
-    # Finishing.
-    return parasObj
+    # Finishing
+    return paras_obj
 
-def createMatrices(dataset, initDict):
-    ''' Create the data matrices.
-    '''
-    # Antibugging.
-    assert (isinstance(initDict, dict))
-    
+def create_matrices(dataset, init_dict):
+    """ Create the data matrices.
+    """
+    # Antibugging 
+    assert (isinstance(init_dict, dict))
     assert (isinstance(dataset, np.ndarray))
     assert (dataset.dtype == 'float')
     assert (dataset.ndim == 2)
     
     # Distribute information
-    outcome   = initDict['DATA']['outcome']
+    outcome = init_dict['DATA']['outcome']
 
-    treatment = initDict['DATA']['treatment'] 
+    treatment = init_dict['DATA']['treatment'] 
 
-    common    = initDict['DERIV']['common']['pos']
+    common = init_dict['DERIV']['common']['pos']
 
-    exclBeneExAnte = initDict['DERIV']['exclBene']['exAnte']['pos']
+    excl_bene_ex_ante = init_dict['DERIV']['exclBene']['exAnte']['pos']
 
-    exclBeneExPost = initDict['DERIV']['exclBene']['exPost']['pos']
+    excl_bene_ex_post = init_dict['DERIV']['exclBene']['exPost']['pos']
 
-    exclCost       = initDict['DERIV']['exclCost']['pos']
+    excl_cost = init_dict['DERIV']['exclCost']['pos']
 
-    # Construct auxiliary information.
-    numAgents = dataset.shape[0]
+    # Construct auxiliary information 
+    num_agents = dataset.shape[0]
     
-    # Create matrices.
-    Y = dataset[:,outcome]
+    # Create matrices 
+    y = dataset[:, outcome]
     
-    D = dataset[:,treatment]
+    d = dataset[:, treatment]
     
-    M = dataset[:,common].copy()
+    m = dataset[:, common].copy()
         
-    M = np.concatenate((M, np.ones((numAgents, 1))), axis = 1)
-        
-        
-    xExAnte = np.concatenate((dataset[:,exclBeneExAnte], M), axis = 1)
+    m = np.concatenate((m, np.ones((num_agents, 1))), axis=1)
+
+    x_ex_ante = np.concatenate((dataset[:, excl_bene_ex_ante], m), axis=1)
     
-    xExPost = np.concatenate((dataset[:,exclBeneExPost], M), axis = 1)
+    x_ex_post = np.concatenate((dataset[:, excl_bene_ex_post], m), axis=1)
+
+    g = np.concatenate((m, dataset[:, excl_cost]), axis = 1)
         
-        
-    G = np.concatenate((M, dataset[:, exclCost]), axis = 1) 
-        
-    Z = np.concatenate((xExAnte, dataset[:, exclCost]), axis = 1)
+    z = np.concatenate((x_ex_ante, dataset[:, excl_cost]), axis = 1)
     
-    # Quality checks.
-    for mat in [xExAnte, xExPost, G, Z]:
-        
+    # Quality checks 
+    for mat in [x_ex_ante, x_ex_post, g, z]:
         assert (isinstance(mat, np.ndarray))
         assert (mat.dtype == 'float')
         assert (mat.ndim == 2)
     
-    for mat in [D, Y]:
-        
+    for mat in [d, y]:
         assert (isinstance(mat, np.ndarray))
         assert (mat.dtype == 'float')
         assert (mat.ndim == 1)
 
-    # Collect.
-    rslt = {}
-    
-    rslt['xExPost'] = xExPost
-
-    rslt['xExAnte'] = xExAnte
-    
-    
-    rslt['G'] = G
-    
-    rslt['Z'] = Z
-    
-    
-    rslt['Y'] = Y
-        
-    rslt['D'] = D
+    # Collect 
+    rslt = dict()
+    rslt['x_ex_post'] = x_ex_post
+    rslt['x_ex_ante'] = x_ex_ante
+    rslt['G'] = g
+    rslt['Z'] = z
+    rslt['Y'] = y
+    rslt['D'] = d
         
     # Finishing.
     return rslt

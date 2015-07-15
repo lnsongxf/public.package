@@ -8,9 +8,9 @@ import shlex
 import os
 
 # project library
-import _createModel as auxModel
-import _createParas as auxParas
-from grmpy.tools.user._checkInput import checkInput
+import create_model as auxModel
+import create_paras as auxParas
+from grmpy.tools.user.check_input import checkInput
 
 ''' Main function.
 '''

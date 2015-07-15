@@ -32,10 +32,10 @@ class parasCls(MetaCls):
         self.attr['withoutPrediction']       = modelObj.get_attr('withoutPrediction')
         self.attr['surpEstimation']          = modelObj.get_attr('surpEstimation')
 
-        self.attr['xExAnte']                 = modelObj.get_attr('xExAnte')
-        self.attr['xExPost']                 = modelObj.get_attr('xExPost')
+        self.attr['x_ex_ante']                 = modelObj.get_attr('x_ex_ante')
+        self.attr['x_ex_post']                 = modelObj.get_attr('x_ex_post')
 
-        self.attr['numAgents']               = modelObj.get_attr('numAgents')
+        self.attr['num_agents']               = modelObj.get_attr('num_agents')
         
         # Initialization.
         self.attr['modelObj']  = modelObj    
@@ -473,17 +473,17 @@ class parasCls(MetaCls):
         # Check applicability.
         if(withoutPrediction): return coeffsBeneExPost 
         
-        xExPost = self.get_attr('xExPost')
-        xExAnte = self.get_attr('xExAnte')
+        x_ex_post = self.get_attr('x_ex_post')
+        x_ex_ante = self.get_attr('x_ex_ante')
     
         # Construct index.       
-        idxBene = np.dot(coeffsBeneExPost, xExPost.T)
+        idxBene = np.dot(coeffsBeneExPost, x_ex_post.T)
         
         if(self.attr['factor'] is None):
      
-            pinv = np.linalg.pinv(np.dot(xExAnte.T, xExAnte))
+            pinv = np.linalg.pinv(np.dot(x_ex_ante.T, x_ex_ante))
             
-            self.attr['factor'] = np.dot(pinv, xExAnte.T)
+            self.attr['factor'] = np.dot(pinv, x_ex_ante.T)
                 
         rslt = np.dot(self.attr['factor'], idxBene)
   

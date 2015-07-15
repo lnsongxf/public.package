@@ -50,7 +50,7 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
     with_asymptotics = model_obj.get_attr('withAsymptotics')
 
     # Distribute auxiliary objects.
-    max_obj = maxCls(model_obj, paras_obj)
+    max_obj = MaxCls(model_obj, paras_obj)
 
     max_obj.lock()
 

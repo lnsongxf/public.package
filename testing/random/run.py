@@ -36,7 +36,7 @@ def run(hours):
     labels = ['A', 'B', 'C', 'D', 'E']
 
     # Initialize counter
-    dict_ = {}
+    dict_ = dict()
 
     for label in labels:
 

@@ -66,7 +66,7 @@ class RsltCls(MetaCls):
         model_obj = self.get_attr('model_obj')
         paras_obj = self.get_attr('paras_obj')
        
-        num_agents = model_obj.get_attr('numAgents')
+        num_agents = model_obj.get_attr('num_agents')
         
         alpha = model_obj.get_attr('alpha')
         num_draws = model_obj.get_attr('numDraws')

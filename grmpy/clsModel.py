@@ -18,15 +18,15 @@ class modelCls(MetaCls):
         self.attr = {}
         
         # Data matrices.
-        self.attr['numAgents'] = None
+        self.attr['num_agents'] = None
 
         self.attr['Y'] = None
         
         self.attr['D'] = None
         
-        self.attr['xExPost'] = None
+        self.attr['x_ex_post'] = None
         
-        self.attr['xExAnte'] = None
+        self.attr['x_ex_ante'] = None
         
         self.attr['G']       = None
         
@@ -84,12 +84,12 @@ class modelCls(MetaCls):
         ''' Calculate derived attributes.
         '''
         # Number of agents.
-        self.attr['numAgents']   = self.attr['xExPost'].shape[0]
+        self.attr['num_agents']   = self.attr['x_ex_post'].shape[0]
         
         # Evaluation points.
-        self.attr['xExPostEval'] = self.attr['xExPost'].mean(axis = 0)
+        self.attr['xExPostEval'] = self.attr['x_ex_post'].mean(axis = 0)
 
-        self.attr['xExAnteEval'] = self.attr['xExAnte'].mean(axis = 0)
+        self.attr['xExAnteEval'] = self.attr['x_ex_ante'].mean(axis = 0)
 
         self.attr['zEval']       = self.attr['Z'].mean(axis = 0)
 
@@ -100,7 +100,7 @@ class modelCls(MetaCls):
 
         # Prediction.
         self.attr['withoutPrediction'] = \
-            (self.attr['xExPost'].shape[1] == self.attr['xExAnte'].shape[1])
+            (self.attr['x_ex_post'].shape[1] == self.attr['x_ex_ante'].shape[1])
             
         # Surplus estimation.
         self.attr['surpEstimation'] = \
@@ -162,7 +162,7 @@ class modelCls(MetaCls):
         assert (self.is_locked in [True, False])
         
         # Covariate containers.
-        for type_ in ['xExPost', 'xExAnte', 'G', 'Z']:
+        for type_ in ['x_ex_post', 'x_ex_ante', 'G', 'Z']:
 
             if(self.attr[type_] is not None):
 
