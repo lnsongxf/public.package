@@ -54,11 +54,11 @@ class maxCls(metaCls):
 
         parasObj   = grmObj.getAttr('parasObj')
 
-        requestObj = grmObj.getAttr('requestObj')        
+        model_obj = grmObj.getAttr('modelObj')
 
-        algorithm  = requestObj.attr['algorithm']
+        algorithm  = model_obj.attr['algorithm']
         
-        maxiter    = requestObj.getAttr('maxiter')
+        maxiter    = model_obj.getAttr('maxiter')
         
         # Maximization.
         if(maxiter == 0):
@@ -101,11 +101,11 @@ class maxCls(metaCls):
         # Distribute class attributes.
         grmObj = self.getAttr('grmObj')
 
-        requestObj = grmObj.getAttr('requestObj')
+        model_obj = grmObj.getAttr('modelObj')
 
         parasObj   = grmObj.getAttr('parasObj')
                 
-        maxiter    = requestObj.getAttr('maxiter')
+        maxiter    = model_obj.getAttr('maxiter')
 
         critFunc   = self.getAttr('critFunc')
         
@@ -162,15 +162,15 @@ class maxCls(metaCls):
         # Distribute class attributes.
         grmObj = self.getAttr('grmObj')
 
-        requestObj = grmObj.getAttr('requestObj')
+        model_obj = grmObj.getAttr('modelObj')
 
         parasObj   = grmObj.getAttr('parasObj')
         
-        maxiter    = requestObj.getAttr('maxiter')
+        maxiter    = model_obj.getAttr('maxiter')
         
-        gtol       = requestObj.getAttr('gtol')
+        gtol       = model_obj.getAttr('gtol')
         
-        epsilon    = requestObj.getAttr('epsilon')
+        epsilon    = model_obj.getAttr('epsilon')
 
         critFunc   = self.getAttr('critFunc')
                 

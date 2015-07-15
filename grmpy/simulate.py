@@ -27,7 +27,7 @@ def simulate(init='init.ini', update=False):
 
     ''' Process initialization file.
     '''
-    _, paras_obj, _, init_dict = initialize(init, is_simulation=True)
+    _, paras_obj, init_dict = initialize(init, is_simulation=True)
 
     ''' Distribute information.
     '''
@@ -92,14 +92,12 @@ def _get_likelihood(init):
     assert (isinstance(init, str))
 
     # Process model ingredients.
-    model_obj, paras_obj, request_obj, _ = initialize(init, True)
+    model_obj, paras_obj, _ = initialize(init, True)
 
     # Initialize container.
     grm_obj = grmCls()
 
     grm_obj.setAttr('modelObj', model_obj)
-
-    grm_obj.setAttr('requestObj', request_obj)
 
     grm_obj.setAttr('parasObj', paras_obj)
 

@@ -65,15 +65,14 @@ class RsltCls(metaCls):
         grm_obj = self.getAttr('grm_obj')
         cov_mat = self.getAttr('cov_mat')
         
-        request_obj = grm_obj.getAttr('requestObj')
         model_obj = grm_obj.getAttr('modelObj')
         paras_obj = grm_obj.getAttr('parasObj')
        
         num_agents = model_obj.getAttr('numAgents')
         
-        alpha = request_obj.getAttr('alpha')
-        num_draws = request_obj.getAttr('numDraws')
-        with_asymptotics = request_obj.getAttr('withAsymptotics')
+        alpha = model_obj.getAttr('alpha')
+        num_draws = model_obj.getAttr('numDraws')
+        with_asymptotics = model_obj.getAttr('withAsymptotics')
 
         # Auxiliary objects.
         paras_copy = copy.deepcopy(paras_obj)
@@ -164,10 +163,10 @@ class RsltCls(metaCls):
         
         # Preparations
         grm_obj = self.getAttr('grmObj')
-        request_obj = grm_obj.getAttr('requestObj')
         paras_obj = grm_obj.getAttr('parasObj')
+        model_obj = grm_obj.getAttr('modelobj')
 
-        with_asymptotics = request_obj.getAttr('withAsymptotics')
+        with_asymptotics = model_obj.getAttr('withAsymptotics')
         surp_estimation = paras_obj.getAttr('surpEstimation')
         
         # Write results.
@@ -235,12 +234,11 @@ class RsltCls(metaCls):
         # Distribute class attributes.
         grm_obj = self.getAttr('grm_obj')
         
-        request_obj = grm_obj.getAttr('requestObj')
         model_obj = grm_obj.getAttr('modelObj')
         paras_obj = grm_obj.getAttr('parasObj')
                 
-        with_asymptotics = request_obj.getAttr('withAsymptotics')
-        alpha = request_obj.getAttr('alpha')
+        with_asymptotics = model_obj.getAttr('withAsymptotics')
+        alpha = model_obj.getAttr('alpha')
         surp_estimation = paras_obj.getAttr('surpEstimation')
 
         # Auxiliary objects.

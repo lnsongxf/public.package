@@ -72,12 +72,12 @@ class critCls(metaCls):
         # Distribute class attributes.
         grmObj = self.getAttr('grmObj')
         
-        requestObj = grmObj.getAttr('requestObj')
+        model_obj = grmObj.getAttr('modelObj')
 
         parasObj   = grmObj.getAttr('parasObj')
       
-        epsilon     = requestObj.getAttr('epsilon')
-        differences = requestObj.getAttr('differences')
+        epsilon     = model_obj.getAttr('epsilon')
+        differences = model_obj.getAttr('differences')
          
         # Auxiliary statistics.
         numFree = parasObj.getAttr('numFree')
@@ -149,10 +149,10 @@ class critCls(metaCls):
         
         parasObj = grmObj.getAttr('parasObj')
 
-        requestObj = grmObj.getAttr('requestObj')
+        model_obj = grmObj.getAttr('modelObj')
 
         # Auxiliary objects
-        version = requestObj.getAttr('version')
+        version = model_obj.getAttr('version')
 
         # Update values.            
         self.update(x)

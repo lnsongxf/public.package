@@ -34,13 +34,11 @@ def initialize(initFile, use_simulation = False, is_simulation = False):
     modelObj   = auxModel.constructModel(initDict)
     
     parasObj   = auxParas.constructParas(initDict, modelObj, is_simulation)
-    
-    requestObj = auxRequest.constructRequest(initDict)
-    
+
     # Quality checks.
-    for obj in [modelObj, parasObj, requestObj]:
+    for obj in [modelObj, parasObj]:
 
         assert (obj.getStatus() == True)
     
     # Finishing
-    return modelObj, parasObj, requestObj, initDict
+    return modelObj, parasObj, initDict

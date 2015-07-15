@@ -55,7 +55,29 @@ def constructModel(initDict):
     modelObj.setAttr('numCovarsExclBeneExAnte', numCovarsExclBeneExAnte)
     
     modelObj.setAttr('numCovarsExclCost', numCovarsExclCost)
-    
+
+
+    modelObj.setAttr('algorithm', initDict['ESTIMATION']['algorithm'])
+
+    modelObj.setAttr('epsilon', initDict['ESTIMATION']['epsilon'])
+
+    modelObj.setAttr('differences', initDict['ESTIMATION']['differences'])
+
+    modelObj.setAttr('gtol', initDict['ESTIMATION']['gtol'])
+
+    modelObj.setAttr('maxiter', initDict['ESTIMATION']['maxiter'])
+
+    modelObj.setAttr('withAsymptotics', initDict['ESTIMATION']['asymptotics'])
+
+    modelObj.setAttr('numDraws', initDict['ESTIMATION']['draws'])
+
+    modelObj.setAttr('version', initDict['ESTIMATION']['version'])
+
+    modelObj.setAttr('hessian', initDict['ESTIMATION']['hessian'])
+
+    modelObj.setAttr('alpha', initDict['ESTIMATION']['alpha'])
+
+
     
     modelObj.lock()
     

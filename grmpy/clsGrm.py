@@ -5,7 +5,6 @@
 from grmpy.clsMeta import metaCls
 from grmpy.clsModel import modelCls
 from grmpy.clsParas import parasCls
-from grmpy.clsRequest import requestCls
 
 class grmCls(metaCls):
     
@@ -16,9 +15,7 @@ class grmCls(metaCls):
         self.attr['modelObj']   = None
         
         self.attr['parasObj']   = None
-        
-        self.attr['requestObj'] = None
-        
+
         # Status.
         self.isLocked = False
         
@@ -36,6 +33,3 @@ class grmCls(metaCls):
         assert (isinstance(self.attr['parasObj'], parasCls))
         assert (self.attr['parasObj'].getStatus() == True)
         
-        # Request.
-        assert (isinstance(self.attr['requestObj'], requestCls))
-        assert (self.attr['requestObj'].getStatus() == True)

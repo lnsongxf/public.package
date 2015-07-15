@@ -30,7 +30,7 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
     cleanup(resume)
 
     # Process initialization file
-    model_obj, paras_obj, request_obj, _ = initialize(init, use_simulation)
+    model_obj, paras_obj, _ = initialize(init, use_simulation)
 
     # Update parameter objects.
     if resume:
@@ -46,8 +46,6 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
 
     grm_obj.setAttr('modelObj', model_obj)
 
-    grm_obj.setAttr('requestObj', request_obj)
-
     grm_obj.setAttr('parasObj', paras_obj)
 
     grm_obj.lock()
@@ -56,11 +54,11 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
     np.random.seed(123)
 
     # Distribute class attributes.
-    request_obj = grm_obj.getAttr('requestObj')
+    modelObj = grm_obj.getAttr('modelObj')
 
-    hessian = request_obj.getAttr('hessian')
+    hessian = modelObj.getAttr('hessian')
 
-    with_asymptotics = request_obj.getAttr('withAsymptotics')
+    with_asymptotics = modelObj.getAttr('withAsymptotics')
 
     # Distribute auxiliary objects.
     max_obj = maxCls(grm_obj)

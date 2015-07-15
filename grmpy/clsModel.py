@@ -58,7 +58,23 @@ class modelCls(metaCls):
         self.attr['withoutPrediction']  = None
         
         self.attr['surpEstimation']     = None
-        
+
+        # Optional arguments.
+        self.attr['algorithm']       = None
+        self.attr['epsilon']         = None
+        self.attr['differences']     = None
+
+        self.attr['gtol']            = None
+        self.attr['maxiter']         = None
+
+        self.attr['withAsymptotics'] = None
+        self.attr['numDraws']        = None
+
+        self.attr['version']         = None
+        self.attr['hessian']         = None
+        self.attr['alpha']           = None
+
+
         # Status.               
         self.isLocked = False
     
@@ -175,3 +191,40 @@ class modelCls(metaCls):
         # Common support.
         assert (isinstance(self.attr['commonSupport'], tuple))
         assert (len(self.attr['commonSupport']) == 2)       
+
+        # version
+        assert (self.attr['version'] in ['fast', 'slow'])
+
+        # withAsymptotics.
+        assert (self.attr['withAsymptotics'] in [True, False])
+
+        # Algorithm.
+        assert (self.attr['algorithm'] in ['bfgs', 'powell'])
+
+        # Maximum iteration.
+        if(self.attr['maxiter'] is not None):
+
+            assert (isinstance(self.attr['maxiter'], int))
+            assert (self.attr['maxiter'] >= 0)
+
+        # alpha.
+        assert (isinstance(self.attr['alpha'], float))
+        assert (0.0 < self.attr['alpha'] < 1.0)
+
+        # gtol.
+        assert (isinstance(self.attr['gtol'], float))
+        assert (self.attr['gtol'] > 0.00)
+
+        # epsilon.
+        assert (isinstance(self.attr['epsilon'], float))
+        assert (self.attr['epsilon'] > 0.00)
+
+        # differences.
+        assert (self.attr['differences'] in ['one-sided', 'two-sided'])
+
+        # hessian.
+        assert (self.attr['hessian'] in ['bfgs', 'numdiff'])
+
+        if(self.attr['algorithm'] == 'powell'):
+
+            assert(self.attr['hessian'] == 'numdiff')
