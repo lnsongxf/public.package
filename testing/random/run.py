@@ -64,8 +64,6 @@ def run(hours):
         # Setup of test case
         label = np.random.choice(labels)
 
-        print(seed, label)
-
         test = getattr(lib,'test_' + label)
 
         try:
