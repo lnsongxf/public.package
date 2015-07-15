@@ -56,17 +56,17 @@ def run(hours):
     # Evaluation loop
     while True:
 
-        # Setup of test case
-        label = np.random.choice(labels)
-
-        test = getattr(lib,'test_' + label)
-
         # Set seed
         random.jumpahead(5)
 
         seed = random.randrange(1, 100000)
 
         np.random.seed(seed)
+
+        # Setup of test case
+        label = np.random.choice(labels)
+
+        test = getattr(lib,'test_' + label)
 
         try:
 
