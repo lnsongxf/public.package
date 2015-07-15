@@ -7,13 +7,9 @@ import random
 import os
 
 # project library
-from grmpy.clsMax import _scipyWrapperFunction as evaluate
-from grmpy.user.init_interface import initialize
-from grmpy.tools.auxiliary import createMatrices
-from grmpy.clsCrit import critCls
-from grmpy.user._createDictionary import processInput
-from grmpy.tools.auxiliary import _updateParameters
-
+from grmpy.tools.msc import *
+from grmpy.tools.user import *
+from grmpy.tools.optimization import *
 
 ''' Main functions
 '''
@@ -40,7 +36,7 @@ def simulate(init='init.ini', update=False):
     ''' Update parameter class.
     '''
     if update:
-        paras_obj = _updateParameters(paras_obj)
+        paras_obj = updateParameters(paras_obj)
 
     ''' Create simulated dataset.
     '''
@@ -100,7 +96,7 @@ def _get_likelihood(init):
     # Evaluate at true values.
     x = paras_obj.getValues('external', 'free')
 
-    likl = evaluate(x, crit_obj)
+    likl = scipy_wrapper_function(x, crit_obj)
 
     # Cleanup.
     try:

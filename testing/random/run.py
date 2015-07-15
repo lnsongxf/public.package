@@ -62,6 +62,8 @@ def run(hours):
         test = getattr(lib,'test_' + label)
 
         # Set seed
+        random.jumpahead(5)
+
         seed = random.randrange(1, 100000)
 
         np.random.seed(seed)

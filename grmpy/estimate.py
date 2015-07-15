@@ -10,15 +10,16 @@ import os
 
 try:
     import cPickle as pkl
-except:
+except ImportError:
     import pickle as pkl
 
 # project library
-from grmpy.tools.auxiliary import _updateParameters
-from grmpy.user.init_interface import initialize
-from grmpy.clsMax import _scipyWrapperFunction
+from grmpy.tools.msc import *
+from grmpy.tools.user import *
+from grmpy.tools.optimization import *
+
 from grmpy.clsRslt import RsltCls
-from grmpy.clsMax import maxCls
+
 
 ''' Main function
 '''
@@ -33,7 +34,7 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
 
     # Update parameter objects.
     if resume:
-        paras_obj = _updateParameters(paras_obj)
+        paras_obj = updateParameters(paras_obj)
 
     paras = paras_obj.getValues('internal', 'all')
 
@@ -80,8 +81,6 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
 
     rslt.setAttr('max_rslt', max_rslt)
 
-    rslt.setAttr('cov_mat', cov_mat)
-
     rslt.lock()
 
     rslt.store('rslt.grmpy.pkl')
@@ -101,7 +100,7 @@ def _add_asymptotics(max_rslt, max_obj, hessian):
         cov_mat = max_rslt['covMat']
     elif hessian == 'numdiff':
         crit_func = max_obj.getAttr('critFunc')
-        nd_obj = nd.Hessian(lambda x: _scipyWrapperFunction(x, crit_func))
+        nd_obj = nd.Hessian(lambda x: scipy_wrapper_function(x, crit_func))
         hess = nd_obj(xopt)
         cov_mat = np.linalg.pinv(hess)
 

@@ -7,7 +7,7 @@ import shlex
 import os
 
 
-def _updateParameters(parasObj):
+def updateParameters(parasObj):
     ''' Update parameter object if possible.
     '''
     # Antibugging.

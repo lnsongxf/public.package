@@ -7,7 +7,7 @@ import numpy as np
 
 # project library
 from grmpy.clsModel import modelCls
-from grmpy.tools.auxiliary import createMatrices
+from grmpy.tools.shared import createMatrices
 
 
 ''' Main function.

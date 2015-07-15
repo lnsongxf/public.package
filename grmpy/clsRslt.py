@@ -2,18 +2,17 @@
 """
 
 # standard library
-try:
-   import cPickle as pkl
-except:
-   import pickle as pkl
-
 import numpy as np
 import random
 import scipy
 import copy
 
+try:
+    import cPickle as pkl
+except ImportError:
+    import pickle as pkl
+
 # project library
-from grmpy.clsMeta import metaCls
 from grmpy.clsMeta import metaCls
 from grmpy.clsModel import modelCls
 from grmpy.clsParas import parasCls
@@ -30,11 +29,8 @@ class RsltCls(metaCls):
         # Attributes.
         self.attr['paras_obj'] = None
         self.attr['model_obj'] = None
-
         self.attr['max_rslt'] = None
-        self.attr['cov_mat'] = None
-        self.attr['para_objs'] = None
-      
+
         # Constructed objects.
         self.attr['bmte_ex_post'] = None
         self.attr['cmte_ex_ante'] = None

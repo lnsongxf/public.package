@@ -18,7 +18,7 @@ dir_ = FILE_PATH.replace('/tests', '')
 sys.path.insert(0, dir_)
 
 # project library
-from grmpy.tools.auxiliary import cleanup
+from grmpy.shared import cleanup
 from grmpy.user._createParas import constructParas
 from grmpy.user._createDictionary import  processInput
 from grmpy.user._createModel import constructModel

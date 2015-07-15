@@ -7,9 +7,11 @@ from   scipy.optimize  import  fmin_bfgs, fmin_powell
 
 # project library
 from grmpy.clsMeta import metaCls
-from grmpy.clsCrit import critCls
+from grmpy.tools.optimization.clsCrit import critCls
 from grmpy.clsModel import modelCls
 from grmpy.clsParas import parasCls
+
+from grmpy.tools.optimization.wrappers import *
 
 class maxCls(metaCls):
     
@@ -76,9 +78,9 @@ class maxCls(metaCls):
             
             maxRslt = {}
             
-            maxRslt['fun']     = _scipyWrapperFunction(x, critFunc)
+            maxRslt['fun']     = scipy_wrapper_function(x, critFunc)
             
-            maxRslt['grad']    = _scipyWrapperGradient(x, critFunc)
+            maxRslt['grad']    = scipy_wrapper_gradient(x, critFunc)
             
             maxRslt['xopt']    = x
                         
@@ -120,7 +122,7 @@ class maxCls(metaCls):
         
         rslt = fmin_powell(
                 
-                func        = _scipyWrapperFunction, 
+                func        = scipy_wrapper_function,
                 x0          = startingValues, 
                 args        = (critFunc, ), 
                 xtol        = 0.0000000001,
@@ -184,8 +186,8 @@ class maxCls(metaCls):
         # Maximization.
         rslt = fmin_bfgs(
                     
-                f           = _scipyWrapperFunction, 
-                fprime      = _scipyWrapperGradient,
+                f           = scipy_wrapper_function,
+                fprime      = scipy_wrapper_gradient,
                 x0          = startingValues,
                 args        = (critFunc, ), 
                 gtol        = gtol,
@@ -224,49 +226,3 @@ class maxCls(metaCls):
             
         # Finishing.
         return maxRslt
-        
-''' Private functions of the module.
-'''
-def _scipyWrapperGradient(x, critFunc):
-    ''' Wrapper for the gradient calculation.
-    '''
-    # Antibugging.
-    assert (isinstance(x, np.ndarray))
-    assert (np.all(np.isfinite(x)))
-    assert (x.dtype == 'float')
-    assert (x.ndim == 1)
-    
-    assert (isinstance(critFunc, critCls))
-    assert (critFunc.get_status() == True)
-
-    # Evaluate gradient.
-    grad = critFunc.evaluate(x, 'gradient')
-    
-    # Check quality.
-    assert (isinstance(grad, np.ndarray))
-    assert (np.all(np.isfinite(grad)))
-    assert (grad.dtype == 'float')
-        
-    return grad
-    
-def _scipyWrapperFunction(x, critFunc):
-    ''' Wrapper for most scipy maximization algorithms.
-    '''
-    # Antibugging.
-    assert (isinstance(x, np.ndarray))
-    assert (np.all(np.isfinite(x)))
-    assert (x.dtype == 'float')
-    assert (x.ndim == 1)
-    
-    assert (isinstance(critFunc, critCls))
-    assert (critFunc.get_status() == True)
-    
-    # Evaluate likelihood.
-    likl = critFunc.evaluate(x, 'function')
-    
-    # Quality checks.
-    assert (isinstance(likl, float))    
-    assert (np.isfinite(likl))
-    
-    #Finishing.        
-    return likl

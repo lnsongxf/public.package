@@ -2,10 +2,9 @@
 '''
 
 # standard library
-import pickle as pkl
 try:
    import cPickle as pkl
-except:
+except ImportError:
    import pickle as pkl
 
 class metaCls(object):

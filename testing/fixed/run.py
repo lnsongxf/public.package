@@ -24,7 +24,7 @@ from nose.tools import *
 sys.path.insert(0, os.environ['GRMPY'])
 
 # project library
-import grmpy.public as grmpy
+import grmpy
 
 # virtual environment
 #if not hasattr(sys, 'real_prefix'):
