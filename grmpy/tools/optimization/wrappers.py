@@ -5,7 +5,7 @@
 import numpy as np
 
 
-def scipy_wrapper_gradient(x, critFunc):
+def scipy_wrapper_gradient(x, crit_func):
     """ Wrapper for the gradient calculation.
     """
     # Antibugging.
@@ -15,7 +15,7 @@ def scipy_wrapper_gradient(x, critFunc):
     assert (x.ndim == 1)
 
     # Evaluate gradient.
-    grad = critFunc.evaluate(x, 'gradient')
+    grad = crit_func.evaluate(x, 'gradient')
 
     # Check quality.
     assert (isinstance(grad, np.ndarray))
@@ -24,7 +24,7 @@ def scipy_wrapper_gradient(x, critFunc):
 
     return grad
 
-def scipy_wrapper_function(x, critFunc):
+def scipy_wrapper_function(x, crit_func):
     """ Wrapper for most SCIPY maximization algorithms.
     """
     # Antibugging
@@ -34,7 +34,7 @@ def scipy_wrapper_function(x, critFunc):
     assert (x.ndim == 1)
 
     # Evaluate likelihood
-    likl = critFunc.evaluate(x, 'function')
+    likl = crit_func.evaluate(x, 'function')
 
     # Quality checks
     assert (isinstance(likl, float))
