@@ -6,14 +6,14 @@ import numpy as np
 from   scipy.optimize  import  fmin_bfgs, fmin_powell
 
 # project library
-from grmpy.clsMeta import metaCls
+from grmpy.clsMeta import MetaCls
 from grmpy.tools.optimization.clsCrit import critCls
 from grmpy.clsModel import modelCls
 from grmpy.clsParas import parasCls
 
 from grmpy.tools.optimization.wrappers import *
 
-class maxCls(metaCls):
+class maxCls(MetaCls):
     
     def __init__(self, model_obj, paras_obj):
 
@@ -34,17 +34,17 @@ class maxCls(metaCls):
         self.attr['maxRslt'] = None
                 
         # Status.
-        self.isLocked = False
+        self.is_locked = False
     
-    def _derivedAttributes(self):
+    def derived_attributes(self):
         ''' Construct derived attributes.
         '''
         # Antibugging.
         assert (self.get_status() == True)
         
         # Distribute class attributes.
-        model_obj = self.getAttr('model_obj')
-        paras_obj = self.getAttr('paras_obj')
+        model_obj = self.get_attr('model_obj')
+        paras_obj = self.get_attr('paras_obj')
 
         # Criterion function.
         critFunc = critCls(model_obj, paras_obj)
@@ -60,15 +60,15 @@ class maxCls(metaCls):
         assert (self.get_status() == True)
         
         # Distribute class attributes.
-        critFunc   = self.getAttr('critFunc')
+        critFunc   = self.get_attr('critFunc')
 
-        paras_obj   = self.getAttr('paras_obj')
+        paras_obj   = self.get_attr('paras_obj')
 
-        model_obj = self.getAttr('model_obj')
+        model_obj = self.get_attr('model_obj')
 
-        algorithm  = model_obj.getAttr('algorithm')
+        algorithm  = model_obj.get_attr('algorithm')
         
-        maxiter    = model_obj.getAttr('maxiter')
+        maxiter    = model_obj.get_attr('maxiter')
         
         # Maximization.
         if(maxiter == 0):
@@ -109,13 +109,13 @@ class maxCls(metaCls):
         assert (self.get_status() == True)
 
         # Distribute class attributes.
-        model_obj = self.getAttr('model_obj')
+        model_obj = self.get_attr('model_obj')
 
-        paras_obj   = self.getAttr('paras_obj')
+        paras_obj   = self.get_attr('paras_obj')
                 
-        maxiter    = model_obj.getAttr('maxiter')
+        maxiter    = model_obj.get_attr('maxiter')
 
-        critFunc   = self.getAttr('critFunc')
+        critFunc   = self.get_attr('critFunc')
         
         # Staring values.
         startingValues = paras_obj.getValues(version = 'external', which = 'free')
@@ -168,17 +168,17 @@ class maxCls(metaCls):
         assert (self.get_status() == True)
 
         # Distribute class attributes.
-        model_obj = self.getAttr('model_obj')
+        model_obj = self.get_attr('model_obj')
 
-        paras_obj   = self.getAttr('paras_obj')
+        paras_obj   = self.get_attr('paras_obj')
         
-        maxiter    = model_obj.getAttr('maxiter')
+        maxiter    = model_obj.get_attr('maxiter')
         
-        gtol       = model_obj.getAttr('gtol')
+        gtol       = model_obj.get_attr('gtol')
         
-        epsilon    = model_obj.getAttr('epsilon')
+        epsilon    = model_obj.get_attr('epsilon')
 
-        critFunc   = self.getAttr('critFunc')
+        critFunc   = self.get_attr('critFunc')
                 
         # Staring values.
         startingValues = paras_obj.getValues(version = 'external', which = 'free')

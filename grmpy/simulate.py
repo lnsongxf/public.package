@@ -61,9 +61,9 @@ def simulate(init='init.ini', update=False):
 
     paras_obj.unlock()
 
-    paras_obj.setAttr('xExAnte', rslt['xExAnte'])
+    paras_obj.set_attr('xExAnte', rslt['xExAnte'])
 
-    paras_obj.setAttr('xExPost', rslt['xExPost'])
+    paras_obj.set_attr('xExPost', rslt['xExPost'])
 
     paras_obj.lock()
 

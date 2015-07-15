@@ -8,10 +8,10 @@ import statsmodels.api  as sm
 import numpy            as np
 
 # project library
-from grmpy.clsMeta import metaCls
+from grmpy.clsMeta import MetaCls
 
 
-class modelCls(metaCls):
+class modelCls(MetaCls):
     
     def __init__(self):
         
@@ -76,11 +76,11 @@ class modelCls(metaCls):
 
 
         # Status.               
-        self.isLocked = False
+        self.is_locked = False
     
     ''' Private class methods.
     '''    
-    def _derivedAttributes(self):
+    def derived_attributes(self):
         ''' Calculate derived attributes.
         '''
         # Number of agents.
@@ -113,9 +113,9 @@ class modelCls(metaCls):
         assert (self.get_status() == True)
         
         # Distribute attributes.
-        D = self.getAttr('D') 
+        D = self.get_attr('D')
         
-        Z = self.getAttr('Z')
+        Z = self.get_attr('Z')
                 
         # Probit estimation.            
         sys.stdout = open('/dev/null', 'w')
@@ -159,7 +159,7 @@ class modelCls(metaCls):
         assert (self.attr['numAgents'] > 0)
         
         # Class status.
-        assert (self.isLocked in [True, False])
+        assert (self.is_locked in [True, False])
         
         # Covariate containers.
         for type_ in ['xExPost', 'xExAnte', 'G', 'Z']:

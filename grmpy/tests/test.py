@@ -45,11 +45,11 @@ class testParasCls(object):
 
         paras_obj = constructParas(init_dict, model_obj, False)
 
-        para_objs = paras_obj.getAttr('paraObjs')
+        para_objs = paras_obj.get_attr('paraObjs')
         
         for para_obj in para_objs:
             
-            value = para_obj.getAttr('value')
+            value = para_obj.get_attr('value')
             
             ext = paras_obj._transformToExternal(para_obj, value)
             

@@ -35,47 +35,47 @@ def constructModel(initDict):
     modelObj = modelCls()
     
     
-    modelObj.setAttr('Y', rslt['Y'])
+    modelObj.set_attr('Y', rslt['Y'])
     
-    modelObj.setAttr('D', rslt['D'])
+    modelObj.set_attr('D', rslt['D'])
     
     
-    modelObj.setAttr('xExPost', rslt['xExPost'])
+    modelObj.set_attr('xExPost', rslt['xExPost'])
     
-    modelObj.setAttr('xExAnte', rslt['xExAnte'])
+    modelObj.set_attr('xExAnte', rslt['xExAnte'])
         
     
-    modelObj.setAttr('G', rslt['G'])
+    modelObj.set_attr('G', rslt['G'])
     
-    modelObj.setAttr('Z', rslt['Z'])
+    modelObj.set_attr('Z', rslt['Z'])
     
     
-    modelObj.setAttr('numCovarsExclBeneExPost', numCovarsExclBeneExPost)
+    modelObj.set_attr('numCovarsExclBeneExPost', numCovarsExclBeneExPost)
     
-    modelObj.setAttr('numCovarsExclBeneExAnte', numCovarsExclBeneExAnte)
+    modelObj.set_attr('numCovarsExclBeneExAnte', numCovarsExclBeneExAnte)
     
-    modelObj.setAttr('numCovarsExclCost', numCovarsExclCost)
+    modelObj.set_attr('numCovarsExclCost', numCovarsExclCost)
 
 
-    modelObj.setAttr('algorithm', initDict['ESTIMATION']['algorithm'])
+    modelObj.set_attr('algorithm', initDict['ESTIMATION']['algorithm'])
 
-    modelObj.setAttr('epsilon', initDict['ESTIMATION']['epsilon'])
+    modelObj.set_attr('epsilon', initDict['ESTIMATION']['epsilon'])
 
-    modelObj.setAttr('differences', initDict['ESTIMATION']['differences'])
+    modelObj.set_attr('differences', initDict['ESTIMATION']['differences'])
 
-    modelObj.setAttr('gtol', initDict['ESTIMATION']['gtol'])
+    modelObj.set_attr('gtol', initDict['ESTIMATION']['gtol'])
 
-    modelObj.setAttr('maxiter', initDict['ESTIMATION']['maxiter'])
+    modelObj.set_attr('maxiter', initDict['ESTIMATION']['maxiter'])
 
-    modelObj.setAttr('withAsymptotics', initDict['ESTIMATION']['asymptotics'])
+    modelObj.set_attr('withAsymptotics', initDict['ESTIMATION']['asymptotics'])
 
-    modelObj.setAttr('numDraws', initDict['ESTIMATION']['draws'])
+    modelObj.set_attr('numDraws', initDict['ESTIMATION']['draws'])
 
-    modelObj.setAttr('version', initDict['ESTIMATION']['version'])
+    modelObj.set_attr('version', initDict['ESTIMATION']['version'])
 
-    modelObj.setAttr('hessian', initDict['ESTIMATION']['hessian'])
+    modelObj.set_attr('hessian', initDict['ESTIMATION']['hessian'])
 
-    modelObj.setAttr('alpha', initDict['ESTIMATION']['alpha'])
+    modelObj.set_attr('alpha', initDict['ESTIMATION']['alpha'])
 
 
     

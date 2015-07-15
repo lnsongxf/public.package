@@ -100,11 +100,11 @@ def finish(dict_, HOURS, notification):
 
         mailObj = modules.clsMail.mailCls()
 
-        mailObj.setAttr('subject', subject)
+        mailObj.set_attr('subject', subject)
 
-        mailObj.setAttr('message', message)
+        mailObj.set_attr('message', message)
 
-        mailObj.setAttr('attachment', 'logging.test.txt')
+        mailObj.set_attr('attachment', 'logging.test.txt')
 
         mailObj.lock()
 

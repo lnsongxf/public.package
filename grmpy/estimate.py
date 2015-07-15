@@ -45,9 +45,9 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
     np.random.seed(123)
 
     # Distribute class attributes.
-    hessian = model_obj.getAttr('hessian')
+    hessian = model_obj.get_attr('hessian')
 
-    with_asymptotics = model_obj.getAttr('withAsymptotics')
+    with_asymptotics = model_obj.get_attr('withAsymptotics')
 
     # Distribute auxiliary objects.
     max_obj = maxCls(model_obj, paras_obj)
@@ -75,11 +75,13 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
     # Construct result class.
     rslt = RsltCls()
 
-    rslt.setAttr('model_obj', model_obj)
+    rslt.set_attr('model_obj', model_obj)
 
-    rslt.setAttr('paras_obj', paras_obj)
+    rslt.set_attr('paras_obj', paras_obj)
 
-    rslt.setAttr('max_rslt', max_rslt)
+    rslt.set_attr('max_rslt', max_rslt)
+
+    rslt.set_attr('cov_mat', cov_mat)
 
     rslt.lock()
 
@@ -99,7 +101,7 @@ def _add_asymptotics(max_rslt, max_obj, hessian):
     if hessian == 'bfgs':
         cov_mat = max_rslt['covMat']
     elif hessian == 'numdiff':
-        crit_func = max_obj.getAttr('critFunc')
+        crit_func = max_obj.get_attr('critFunc')
         nd_obj = nd.Hessian(lambda x: scipy_wrapper_function(x, crit_func))
         hess = nd_obj(xopt)
         cov_mat = np.linalg.pinv(hess)

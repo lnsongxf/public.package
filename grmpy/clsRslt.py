@@ -13,11 +13,11 @@ except ImportError:
     import pickle as pkl
 
 # project library
-from grmpy.clsMeta import metaCls
+from grmpy.clsMeta import MetaCls
 from grmpy.clsModel import modelCls
 from grmpy.clsParas import parasCls
 
-class RsltCls(metaCls):
+class RsltCls(MetaCls):
     """ This class contains all results provided back to the user from the
         maximization setup.
     """
@@ -30,6 +30,7 @@ class RsltCls(metaCls):
         self.attr['paras_obj'] = None
         self.attr['model_obj'] = None
         self.attr['max_rslt'] = None
+        self.attr['cov_mat'] = None
 
         # Constructed objects.
         self.attr['bmte_ex_post'] = None
@@ -37,7 +38,7 @@ class RsltCls(metaCls):
         self.attr['smte_ex_ante'] = None
 
         # Status indicator
-        self.isLocked = False
+        self.is_locked = False
 
     ''' Public methods
     '''
@@ -53,28 +54,28 @@ class RsltCls(metaCls):
 
     ''' Calculate derived attributes.
     '''
-    def _derived_attributes(self):
+    def derived_attributes(self):
         """ Construct derived objects.
         """
         # Antibugging.
         assert (self.get_status() == True)
 
         # Distribute class attributes.
-        cov_mat = self.getAttr('cov_mat')
+        cov_mat = self.get_attr('cov_mat')
         
-        model_obj = self.getAttr('modelObj')
-        paras_obj = self.getAttr('parasObj')
+        model_obj = self.get_attr('model_obj')
+        paras_obj = self.get_attr('paras_obj')
        
-        num_agents = model_obj.getAttr('numAgents')
+        num_agents = model_obj.get_attr('numAgents')
         
-        alpha = model_obj.getAttr('alpha')
-        num_draws = model_obj.getAttr('numDraws')
-        with_asymptotics = model_obj.getAttr('withAsymptotics')
+        alpha = model_obj.get_attr('alpha')
+        num_draws = model_obj.get_attr('numDraws')
+        with_asymptotics = model_obj.get_attr('withAsymptotics')
 
         # Auxiliary objects.
         paras_copy = copy.deepcopy(paras_obj)
         
-        para_objs  = paras_obj.getAttr('paraObjs')
+        para_objs  = paras_obj.get_attr('paraObjs')
         
         scale = 1.0 / num_agents
         cov = scale * cov_mat
@@ -99,11 +100,11 @@ class RsltCls(metaCls):
         
         for para_obj in para_objs:
             
-            if (para_obj.getAttr('isFree') == False) or (not with_asymptotics):
+            if (para_obj.get_attr('isFree') == False) or (not with_asymptotics):
                 
-                para_obj.setAttr('confi', ('---', '---'))
+                para_obj.set_attr('confi', ('---', '---'))
 
-                para_obj.setAttr('pvalue', '---')
+                para_obj.set_attr('pvalue', '---')
                                 
             else:
                 
@@ -115,7 +116,7 @@ class RsltCls(metaCls):
        
                     para_copy = paras_copy.getParameter(counter)
        
-                    rslt.append(para_copy.getAttr('value'))
+                    rslt.append(para_copy.get_attr('value'))
                 
                 # Confidence intervals.
                 lower, upper = scipy.stats.mstats.mquantiles(rslt, \
@@ -123,14 +124,14 @@ class RsltCls(metaCls):
                 
                 confi  = (lower, upper)
 
-                para_obj.setAttr('confi', confi)
+                para_obj.set_attr('confi', confi)
 
                 # p values.
-                estimate = para_obj.getAttr('value')
+                estimate = para_obj.get_attr('value')
                 
                 pvalue = sum(np.sign(rslt) != np.sign(estimate))/float(num_draws)
                                 
-                para_obj.setAttr('pvalue', pvalue)
+                para_obj.set_attr('pvalue', pvalue)
             
             counter += 1
 
@@ -144,12 +145,12 @@ class RsltCls(metaCls):
         
         ''' Store update parameter objects.'''
         
-        self.attr['parasObj'] = paras_obj
+        self.attr['paras_obj'] = paras_obj
 
         self.attr['paras'] = paras_obj.getValues('internal', 'all')
 
         # Cleanup.
-        self.attr.pop('parasObj', None)
+        self.attr.pop('paras_obj', None)
 
     def _write_file(self):
         """ Write results to file.
@@ -158,11 +159,11 @@ class RsltCls(metaCls):
         assert (self.get_status() == True)
         
         # Preparations
-        paras_obj = self.getAttr('paras_obj')
-        model_obj = self.getAttr('model_obj')
+        paras_obj = self.get_attr('paras_obj')
+        model_obj = self.get_attr('model_obj')
 
-        with_asymptotics = model_obj.getAttr('withAsymptotics')
-        surp_estimation = paras_obj.getAttr('surpEstimation')
+        with_asymptotics = model_obj.get_attr('withAsymptotics')
+        surp_estimation = paras_obj.get_attr('surpEstimation')
         
         # Write results.
         with open('info.grmpy.out', 'a') as file_:
@@ -227,12 +228,12 @@ class RsltCls(metaCls):
         assert (random_parameters.ndim  == 2)
     
         # Distribute class attributes.
-        model_obj = self.getAttr('modelObj')
-        paras_obj = self.getAttr('parasObj')
+        model_obj = self.get_attr('model_obj')
+        paras_obj = self.get_attr('paras_obj')
                 
-        with_asymptotics = model_obj.getAttr('withAsymptotics')
-        alpha = model_obj.getAttr('alpha')
-        surp_estimation = paras_obj.getAttr('surpEstimation')
+        with_asymptotics = model_obj.get_attr('withAsymptotics')
+        alpha = model_obj.get_attr('alpha')
+        surp_estimation = paras_obj.get_attr('surpEstimation')
 
         # Auxiliary objects.
         paras_copy = copy.deepcopy(paras_obj)
@@ -309,9 +310,9 @@ class RsltCls(metaCls):
         assert (paras_obj.get_status() == True)
 
         # Distribute class attributes.
-        x_ex_post_eval = model_obj.getAttr('xExPostEval')
-        z_eval = model_obj.getAttr('zEval')
-        c_eval = model_obj.getAttr('cEval')
+        x_ex_post_eval = model_obj.get_attr('xExPostEval')
+        z_eval = model_obj.get_attr('zEval')
+        c_eval = model_obj.get_attr('cEval')
 
         # Marginal benefit of treatment.
         rho_u1_v = paras_obj.getParameters('rho', 'U1,V')

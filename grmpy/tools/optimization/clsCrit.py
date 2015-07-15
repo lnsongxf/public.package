@@ -6,11 +6,11 @@ import  numpy           as      np
 from    scipy.stats     import  norm
 
 # project library
-from grmpy.clsMeta import metaCls
+from grmpy.clsMeta import MetaCls
 from grmpy.clsModel import modelCls
 from grmpy.clsParas import parasCls
 
-class critCls(metaCls):
+class critCls(MetaCls):
     
     def __init__(self, model_obj, paras_obj):
 
@@ -28,7 +28,7 @@ class critCls(metaCls):
         self.attr['paras_obj'] = paras_obj
 
         # Status.
-        self.isLocked = False
+        self.is_locked = False
     
     def update(self, x):
         """ Update parameter object.
@@ -42,7 +42,7 @@ class critCls(metaCls):
         assert (x.ndim == 1)
             
         # Distribute class attributes.
-        paras_obj = self.getAttr('paras_obj')
+        paras_obj = self.get_attr('paras_obj')
         
         paras_obj.update(x, version='external', which='free')
     
@@ -71,15 +71,15 @@ class critCls(metaCls):
         assert (x.ndim == 1)
         
         # Distribute class attributes.
-        model_obj = self.getAttr('model_obj')
+        model_obj = self.get_attr('model_obj')
 
-        paras_obj   = self.getAttr('paras_obj')
+        paras_obj   = self.get_attr('paras_obj')
       
-        epsilon     = model_obj.getAttr('epsilon')
-        differences = model_obj.getAttr('differences')
+        epsilon     = model_obj.get_attr('epsilon')
+        differences = model_obj.get_attr('differences')
          
         # Auxiliary statistics.
-        numFree = paras_obj.getAttr('numFree')
+        numFree = paras_obj.get_attr('numFree')
         
         # Antibugging.
         assert (x.shape == (numFree, ))
@@ -142,12 +142,12 @@ class critCls(metaCls):
         assert (x.ndim == 1)
         
         # Distribute class attributes.
-        paras_obj = self.getAttr('paras_obj')
+        paras_obj = self.get_attr('paras_obj')
 
-        model_obj = self.getAttr('model_obj')
+        model_obj = self.get_attr('model_obj')
 
         # Auxiliary objects
-        version = model_obj.getAttr('version')
+        version = model_obj.get_attr('version')
 
         # Update values.            
         self.update(x)
@@ -181,13 +181,13 @@ class critCls(metaCls):
         """ Evaluate the criterion function in a fast fashion.
         """
         # Distribute model information
-        xExPost = modelObj.getAttr('xExPost')
+        xExPost = modelObj.get_attr('xExPost')
 
-        Y = modelObj.getAttr('Y')
+        Y = modelObj.get_attr('Y')
 
-        D = modelObj.getAttr('D')
+        D = modelObj.get_attr('D')
 
-        Z = modelObj.getAttr('Z')
+        Z = modelObj.get_attr('Z')
 
         # Distribute current parametrization.
         outcTreated = parasObj.getParameters('outc', 'treated')
@@ -225,15 +225,15 @@ class critCls(metaCls):
         """ Evaluate the criterion function in a slow fashion.
         """
         # Distribute model information
-        numAgents = modelObj.getAttr('numAgents')
+        numAgents = modelObj.get_attr('numAgents')
 
-        xExPost = modelObj.getAttr('xExPost')
+        xExPost = modelObj.get_attr('xExPost')
 
-        Y = modelObj.getAttr('Y')
+        Y = modelObj.get_attr('Y')
 
-        D = modelObj.getAttr('D')
+        D = modelObj.get_attr('D')
 
-        Z = modelObj.getAttr('Z')
+        Z = modelObj.get_attr('Z')
 
         # Distribute current parametrization.
         outcTreated = parasObj.getParameters('outc', 'treated')

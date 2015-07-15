@@ -117,7 +117,7 @@ def test_D():
         # Estimate
         rslt = estimate(use_simulation=True, init='test.grm.ini')
 
-        rslt = rslt.getAttr('max_rslt')
+        rslt = rslt.get_attr('max_rslt')
 
         # Check evaluation result
         if fval is None:

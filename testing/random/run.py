@@ -57,14 +57,14 @@ def run(hours):
     while True:
 
         # Set seed
-        random.jumpahead(5)
-
-        seed = random.randrange(1, 100000)
+        seed = int(datetime.now().microsecond)
 
         np.random.seed(seed)
 
         # Setup of test case
         label = np.random.choice(labels)
+
+        print(seed, label)
 
         test = getattr(lib,'test_' + label)
 

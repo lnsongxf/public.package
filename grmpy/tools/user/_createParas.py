@@ -277,14 +277,14 @@ def _autoStart(parasObj, modelObj):
         assert (which in ['treated', 'untreated', 'cost'])
         
         # Data selection.
-        Y = modelObj.getAttr('Y')
+        Y = modelObj.get_attr('Y')
 
-        D = modelObj.getAttr('D')
+        D = modelObj.get_attr('D')
         
         
-        X = modelObj.getAttr('xExPost')
+        X = modelObj.get_attr('xExPost')
         
-        G = modelObj.getAttr('G')
+        G = modelObj.get_attr('G')
         
         # Subset selection.
         if(which == 'treated'):
@@ -360,7 +360,7 @@ def _autoStart(parasObj, modelObj):
             
             coeff = coeffs.pop(0)
             
-            paraObj.setAttr('value', coeff)
+            paraObj.set_attr('value', coeff)
         
             parasObj._replaceParasObj(paraObj)
         
@@ -370,7 +370,7 @@ def _autoStart(parasObj, modelObj):
         
         paraObj = parasObj.getParameters('sd', label, isObj = True)
         
-        paraObj.setAttr('value', sd)
+        paraObj.set_attr('value', sd)
         
         parasObj._replaceParasObj(paraObj)
 
@@ -385,14 +385,14 @@ def _autoStart(parasObj, modelObj):
             
         coeff = coeffs.pop(0)
             
-        paraObj.setAttr('value', coeff)
+        paraObj.set_attr('value', coeff)
         
         parasObj._replaceParasObj(paraObj)
     
     
     paraObj = parasObj.getParameters('sd', 'V', isObj = True)
         
-    paraObj.setAttr('value', sd)
+    paraObj.set_attr('value', sd)
         
     parasObj._replaceParasObj(paraObj)
     
@@ -401,7 +401,7 @@ def _autoStart(parasObj, modelObj):
 
         paraObj = parasObj.getParameters('rho', corr, isObj = True)
             
-        paraObj.setAttr('value', 0.0)
+        paraObj.set_attr('value', 0.0)
             
         parasObj._replaceParasObj(paraObj)
     

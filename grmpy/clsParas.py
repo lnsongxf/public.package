@@ -5,10 +5,10 @@
 import numpy   as np
 
 # project library
-from grmpy.clsMeta import metaCls
+from grmpy.clsMeta import MetaCls
 from grmpy.clsModel import modelCls
 
-class parasCls(metaCls):
+class parasCls(MetaCls):
     ''' Class for the parameter management.
     '''
     def __init__(self, modelObj):
@@ -26,16 +26,16 @@ class parasCls(metaCls):
         self.attr['numFree']    = 0
         self.attr['factor']     = None
 
-        self.attr['numCovarsExclBeneExAnte'] = modelObj.getAttr('numCovarsExclBeneExAnte')                    
-        self.attr['numCovarsExclCost']       = modelObj.getAttr('numCovarsExclCost')
+        self.attr['numCovarsExclBeneExAnte'] = modelObj.get_attr('numCovarsExclBeneExAnte')
+        self.attr['numCovarsExclCost']       = modelObj.get_attr('numCovarsExclCost')
 
-        self.attr['withoutPrediction']       = modelObj.getAttr('withoutPrediction')
-        self.attr['surpEstimation']          = modelObj.getAttr('surpEstimation')
+        self.attr['withoutPrediction']       = modelObj.get_attr('withoutPrediction')
+        self.attr['surpEstimation']          = modelObj.get_attr('surpEstimation')
 
-        self.attr['xExAnte']                 = modelObj.getAttr('xExAnte')
-        self.attr['xExPost']                 = modelObj.getAttr('xExPost')
+        self.attr['xExAnte']                 = modelObj.get_attr('xExAnte')
+        self.attr['xExPost']                 = modelObj.get_attr('xExPost')
 
-        self.attr['numAgents']               = modelObj.getAttr('numAgents')
+        self.attr['numAgents']               = modelObj.get_attr('numAgents')
         
         # Initialization.
         self.attr['modelObj']  = modelObj    
@@ -43,7 +43,7 @@ class parasCls(metaCls):
         self.isFirst = True
     
         # Status.
-        self.isLocked = False
+        self.is_locked = False
     
     def addParameter(self, type_, subgroup, value, isFree, bounds, col):
         ''' Add parameters to class instance.
@@ -78,25 +78,25 @@ class parasCls(metaCls):
 
             id_   = self.attr['numFree']
             
-            paraObj.setAttr('id', id_)
+            paraObj.set_attr('id', id_)
             
         else:
             
-            paraObj.setAttr('id', None)
+            paraObj.set_attr('id', None)
 
-        paraObj.setAttr('col', col)
+        paraObj.set_attr('col', col)
         
-        paraObj.setAttr('count', count)
+        paraObj.set_attr('count', count)
                         
-        paraObj.setAttr('type', type_)
+        paraObj.set_attr('type', type_)
         
-        paraObj.setAttr('subgroup', subgroup)
+        paraObj.set_attr('subgroup', subgroup)
         
-        paraObj.setAttr('value', value)
+        paraObj.set_attr('value', value)
         
-        paraObj.setAttr('isFree', isFree)
+        paraObj.set_attr('isFree', isFree)
 
-        paraObj.setAttr('bounds', bounds)
+        paraObj.set_attr('bounds', bounds)
                      
         paraObj.lock()
                                  
@@ -116,14 +116,14 @@ class parasCls(metaCls):
         '''
         # Antibugging.
         assert (self.get_status() == True)
-        assert (count < self.getAttr('numParas'))
+        assert (count < self.get_attr('numParas'))
         
         # Algorithm.
-        paraObjs = self.getAttr('paraObjs')
+        paraObjs = self.get_attr('paraObjs')
 
         for paraObj in paraObjs:
             
-            paraCount = paraObj.getAttr('count')
+            paraCount = paraObj.get_attr('count')
         
             if(paraCount == count):
                 
@@ -145,9 +145,9 @@ class parasCls(metaCls):
             
             for paraObj in self.attr['paraObjs']:
                 
-                if(paraObj.getAttr('type')      != type_):    continue
+                if(paraObj.get_attr('type')      != type_):    continue
                 
-                if(paraObj.getAttr('subgroup')  != subgroup): continue
+                if(paraObj.get_attr('subgroup')  != subgroup): continue
                 
                 if(isObj):
                     
@@ -155,7 +155,7 @@ class parasCls(metaCls):
         
                 else:
                     
-                    rsltList.append(paraObj.getAttr('value'))
+                    rsltList.append(paraObj.get_attr('value'))
         
         # Special types: Covariances.
         if(type_ == 'cov'):
@@ -195,8 +195,8 @@ class parasCls(metaCls):
         
         if(type_ == 'choice'):
             
-            numCovarsExclCost       = self.getAttr('numCovarsExclCost')
-            numCovarExclBeneExAnte  = self.getAttr('numCovarsExclBeneExAnte')
+            numCovarsExclCost       = self.get_attr('numCovarsExclCost')
+            numCovarExclBeneExAnte  = self.get_attr('numCovarsExclBeneExAnte')
             
             coeffsBeneExAnte = self.getParameters('bene', 'exAnte')   
             coeffsCost       = self.getParameters('cost', None)   
@@ -243,15 +243,15 @@ class parasCls(metaCls):
         
         for paraObj in paraObjs:
             
-            isFixed = (paraObj.getAttr('isFree') == False)
+            isFixed = (paraObj.get_attr('isFree') == False)
             
             if(isFixed and (which == 'free')): continue
                         
-            value = paraObj.getAttr('value')
+            value = paraObj.get_attr('value')
             
             if(version == 'external'):
 
-                value = self._transformToExternal(paraObj, paraObj.getAttr('value'))
+                value = self._transformToExternal(paraObj, paraObj.get_attr('value'))
                 
             rslt.append(value)
             
@@ -291,30 +291,30 @@ class parasCls(metaCls):
         
         if(which == 'all'):
             
-            assert (x.shape == (self.getAttr('numParas'), ))
+            assert (x.shape == (self.get_attr('numParas'), ))
         
         else:
             
-            assert (x.shape == (self.getAttr('numFree'), ))
+            assert (x.shape == (self.get_attr('numFree'), ))
         
         # Distribute class attributes.
-        paraObjs = self.getAttr('paraObjs')
+        paraObjs = self.get_attr('paraObjs')
         
         counter = 0
         
         for paraObj in paraObjs:
            
-            isFixed = (paraObj.getAttr('isFree') == False)
+            isFixed = (paraObj.get_attr('isFree') == False)
             
             if(isFixed and (which == 'free')): continue
             
             value = x[counter]
  
-            if(paraObj.getAttr('hasBounds') and (version == 'external')):
+            if(paraObj.get_attr('hasBounds') and (version == 'external')):
                 
                 value = self._transformToInternal(paraObj, value)
             
-            paraObj.setValue(value)
+            paraObj.set_value(value)
             
             counter += 1
         
@@ -332,7 +332,7 @@ class parasCls(metaCls):
         assert (np.isfinite(internalValue))
         
         # Auxiliary objects.
-        lowerBound, upperBound = paraObj.getAttr('bounds')
+        lowerBound, upperBound = paraObj.get_attr('bounds')
         
         hasLowerBound = (lowerBound is not None)
         hasUpperBound = (upperBound is not None)
@@ -380,9 +380,9 @@ class parasCls(metaCls):
         assert (np.isfinite(externalValue))
         
         # Auxiliary objects.
-        lowerBound, upperBound = paraObj.getAttr('bounds') 
+        lowerBound, upperBound = paraObj.get_attr('bounds')
         
-        hasBounds = paraObj.getAttr('hasBounds')
+        hasBounds = paraObj.get_attr('hasBounds')
         
         hasLowerBound = (lowerBound is not None)
         hasUpperBound = (upperBound is not None)
@@ -433,7 +433,7 @@ class parasCls(metaCls):
         assert (np.isfinite(internalValue))
                 
         # Auxiliary objects.
-        lowerBound, upperBound = paraObj.getAttr('bounds')
+        lowerBound, upperBound = paraObj.get_attr('bounds')
 
         hasLowerBound = (lowerBound is not None)
         hasUpperBound = (upperBound is not None)
@@ -467,14 +467,14 @@ class parasCls(metaCls):
         assert (self.get_status() == True)
 
         # Distribute class attributes.
-        withoutPrediction = self.getAttr('withoutPrediction')
+        withoutPrediction = self.get_attr('withoutPrediction')
         coeffsBeneExPost  = self.getParameters('bene', 'exPost')
         
         # Check applicability.
         if(withoutPrediction): return coeffsBeneExPost 
         
-        xExPost = self.getAttr('xExPost')
-        xExAnte = self.getAttr('xExAnte')               
+        xExPost = self.get_attr('xExPost')
+        xExAnte = self.get_attr('xExAnte')
     
         # Construct index.       
         idxBene = np.dot(coeffsBeneExPost, xExPost.T)
@@ -510,19 +510,19 @@ class parasCls(metaCls):
             
             paraObj.unlock()
             
-            paraObj.setAttr('id', None)
+            paraObj.set_attr('id', None)
              
             paraObj.lock()
 
-            if(paraObj.getAttr('isFree')):
+            if(paraObj.get_attr('isFree')):
                 
-                paraObj.setAttr('id', id_)
+                paraObj.set_attr('id', id_)
                 
                 id_ += 1
 
         self.unlock()
         
-        self.setAttr('numFree', id_)
+        self.set_attr('numFree', id_)
         
         self.lock()
 
@@ -556,7 +556,7 @@ class parasCls(metaCls):
 
 ''' Private methods and classes of the module. 
 '''
-class _paraContainer(metaCls):
+class _paraContainer(MetaCls):
     ''' Container for parameter class.
     '''
     counter = 0
@@ -585,11 +585,11 @@ class _paraContainer(metaCls):
 
         self.attr['hasBounds'] = False      
 
-        self.isLocked          = False
+        self.is_locked          = False
         
     ''' Public get/set methods.
     '''
-    def setValue(self, arg):
+    def set_value(self, arg):
         ''' Set value of parameter object.
         '''
         # Antibugging.
@@ -616,7 +616,7 @@ class _paraContainer(metaCls):
         # Set attribute.
         self.attr['value'] = arg
         
-    def setAttr(self, key, arg):
+    def set_attr(self, key, arg):
         ''' Set attribute.
         
             Development Note:
@@ -626,14 +626,14 @@ class _paraContainer(metaCls):
         
         '''
         # Antibugging.
-        assert (self._checkKey(key) == True)
+        assert (self.check_key(key) == True)
 
         # Set attribute.
         self.attr[key] = arg
 
     ''' Private methods
     '''
-    def _derivedAttributes(self):
+    def derived_attributes(self):
         ''' Update endogenous attributes.
         '''
         
@@ -641,31 +641,31 @@ class _paraContainer(metaCls):
             
             self.attr['hasBounds'] = True
     
-    def _checkIntegrity(self):
+    def _check_integrity(self):
         ''' Check integrity.
         '''
         # type.
-        assert (self.getAttr('type') in ['outc', 'cost', 'rho', 'sd'])
+        assert (self.get_attr('type') in ['outc', 'cost', 'rho', 'sd'])
 
         # column, 
-        if(self.getAttr('col') is not None):
+        if(self.get_attr('col') is not None):
 
-            col = self.getAttr('col')
+            col = self.get_attr('col')
 
             assert (isinstance(col, int) or (col == 'int'))
             if col != 'int': assert (col >= 0)
 
         # subgroup.
-        if(self.getAttr('subgroup') is not None):
+        if(self.get_attr('subgroup') is not None):
             
-            assert (isinstance(self.getAttr('subgroup'), str))
+            assert (isinstance(self.get_attr('subgroup'), str))
         
         # value.
-        assert (isinstance(self.getAttr('value'), float))
-        assert (np.isfinite(self.getAttr('value')))           
+        assert (isinstance(self.get_attr('value'), float))
+        assert (np.isfinite(self.get_attr('value')))
 
         # isFree.
-        assert (self.getAttr('isFree') in [True, False])
+        assert (self.get_attr('isFree') in [True, False])
         
         # hasBounds.
         assert (isinstance(self.attr['bounds'], tuple))
@@ -686,7 +686,7 @@ class _paraContainer(metaCls):
             assert (np.isfinite(self.attr['pvalue']))
             
         # isLocked
-        assert (self.isLocked in [True, False])
+        assert (self.is_locked in [True, False])
         
         # Finishing.
         return True

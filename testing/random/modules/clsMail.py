@@ -71,7 +71,7 @@ class _meta(object):
         # Update class attributes.
         self.isLocked = False
 
-    def getAttr(self, key, deep = False):
+    def get_attr(self, key, deep = False):
         ''' Get attributes.
         '''
         # Antibugging.
