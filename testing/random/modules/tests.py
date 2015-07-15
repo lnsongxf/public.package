@@ -94,13 +94,16 @@ def test_D():
     # Initialize containers
     fval = None
 
-    # Impose constraints
+    #  Generate a random request with several constraints.
     dict_ = dict()
 
     dict_['asymptotics'] = 'false'
     dict_['maxiter'] = 0
 
-    dict_ = _randomDict(dict_)
+    dict_ = generateInitFile(dict_)
+
+    # Lock in simulated dataset
+    simulate('test.grm.ini')
 
     # Loop over fast and slow evaluation of criterion function.
     for version in ['fast', 'slow']:
@@ -108,11 +111,8 @@ def test_D():
         # Impose constraints to initialization file
         dict_['ESTIMATION']['version'] = version
 
-        # Generate random request
+        # Print revised initialization file
         _printDict(dict_)
-
-        # Simulation
-        simulate('test.grm.ini')
 
         # Estimate
         rslt = estimate(use_simulation=True, init='test.grm.ini')
