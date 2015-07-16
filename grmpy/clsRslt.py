@@ -174,9 +174,9 @@ class RsltCls(MetaCls):
             struct = '''   {0[0]}        {0[1]}          {0[2]} / {0[3]}\n'''
             idx = np.arange(0.01, 1.00, 0.01)
 
-            parameter_list = ['bmteExPost']
+            parameter_list = ['bmte_ex_post']
 
-            if(surp_estimation): parameter_list += ['cmteExAnte', 'smteExAnte']
+            if(surp_estimation): parameter_list += ['cmte_ex_ante', 'smte_ex_ante']
 
             for parameter in parameter_list:
 
@@ -188,15 +188,15 @@ class RsltCls(MetaCls):
 
                     lower_bound = self.attr[parameter]['confi']['lower']
 
-                if parameter == 'bmteExPost':
+                if parameter == 'bmte_ex_post':
 
                     title = ' MARGINAL BENEFIT OF TREATMENT (EX POST)'
 
-                if parameter == 'cmteExAnte':
+                if parameter == 'cmte_ex_ante':
 
                     title = ' MARGINAL COST OF TREATMENT '
 
-                if parameter == 'smteExAnte':
+                if parameter == 'smte_ex_ante':
 
                     title = ' MARGINAL SURPLUS OF TREATMENT '
 
@@ -241,10 +241,10 @@ class RsltCls(MetaCls):
         paras_copy = copy.deepcopy(paras_obj)
         
         # Initialize parameters.
-        parameter_list = ['bmteExPost']
+        parameter_list = ['bmte_ex_post']
 
         if surp_estimation:
-            parameter_list += ['smteExAnte', 'cmteExAnte']
+            parameter_list += ['smte_ex_ante', 'cmte_ex_ante']
         
         for parameter in parameter_list:
             self.attr[parameter] = {}
@@ -360,15 +360,15 @@ class RsltCls(MetaCls):
 
             cmte_ex_post[i] = cmte_level + cmte_slopes[i]
 
-        if args['which'] == 'bmteExPost':
+        if args['which'] == 'bmte_ex_post':
 
             rslt = bmte_ex_post
 
-        elif args['which'] == 'cmteExAnte':
+        elif args['which'] == 'cmte_ex_ante':
 
             rslt = cmte_ex_post
 
-        elif args['which'] == 'smteExAnte':
+        elif args['which'] == 'smte_ex_ante':
 
             rslt = smte_ex_ante
 
