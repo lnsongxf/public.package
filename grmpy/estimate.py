@@ -177,9 +177,11 @@ def cleanup(resume):
 
     # Remove information from simulated data
     for file_ in ['*.infos.grmpy.out']:
-
-        file_list.remove(glob.glob(file_)[0])
-
+        try:
+            file_list.remove(glob.glob(file_)[0])
+        except IndexError:
+            pass
+        
     # Cleanup
     for file_ in file_list:
 
