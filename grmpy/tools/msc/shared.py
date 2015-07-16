@@ -6,47 +6,43 @@ import numpy as np
 import shlex
 import os
 
-
 def update_parameters(paras_obj):
     """ Update parameter object if possible.
     """
-    # Antibugging 
+    # Antibugging
     assert (paras_obj.get_status() is True)
     assert (os.path.isfile('info.grmpy.out'))
 
-    # Update
-    has_step = (os.path.isfile('info.grmpy.out'))
+    # Initialize containers
+    list_, is_relevant = [], False
 
-    if has_step:
+    # Read parameters
+    with open('info.grmpy.out', 'r') as file_:
 
-        list_ = []
+        for line in file_:
 
-        is_relevant = False
+            current_line = shlex.split(line)
 
-        with open('info.grmpy.out', 'r') as file_:
+            if len(current_line) == 0:
+                continue
 
-            for line in file_:
+            if len(current_line) > 1:
+                break
 
-                current_line = shlex.split(line)
+            if current_line == ['STOP']:
+                is_relevant = True
 
-                if len(current_line) == 0:
-                    continue
+            if current_line[0] in ['START', 'STOP']:
+                continue
 
-                if len(current_line) > 1:
-                    break
+            if is_relevant:
+                list_ += [np.float(current_line[0])]
 
-                if current_line == ['STOP']:
-                    is_relevant = True
+    # Type conversion
+    starting_values = np.array(list_)
 
-                if current_line[0] in ['START', 'STOP']:
-                    continue
-
-                if is_relevant:
-                    list_ += [np.float(current_line[0])]
-
-        starting_values = np.array(list_)
-
-        paras_obj.update(starting_values, 'internal', 'all')
+    # Update object
+    paras_obj.update(starting_values, 'internal', 'all')
 
     # Finishing
     return paras_obj
@@ -95,13 +91,10 @@ def create_matrices(dataset, init_dict):
 
     # Collect 
     rslt = dict()
-    rslt['X_ex_post'] = x_ex_post
-    rslt['X_ex_ante'] = x_ex_ante
-    rslt['G'] = g
-    rslt['Z'] = z
-    rslt['Y'] = y
-    rslt['D'] = d
-        
+    rslt['Y'], rslt['D'] = y, d
+    rslt['G'], rslt['Z'] = g, z
+    rslt['X_ex_post'], rslt['X_ex_ante'] = x_ex_post, x_ex_ante
+
     # Finishing.
     return rslt
 

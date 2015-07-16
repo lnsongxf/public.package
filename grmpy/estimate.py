@@ -18,6 +18,8 @@ from grmpy.clsRslt import RsltCls
 
 ''' Main function
 '''
+
+
 def estimate(init='init.ini', resume=False, use_simulation=False):
     """ Estimate specified model.
     """
@@ -29,22 +31,22 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
 
     # Update parameter objects.
     if resume:
-        paras_obj = updateParameters(paras_obj)
+        paras_obj = update_parameters(paras_obj)
 
     paras = paras_obj.get_values('internal', 'all')
 
     # Note starting values
     _write_starting_values(paras)
 
-    # Set random seed.
+    # Set random seed
     np.random.seed(123)
 
-    # Distribute class attributes.
+    # Distribute class attributes
     hessian = model_obj.get_attr('hessian')
 
     with_asymptotics = model_obj.get_attr('with_asymptotics')
 
-    # Distribute auxiliary objects.
+    # Distribute auxiliary objects
     max_obj = MaxCls(model_obj, paras_obj)
 
     max_obj.lock()
@@ -58,16 +60,16 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
     # Write optimization results to file
     _write_optimization_results(max_rslt, paras_obj)
 
-    # Distribute results.
+    # Distribute results
     xopt = max_rslt['xopt']
 
-    # Approximate hessian.
+    # Approximate hessian
     cov_mat = np.tile(np.nan, (len(xopt), len(xopt)))
 
     if with_asymptotics:
         cov_mat = _add_asymptotics(max_rslt, max_obj, hessian)
 
-    # Construct result class.
+    # Construct result class
     rslt = RsltCls(model_obj, paras_obj)
 
     rslt.set_attr('max_rslt', max_rslt)
@@ -78,15 +80,21 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
 
     rslt.store('rslt.grmpy.pkl')
 
+    # Finishing
     return rslt
 
 ''' Auxiliary function
 '''
+
+
 def _add_asymptotics(max_rslt, max_obj, hessian):
     """ Add information about asymptotics.
     """
     # Distribute objects
     xopt = max_rslt['xopt']
+
+    # Initialize container
+    cov_mat = None
 
     # Construct hessian
     if hessian == 'bfgs':
@@ -100,6 +108,7 @@ def _add_asymptotics(max_rslt, max_obj, hessian):
     # Finishing
     return cov_mat
 
+
 def _write_starting_values(paras):
     """ Write starting values to file.
     """
@@ -108,25 +117,25 @@ def _write_starting_values(paras):
         file_.write('''\n  START \n\n''')
 
         for para in paras:
-
             file_.write('  {:25.18f}'.format(para) + '\n')
 
-def _write_optimization_results(maxRslt, paras_obj):
+
+def _write_optimization_results(max_rslt, paras_obj):
     """ Write optimization results to file.
     """
-    fval = str(maxRslt['fun'])
+    fval = str(max_rslt['fun'])
 
-    if maxRslt['grad'] is not None:
-        grad = str(np.amax(np.abs(maxRslt['grad'])))
+    if max_rslt['grad'] is not None:
+        grad = str(np.amax(np.abs(max_rslt['grad'])))
     else:
         grad = 'None'
 
-    success = str(maxRslt['success'])
+    success = str(max_rslt['success'])
 
-    msg = maxRslt['message']
+    msg = max_rslt['message']
 
     # Write stop values to file
-    paras_obj.update(maxRslt['xopt'], 'external', 'free')
+    paras_obj.update(max_rslt['xopt'], 'external', 'free')
 
     paras = paras_obj.get_values('internal', 'all')
 
@@ -153,27 +162,25 @@ def _write_optimization_results(maxRslt, paras_obj):
 
     file_.close()
 
+
 def cleanup(resume):
     """ Cleanup from previous estimation run.
     """
     # Antibugging.
     assert (resume in [True, False])
 
-    # Construct files list.
+    # Construct files list
     file_list = glob.glob('*.grmpy.*')
 
     if resume:
         file_list.remove('info.grmpy.out')
 
-    # Remove information from simulated data.
+    # Remove information from simulated data
     for file_ in ['*.infos.grmpy.out', '*.paras.grmpy.out']:
 
         try:
-
             file_list.remove(glob.glob(file_)[0])
-
-        except Exception:
-
+        except IndexError:
             pass
 
     # Cleanup

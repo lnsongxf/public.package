@@ -19,12 +19,10 @@ def simulate(init='init.ini', update=False):
 
     is_mock = _create_mock(init)
 
-    ''' Process initialization file.
-    '''
+    # Process initialization file
     _, paras_obj, init_dict = initialize(init, is_simulation=True)
 
-    ''' Distribute information.
-    '''
+    # Distribute information
     target = init_dict['SIMULATION']['target']
 
     seed = init_dict['SIMULATION']['seed']
@@ -33,13 +31,11 @@ def simulate(init='init.ini', update=False):
 
     random.seed(seed)
 
-    ''' Update parameter class.
-    '''
+    # Update parameter class
     if update:
-        paras_obj = updateParameters(paras_obj)
+        paras_obj = update_parameters(paras_obj)
 
-    ''' Create simulated dataset.
-    '''
+    # Create simulated dataset
     if is_mock:
         os.remove(init_dict['DATA']['source'])
 
@@ -55,8 +51,7 @@ def simulate(init='init.ini', update=False):
 
     sim_dat = _simulate_endogenous(sim_dat, paras_obj, init_dict)
 
-    ''' Update for prediction step.
-    '''
+    # Update for prediction step
     rslt = create_matrices(sim_dat, init_dict)
 
     paras_obj.unlock()
@@ -67,8 +62,7 @@ def simulate(init='init.ini', update=False):
 
     paras_obj.lock()
 
-    ''' Save dataset.
-    '''
+    # Save dataset
     np.savetxt(target, sim_dat, fmt='%15.10f')
 
     likl = _get_likelihood(init)
@@ -85,20 +79,20 @@ def _get_likelihood(init):
     # Antibugging.
     assert (isinstance(init, str))
 
-    # Process model ingredients.
+    # Process model ingredients
     model_obj, paras_obj, _ = initialize(init, True)
 
-    # Initialize container.
+    # Initialize container
     crit_obj = CritCls(model_obj, paras_obj)
 
     crit_obj.lock()
 
-    # Evaluate at true values.
+    # Evaluate at true values
     x = paras_obj.get_values('external', 'free')
 
     likl = scipy_wrapper_function(x, crit_obj)
 
-    # Cleanup.
+    # Cleanup
     try:
         os.remove('info.grmpy.out')
     except Exception:
@@ -131,18 +125,18 @@ def _create_mock(init):
 
     np.savetxt(source, sim_dat, fmt='%15.10f')
 
-    # Finishing.
+    # Finishing
     return is_mock
 
 def _simulate_endogenous(sim_dat, paras_obj, init_dict):
     """ Simulate the endogenous characteristics such as choices and outcomes.
     """
-    # Antibugging.
+    # Antibugging
     assert (isinstance(init_dict, dict))
     assert (isinstance(sim_dat, np.ndarray))
     assert (paras_obj.get_status() is True)
 
-    # Distribute information.
+    # Distribute information
     sim_agents = init_dict['SIMULATION']['agents']
 
     outcome = init_dict['DATA']['outcome']
@@ -151,7 +145,7 @@ def _simulate_endogenous(sim_dat, paras_obj, init_dict):
 
     all_ = init_dict['DERIV']['pos']['all']
 
-    # Sampling of unobservables.
+    # Sampling of unobservables
     var_v = paras_obj.get_parameters('var',  'V')
 
     var_u1 = paras_obj.get_parameters('var',  'U1')
@@ -168,19 +162,19 @@ def _simulate_endogenous(sim_dat, paras_obj, init_dict):
 
     u1, u0, v = np.random.multivariate_normal(mean, cov_mat, sim_agents).T
 
-    # Create data matrices.
+    # Create data matrices
     rslt = create_matrices(sim_dat, init_dict)
 
     x = rslt['X_ex_post']
 
     z = rslt['Z']
 
-    # Simulate choices.
+    # Simulate choices
     coeffs_choc = paras_obj.get_parameters('choice', None)
 
     d = (np.dot(coeffs_choc, z.T) - v > 0.0)
 
-    # Potential Outcomes
+    # Potential outcomes
     outc_treated = paras_obj.get_parameters('outc', 'treated')
     outc_untreated = paras_obj.get_parameters('outc', 'untreated')
 
@@ -192,7 +186,7 @@ def _simulate_endogenous(sim_dat, paras_obj, init_dict):
     sim_dat[:, outcome] = y
     sim_dat[:, treatment] = d
 
-    # Quality checks.
+    # Quality checks
     assert (isinstance(sim_dat, np.ndarray))
     assert (np.all(np.isfinite(sim_dat[:, all_])))
     assert (sim_dat.dtype == 'float')
@@ -205,11 +199,11 @@ def _simulate_exogenous(sim_dat, init_dict):
         with random deviates of the exogenous characteristics from the
         observed dataset.
     """
-    # Antibugging.
+    # Antibugging
     assert (isinstance(init_dict, dict))
     assert (isinstance(sim_dat, np.ndarray))
 
-    # Distribute information.
+    # Distribute information
     source = init_dict['DATA']['source']
 
     sim_agents = init_dict['SIMULATION']['agents']
@@ -220,12 +214,12 @@ def _simulate_exogenous(sim_dat, init_dict):
 
     treatment = init_dict['DATA']['treatment']
 
-    # Restrict to exogenous positions.
+    # Restrict to exogenous positions
     for pos in [outcome, treatment]:
         all_.remove(pos)
 
-    # Simulate endogenous characteristics.
-    has_source = (os.path.exists(source) == True)
+    # Simulate endogenous characteristics
+    has_source = (os.path.exists(source) is True)
 
     if has_source:
 
@@ -260,9 +254,9 @@ def _simulate_exogenous(sim_dat, init_dict):
     return sim_dat
 
 def _write_info(paras_obj, target, rslt, likl):
-    """ Write out some additional infos about the simulated dataset.
+    """ Write out some additional info about the simulated dataset.
     """
-    # Auxiliary objects.
+    # Auxiliary objects
     file_name = target.split('.')[0]
 
     num_agents = str(len(rslt['Y']))
@@ -273,12 +267,12 @@ def _write_info(paras_obj, target, rslt, likl):
 
     fval = str(likl)
 
-    # Write out structural parameters.
-    paras = paras_obj.get_values(version='internal', which='all')
+    # Write out structural parameters
+    paras = paras_obj.get_values('internal', 'all')
 
     np.savetxt(file_name + '.paras.grmpy.out', paras, fmt='%15.10f')
 
-    # Write out information on agent experiences.
+    # Write out information on agent experiences
     with open(file_name + '.infos.grmpy.out', 'w') as file_:
 
         file_.write('\n Simulated Economy\n\n')
