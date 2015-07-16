@@ -4,6 +4,7 @@
 # standard library
 import pickle as pkl
 
+
 class MetaCls(object):
     
     def __init__(self):
@@ -83,10 +84,10 @@ class MetaCls(object):
         """ Calculate derived attributes.
         """
         
-        self
+        pass
     
     def _check_integrity(self):
         """ Check integrity of class instance.
         """
 
-        self
+        pass

@@ -95,8 +95,8 @@ def create_matrices(dataset, init_dict):
 
     # Collect 
     rslt = dict()
-    rslt['x_ex_post'] = x_ex_post
-    rslt['x_ex_ante'] = x_ex_ante
+    rslt['X_ex_post'] = x_ex_post
+    rslt['X_ex_ante'] = x_ex_ante
     rslt['G'] = g
     rslt['Z'] = z
     rslt['Y'] = y

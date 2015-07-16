@@ -6,7 +6,7 @@ import numpy   as np
 
 # project library
 from grmpy.clsMeta import MetaCls
-from grmpy.clsModel import modelCls
+from grmpy.clsModel import ModelCls
 
 class parasCls(MetaCls):
     ''' Class for the parameter management.
@@ -14,8 +14,8 @@ class parasCls(MetaCls):
     def __init__(self, modelObj):
         
         # Antibugging.
-        assert (isinstance(modelObj, modelCls))
-        assert (modelObj.get_status() == True)
+        assert (isinstance(modelObj, ModelCls))
+        assert (modelObj.get_status() is True)
         
         # Attach attributes.
         self.attr = {}
@@ -29,11 +29,11 @@ class parasCls(MetaCls):
         self.attr['num_covars_excl_bene_ex_ante'] = modelObj.get_attr('num_covars_excl_bene_ex_ante')
         self.attr['num_covars_excl_cost']       = modelObj.get_attr('num_covars_excl_cost')
 
-        self.attr['withoutPrediction']       = modelObj.get_attr('withoutPrediction')
-        self.attr['surpEstimation']          = modelObj.get_attr('surpEstimation')
+        self.attr['without_prediction']       = modelObj.get_attr('without_prediction')
+        self.attr['surp_estimation']          = modelObj.get_attr('surp_estimation')
 
-        self.attr['x_ex_ante']                 = modelObj.get_attr('x_ex_ante')
-        self.attr['x_ex_post']                 = modelObj.get_attr('x_ex_post')
+        self.attr['X_ex_ante']                 = modelObj.get_attr('X_ex_ante')
+        self.attr['X_ex_post']                 = modelObj.get_attr('X_ex_post')
 
         self.attr['num_agents']               = modelObj.get_attr('num_agents')
         
@@ -468,14 +468,14 @@ class parasCls(MetaCls):
         assert (self.get_status() == True)
 
         # Distribute class attributes.
-        withoutPrediction = self.get_attr('withoutPrediction')
+        without_prediction = self.get_attr('without_prediction')
         coeffsBeneExPost  = self.getParameters('bene', 'exPost')
         
         # Check applicability.
-        if(withoutPrediction): return coeffsBeneExPost 
+        if(without_prediction): return coeffsBeneExPost 
         
-        x_ex_post = self.get_attr('x_ex_post')
-        x_ex_ante = self.get_attr('x_ex_ante')
+        x_ex_post = self.get_attr('X_ex_post')
+        x_ex_ante = self.get_attr('X_ex_ante')
     
         # Construct index.       
         idxBene = np.dot(coeffsBeneExPost, x_ex_post.T)

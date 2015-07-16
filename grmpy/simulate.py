@@ -61,9 +61,9 @@ def simulate(init='init.ini', update=False):
 
     paras_obj.unlock()
 
-    paras_obj.set_attr('x_ex_ante', rslt['x_ex_ante'])
+    paras_obj.set_attr('X_ex_post', rslt['X_ex_post'])
 
-    paras_obj.set_attr('x_ex_post', rslt['x_ex_post'])
+    paras_obj.set_attr('X_ex_ante', rslt['X_ex_ante'])
 
     paras_obj.lock()
 
@@ -140,7 +140,7 @@ def _simulate_endogenous(sim_dat, paras_obj, init_dict):
     # Antibugging.
     assert (isinstance(init_dict, dict))
     assert (isinstance(sim_dat, np.ndarray))
-    assert (paras_obj.get_status() == True)
+    assert (paras_obj.get_status() is True)
 
     # Distribute information.
     sim_agents = init_dict['SIMULATION']['agents']
@@ -171,7 +171,7 @@ def _simulate_endogenous(sim_dat, paras_obj, init_dict):
     # Create data matrices.
     rslt = create_matrices(sim_dat, init_dict)
 
-    x_ex_post = rslt['x_ex_post']
+    x = rslt['X_ex_post']
 
     z = rslt['Z']
 
@@ -184,8 +184,8 @@ def _simulate_endogenous(sim_dat, paras_obj, init_dict):
     outc_treated = paras_obj.getParameters('outc', 'treated')
     outc_untreated = paras_obj.getParameters('outc', 'untreated')
 
-    y1 = np.dot(outc_treated, x_ex_post.T) + u1
-    y0 = np.dot(outc_untreated, x_ex_post.T) + u0
+    y1 = np.dot(outc_treated, x.T) + u1
+    y0 = np.dot(outc_untreated, x.T) + u0
 
     y = d*y1 + (1 - d)*y0
 

@@ -10,7 +10,7 @@ import sys
 
 # project library.
 from grmpy.clsParas import parasCls
-from grmpy.clsModel import modelCls
+from grmpy.clsModel import ModelCls
 
 
 ''' Main function.
@@ -282,7 +282,7 @@ def _autoStart(parasObj, modelObj):
         D = modelObj.get_attr('D')
         
         
-        X = modelObj.get_attr('x_ex_post')
+        X = modelObj.get_attr('X_ex_post')
         
         G = modelObj.get_attr('G')
         
@@ -344,7 +344,7 @@ def _autoStart(parasObj, modelObj):
     assert (isinstance(parasObj, parasCls))
     assert (parasObj.get_status() == True)
 
-    assert (isinstance(modelObj, modelCls))
+    assert (isinstance(modelObj, ModelCls))
     assert (modelObj.get_status() == True)
     
     # Benefits.

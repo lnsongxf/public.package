@@ -33,7 +33,9 @@ def run(hours):
     start, timeout = datetime.now(), timedelta(hours=hours)
 
     # Define list of admissible tests
-    labels = ['A', 'B', 'C', 'D', 'E']
+#    labels = ['A', 'B', 'C', 'D', 'E']
+    print('C removed')
+    labels = ['A', 'B', 'D', 'E']
 
     # Initialize counter
     dict_ = dict()

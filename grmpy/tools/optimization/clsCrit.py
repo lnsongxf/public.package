@@ -6,7 +6,7 @@ import numpy as np
 
 # project library
 from grmpy.clsMeta import MetaCls
-from grmpy.clsModel import modelCls
+from grmpy.clsModel import ModelCls
 from grmpy.clsParas import parasCls
 
 class CritCls(MetaCls):
@@ -14,11 +14,11 @@ class CritCls(MetaCls):
     def __init__(self, model_obj, paras_obj):
 
         # Antibugging
-        assert (isinstance(model_obj, modelCls))
+        assert (isinstance(model_obj, ModelCls))
         assert (isinstance(paras_obj, parasCls))
 
-        assert (model_obj.get_status() == True)
-        assert (paras_obj.get_status() == True)
+        assert (model_obj.get_status() is True)
+        assert (paras_obj.get_status() is True)
 
         self.attr = dict()
         
@@ -168,7 +168,7 @@ class CritCls(MetaCls):
         """ Evaluate the criterion function in a fast fashion.
         """
         # Distribute model information
-        x_ex_post = model_obj.get_attr('x_ex_post')
+        x_ex_post = model_obj.get_attr('X_ex_post')
         y = model_obj.get_attr('Y')
         d = model_obj.get_attr('D')
         z = model_obj.get_attr('Z')
@@ -212,7 +212,7 @@ class CritCls(MetaCls):
         """
         # Distribute model information
         num_agents = model_obj.get_attr('num_agents')
-        x_ex_post = model_obj.get_attr('x_ex_post')
+        x_ex_post = model_obj.get_attr('X_ex_post')
         y = model_obj.get_attr('Y')
         d = model_obj.get_attr('D')
         z = model_obj.get_attr('Z')

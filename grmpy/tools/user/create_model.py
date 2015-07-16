@@ -6,7 +6,7 @@
 import numpy as np
 
 # project library
-from grmpy.clsModel import modelCls
+from grmpy.clsModel import ModelCls
 from grmpy.tools.msc import *
 
 
@@ -32,15 +32,15 @@ def construct_model(init_dict):
     rslt = create_matrices(dataset, init_dict)
 
     # Initialize model object
-    model_obj = modelCls()
+    model_obj = ModelCls()
     
     model_obj.set_attr('Y', rslt['Y'])
     
     model_obj.set_attr('D', rslt['D'])
     
-    model_obj.set_attr('x_ex_post', rslt['x_ex_post'])
+    model_obj.set_attr('X_ex_post', rslt['X_ex_post'])
     
-    model_obj.set_attr('x_ex_ante', rslt['x_ex_ante'])
+    model_obj.set_attr('X_ex_ante', rslt['X_ex_ante'])
         
     model_obj.set_attr('G', rslt['G'])
     

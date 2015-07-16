@@ -10,7 +10,7 @@ import copy
 
 # project library
 from grmpy.clsMeta import MetaCls
-from grmpy.clsModel import modelCls
+from grmpy.clsModel import ModelCls
 from grmpy.clsParas import parasCls
 
 class RsltCls(MetaCls):
@@ -20,7 +20,7 @@ class RsltCls(MetaCls):
     def __init__(self, model_obj, paras_obj):
 
         # Antibugging
-        assert (isinstance(model_obj, modelCls))
+        assert (isinstance(model_obj, ModelCls))
         assert (isinstance(paras_obj, parasCls))
 
         assert (model_obj.get_status() is True)
@@ -165,7 +165,7 @@ class RsltCls(MetaCls):
         model_obj = self.get_attr('model_obj')
 
         with_asymptotics = model_obj.get_attr('with_asymptotics')
-        surp_estimation = paras_obj.get_attr('surpEstimation')
+        surp_estimation = paras_obj.get_attr('surp_estimation')
         
         # Write results.
         with open('info.grmpy.out', 'a') as file_:
@@ -235,7 +235,7 @@ class RsltCls(MetaCls):
                 
         with_asymptotics = model_obj.get_attr('with_asymptotics')
         alpha = model_obj.get_attr('alpha')
-        surp_estimation = paras_obj.get_attr('surpEstimation')
+        surp_estimation = paras_obj.get_attr('surp_estimation')
 
         # Auxiliary objects.
         paras_copy = copy.deepcopy(paras_obj)
@@ -306,15 +306,15 @@ class RsltCls(MetaCls):
         """
         # Antibugging.
         assert (self.get_status() == True)
-        assert (isinstance(model_obj, modelCls))
+        assert (isinstance(model_obj, ModelCls))
         assert (model_obj.get_status() == True)
         assert (isinstance(paras_obj, parasCls))
         assert (paras_obj.get_status() == True)
 
         # Distribute class attributes.
-        x_ex_post_eval = model_obj.get_attr('xExPostEval')
-        z_eval = model_obj.get_attr('zEval')
-        c_eval = model_obj.get_attr('cEval')
+        x_ex_post_eval = model_obj.get_attr('x_ex_post_eval')
+        z_eval = model_obj.get_attr('z_eval')
+        c_eval = model_obj.get_attr('c_eval')
 
         # Marginal benefit of treatment.
         rho_u1_v = paras_obj.getParameters('rho', 'U1,V')

@@ -10,7 +10,7 @@ from grmpy.tools.optimization.wrappers import *
 from grmpy.tools.optimization import *
 
 from grmpy.clsMeta import MetaCls
-from grmpy.clsModel import modelCls
+from grmpy.clsModel import ModelCls
 from grmpy.clsParas import parasCls
 
 
@@ -19,7 +19,7 @@ class MaxCls(MetaCls):
     def __init__(self, model_obj, paras_obj):
 
         # Antibugging
-        assert (isinstance(model_obj, modelCls))
+        assert (isinstance(model_obj, ModelCls))
         assert (isinstance(paras_obj, parasCls))
 
         assert (model_obj.get_status() is True)
