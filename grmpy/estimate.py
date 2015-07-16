@@ -73,11 +73,7 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
         cov_mat = _add_asymptotics(max_rslt, max_obj, hessian)
 
     # Construct result class.
-    rslt = RsltCls()
-
-    rslt.set_attr('model_obj', model_obj)
-
-    rslt.set_attr('paras_obj', paras_obj)
+    rslt = RsltCls(model_obj, paras_obj)
 
     rslt.set_attr('max_rslt', max_rslt)
 
@@ -101,7 +97,7 @@ def _add_asymptotics(max_rslt, max_obj, hessian):
     if hessian == 'bfgs':
         cov_mat = max_rslt['covMat']
     elif hessian == 'numdiff':
-        crit_func = max_obj.get_attr('critFunc')
+        crit_func = max_obj.get_attr('crit_func')
         nd_obj = nd.Hessian(lambda x: scipy_wrapper_function(x, crit_func))
         hess = nd_obj(xopt)
         cov_mat = np.linalg.pinv(hess)

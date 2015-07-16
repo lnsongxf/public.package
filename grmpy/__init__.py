@@ -9,7 +9,7 @@ from grmpy.estimate import *
 from grmpy.simulate import *
 
 def test():
-    """ Run nose tester for the toolbox.
+    """ Run nose tester for the package.
     """
     base = os.getcwd()
 

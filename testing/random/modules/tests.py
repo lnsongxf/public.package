@@ -9,8 +9,7 @@ import os
 
 # project library
 from modules.randominit import *
-from modules.randominit import _randomDict
-from modules.exceptions import TimedOutError
+from modules.exceptions import *
 
 # Setting up signal handler
 def signal_handler(signum, frame):
@@ -36,7 +35,7 @@ def test_A():
     for _ in range(10):
 
         # Generate a random initialization file.
-        generateInitFile()
+        generate_init_file()
 
         # Simulation
         simulate('test.grm.ini')
@@ -49,7 +48,7 @@ def test_B():
     """ Testing if a random estimation task can be handled without complaints for five seconds.
     """
     # Generate a random initialization file.
-    generateInitFile()
+    generate_init_file()
 
     # Simulation
     simulate('test.grm.ini')
@@ -75,7 +74,7 @@ def test_C():
     """ Testing if a random estimation task can be handled without complaints from beginning till end.
     """
     # Generate a random initialization file.
-    generateInitFile()
+    generate_init_file()
 
     # Simulation
     simulate('test.grm.ini')
@@ -100,7 +99,7 @@ def test_D():
     dict_['asymptotics'] = 'false'
     dict_['maxiter'] = 0
 
-    dict_ = generateInitFile(dict_)
+    dict_ = generate_init_file(dict_)
 
     # Lock in simulated dataset
     simulate('test.grm.ini')
@@ -112,7 +111,7 @@ def test_D():
         dict_['ESTIMATION']['version'] = version
 
         # Print revised initialization file
-        _printDict(dict_)
+        print_dict(dict_)
 
         # Estimate
         rslt = estimate(use_simulation=True, init='test.grm.ini')
@@ -135,7 +134,7 @@ def test_E():
     for _ in range(1000):
 
         # Generate a random initialization file.
-        generateInitFile()
+        generate_init_file()
 
         # Finishing
         return True

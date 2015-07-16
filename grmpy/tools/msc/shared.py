@@ -29,7 +29,7 @@ def update_parameters(paras_obj):
 
                 current_line = shlex.split(line)
 
-                if len(current_line) ==  0:
+                if len(current_line) == 0:
                     continue
 
                 if len(current_line) > 1:
@@ -42,14 +42,15 @@ def update_parameters(paras_obj):
                     continue
 
                 if is_relevant:
-                    list_ += [np.float_(current_line[0])]
+                    list_ += [np.float(current_line[0])]
 
         starting_values = np.array(list_)
 
-        paras_obj.update(starting_values, version='internal', which='all')
+        paras_obj.update(starting_values, 'internal', 'all')
 
     # Finishing
     return paras_obj
+
 
 def create_matrices(dataset, init_dict):
     """ Create the data matrices.
@@ -62,15 +63,10 @@ def create_matrices(dataset, init_dict):
     
     # Distribute information
     outcome = init_dict['DATA']['outcome']
-
-    treatment = init_dict['DATA']['treatment'] 
-
+    treatment = init_dict['DATA']['treatment']
     common = init_dict['DERIV']['common']['pos']
-
     excl_bene_ex_ante = init_dict['DERIV']['excl_bene']['ex_ante']['pos']
-
     excl_bene_ex_post = init_dict['DERIV']['excl_bene']['ex_post']['pos']
-
     excl_cost = init_dict['DERIV']['excl_cost']['pos']
 
     # Construct auxiliary information 
@@ -78,20 +74,13 @@ def create_matrices(dataset, init_dict):
     
     # Create matrices 
     y = dataset[:, outcome]
-    
     d = dataset[:, treatment]
-    
     m = dataset[:, common].copy()
-        
     m = np.concatenate((m, np.ones((num_agents, 1))), axis=1)
-
     x_ex_ante = np.concatenate((dataset[:, excl_bene_ex_ante], m), axis=1)
-    
     x_ex_post = np.concatenate((dataset[:, excl_bene_ex_post], m), axis=1)
-
-    g = np.concatenate((m, dataset[:, excl_cost]), axis = 1)
-        
-    z = np.concatenate((x_ex_ante, dataset[:, excl_cost]), axis = 1)
+    g = np.concatenate((m, dataset[:, excl_cost]), axis=1)
+    z = np.concatenate((x_ex_ante, dataset[:, excl_cost]), axis=1)
     
     # Quality checks 
     for mat in [x_ex_ante, x_ex_post, g, z]:
@@ -115,4 +104,9 @@ def create_matrices(dataset, init_dict):
         
     # Finishing.
     return rslt
+
+
+
+
+
 

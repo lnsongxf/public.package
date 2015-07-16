@@ -104,9 +104,9 @@ if __name__ == '__main__':
     parser.add_argument('--notification', action='store_true', dest='notification', default=False, \
                         help='send notification')
 
-    hours, notification = distributeInput(parser)
+    hours, notification = distribute_input(parser)
 
-    startLogging()
+    start_logging()
 
     dict_ = run(hours)
 

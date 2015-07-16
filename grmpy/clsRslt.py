@@ -21,14 +21,20 @@ class RsltCls(MetaCls):
     """ This class contains all results provided back to the user from the
         maximization setup.
     """
-    def __init__(self):
-        
-        # Attach attributes.
-        self.attr = dict()
-        
+    def __init__(self, model_obj, paras_obj):
+
+        # Antibugging
+        assert (isinstance(model_obj, modelCls))
+        assert (isinstance(paras_obj, parasCls))
+
+        assert (model_obj.get_status() is True)
+        assert (paras_obj.get_status() is True)
+
         # Attributes.
-        self.attr['paras_obj'] = None
-        self.attr['model_obj'] = None
+        self.attr = dict()
+        self.attr['model_obj'] = model_obj
+        self.attr['paras_obj'] = paras_obj
+
         self.attr['max_rslt'] = None
         self.attr['cov_mat'] = None
 

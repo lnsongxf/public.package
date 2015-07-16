@@ -166,7 +166,7 @@ def _simulate_endogenous(sim_dat, paras_obj, init_dict):
 
     cov_mat[2,1] = cov_mat[1,2] = paras_obj.getParameters('cov', 'U0,V')
 
-    u1, u0, V = np.random.multivariate_normal(mean, cov_mat, sim_agents).T
+    u1, u0, v = np.random.multivariate_normal(mean, cov_mat, sim_agents).T
 
     # Create data matrices.
     rslt = create_matrices(sim_dat, init_dict)
@@ -178,7 +178,7 @@ def _simulate_endogenous(sim_dat, paras_obj, init_dict):
     # Simulate choices.
     coeffs_choc = paras_obj.getParameters('choice', None)
 
-    d = (np.dot(coeffs_choc, z.T) - V > 0.0)
+    d = (np.dot(coeffs_choc, z.T) - v > 0.0)
 
     # Potential Outcomes
     outc_treated = paras_obj.getParameters('outc', 'treated')

@@ -2,15 +2,16 @@
 """
 
 # standard library.
-from scipy.optimize import fmin_bfgs, fmin_powell
+from scipy.optimize import fmin_bfgs
+from scipy.optimize import fmin_powell
 
 # project library
 from grmpy.tools.optimization.wrappers import *
+from grmpy.tools.optimization import *
+
 from grmpy.clsMeta import MetaCls
 from grmpy.clsModel import modelCls
 from grmpy.clsParas import parasCls
-
-from clsCrit import CritCls
 
 
 class MaxCls(MetaCls):
@@ -24,10 +25,10 @@ class MaxCls(MetaCls):
         assert (model_obj.get_status() is True)
         assert (paras_obj.get_status() is True)
 
+        # Attributes
         self.attr = dict()
 
         self.attr['model_obj'] = model_obj
-
         self.attr['paras_obj'] = paras_obj
 
         # Results container
@@ -61,28 +62,21 @@ class MaxCls(MetaCls):
         
         # Distribute class attributes
         crit_func = self.get_attr('crit_func')
-
         paras_obj = self.get_attr('paras_obj')
-
         model_obj = self.get_attr('model_obj')
-
         algorithm = model_obj.get_attr('algorithm')
-        
         maxiter = model_obj.get_attr('maxiter')
         
         # Maximization
+        max_rslt = None
+
         if maxiter == 0:
-            
             x = paras_obj.getValues('external', 'free')
             
             max_rslt = dict()
-            
             max_rslt['fun'] = scipy_wrapper_function(x, crit_func)
-            
             max_rslt['grad'] = scipy_wrapper_gradient(x, crit_func)
-            
             max_rslt['xopt'] = x
-                        
             max_rslt['success'] = False
     
             # Message:
@@ -90,11 +84,9 @@ class MaxCls(MetaCls):
                                  'starting values.'
                 
         elif algorithm == 'bfgs':
-            
             max_rslt = self._bfgs()
             
         elif algorithm == 'powell':
-            
             max_rslt = self._powell()
 
         # Finishing.
@@ -110,17 +102,14 @@ class MaxCls(MetaCls):
 
         # Distribute class attributes
         model_obj = self.get_attr('model_obj')
-
         paras_obj = self.get_attr('paras_obj')
-                
         maxiter = model_obj.get_attr('maxiter')
-
         crit_func = self.get_attr('crit_func')
         
         # Staring values
-        startingValues = paras_obj.getValues(version='external', which='free')
+        starting_values = paras_obj.getValues('external', 'free')
         
-        rslt = fmin_powell(func=scipy_wrapper_function, x0=startingValues,
+        rslt = fmin_powell(func=scipy_wrapper_function, x0=starting_values,
                            args=(crit_func, ), xtol=0.0000000001,
                            ftol=0.0000000001, maxiter=maxiter, maxfun=None,
                            full_output=True, disp=1, callback=None)
@@ -156,17 +145,12 @@ class MaxCls(MetaCls):
 
         # Distribute class attributes
         model_obj = self.get_attr('model_obj')
-
         paras_obj = self.get_attr('paras_obj')
-        
+        crit_func = self.get_attr('crit_func')
         maxiter = model_obj.get_attr('maxiter')
-        
         gtol = model_obj.get_attr('gtol')
-        
         epsilon = model_obj.get_attr('epsilon')
 
-        crit_func = self.get_attr('crit_func')
-                
         # Staring values
         starting_values = paras_obj.getValues(version='external', which='free')
         

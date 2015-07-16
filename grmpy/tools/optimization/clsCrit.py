@@ -1,4 +1,4 @@
-""" This module contains the criterion function of the grmEstimatorToolbox.
+""" This module contains the criterion function of the GRMPY package.
 """
 # standard library
 from scipy.stats import norm
@@ -40,10 +40,11 @@ class CritCls(MetaCls):
         assert (x.dtype == 'float')
         assert (x.ndim == 1)
             
-        # Distribute class attributes.
+        # Distribute class attributes
         paras_obj = self.get_attr('paras_obj')
-        
-        paras_obj.update(x, version='external', which='free')
+
+        # Update parameter object
+        paras_obj.update(x, 'external', 'free')
     
     def evaluate(self, x, type_):
         """ Wrapper for function evaluate.
@@ -94,24 +95,17 @@ class CritCls(MetaCls):
             
             # Calculate step size
             ei[k] = 1.0
-            
             d = epsilon*ei
     
             # Gradient approximation.
             if differences == 'one-sided':
-                
                 upper = self._evaluate_function(x + d,  False)
-                
                 lower = f0
-
                 grad[k] = (upper - lower)/d[k]
             
             if differences == 'two-sided':
-                
                 upper = self._evaluate_function(x + d, False)
-                
                 lower = self._evaluate_function(x - d, False)
-
                 grad[k] = (upper - lower)/(2.0*d[k])
             
             # Reset step size
@@ -139,7 +133,6 @@ class CritCls(MetaCls):
         
         # Distribute class attributes
         paras_obj = self.get_attr('paras_obj')
-
         model_obj = self.get_attr('model_obj')
 
         # Auxiliary objects
@@ -150,15 +143,12 @@ class CritCls(MetaCls):
 
         # Likelihood calculation
         if version == 'slow':
-
             likl = self._evaluate_function_slow(paras_obj, model_obj)
 
         elif version == 'fast':
-
             likl = self._evaluate_function_fast(paras_obj, model_obj)
 
         else:
-
             raise AssertionError
 
         # Transformations
@@ -179,14 +169,11 @@ class CritCls(MetaCls):
         """
         # Distribute model information
         x_ex_post = model_obj.get_attr('x_ex_post')
-
         y = model_obj.get_attr('Y')
-
         d = model_obj.get_attr('D')
-
         z = model_obj.get_attr('Z')
 
-        # Distribute current parametrization.
+        # Distribute current parametrization
         outc_treated = paras_obj.getParameters('outc', 'treated')
         outc_untreated = paras_obj.getParameters('outc', 'untreated')
         coeffs_choc = paras_obj.getParameters('choice', None)
@@ -225,9 +212,7 @@ class CritCls(MetaCls):
         """
         # Distribute model information
         num_agents = model_obj.get_attr('num_agents')
-
         x_ex_post = model_obj.get_attr('x_ex_post')
-
         y = model_obj.get_attr('Y')
         d = model_obj.get_attr('D')
         z = model_obj.get_attr('Z')

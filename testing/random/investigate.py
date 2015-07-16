@@ -16,7 +16,7 @@ from grmpy import *
 
 ''' Request
 '''
-label, seed = 'D', 39773
+label, seed = 'A', 543534
 
 ''' Error Reproduction
 '''
