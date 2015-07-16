@@ -24,7 +24,7 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
     """ Estimate specified model.
     """
     # Cleanup
-    cleanup(resume)
+    _cleanup(resume)
 
     # Process initialization file
     model_obj, paras_obj, _ = initialize(init, use_simulation)
@@ -163,7 +163,7 @@ def _write_optimization_results(max_rslt, paras_obj):
     file_.close()
 
 
-def cleanup(resume):
+def _cleanup(resume):
     """ Cleanup from previous estimation run.
     """
     # Antibugging.
@@ -181,7 +181,7 @@ def cleanup(resume):
             file_list.remove(glob.glob(file_)[0])
         except IndexError:
             pass
-        
+
     # Cleanup
     for file_ in file_list:
 

@@ -8,12 +8,10 @@
 
 """
 # standard library
-try:
-   import cPickle as pkl
-except:
-   import pickle as pkl
+import pickle as pkl
 
 import socket
+import glob
 import sys
 import os
 
@@ -29,6 +27,30 @@ import grmpy
 # virtual environment
 if not hasattr(sys, 'real_prefix'):
    raise AssertionError('Please use a virtual environment for testing')
+
+
+'''Auxiliary functions
+'''
+def cleanup():
+    """ Cleanup from previous estimation run.
+    """
+    # Construct files list
+    file_list = glob.glob('*.grmpy.*')
+
+    # Remove information from simulated data
+    for file_ in ['*.infos.grmpy.out']:
+        try:
+            file_list.remove(glob.glob(file_)[0])
+        except IndexError:
+            pass
+
+    # Cleanup
+    for file_ in file_list:
+
+        if 'ini' in file_:
+            continue
+
+        os.remove(file_)
 
 
 ''' Test class '''
@@ -54,7 +76,7 @@ class TestEstimationRuns(object):
         assert_almost_equal(max_rslt['fun'], 1.4838776375095368)
 
         # Cleanup
-        grmpy.cleanup(resume=False)
+        cleanup()
 
     @staticmethod
     def test_est_run_two():
@@ -72,7 +94,7 @@ class TestEstimationRuns(object):
         assert_almost_equal(rslt_dict['max_rslt']['fun'], 1.6569860751490129)
 
         # Cleanup.
-        grmpy.cleanup(resume=False)
+        cleanup()
 
     @staticmethod
     def test_est_run_three():
@@ -117,7 +139,7 @@ class TestEstimationRuns(object):
             assert_almost_equal(smteExAnte, bmteExPost - cmteExAnte)
    
         # Cleanup.
-        grmpy.cleanup(resume=False)
+        cleanup()
 
 if __name__ == '__main__': 
     
