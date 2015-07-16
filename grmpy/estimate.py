@@ -8,11 +8,6 @@ import glob
 import sys
 import os
 
-try:
-    import cPickle as pkl
-except ImportError:
-    import pickle as pkl
-
 # project library
 from grmpy.tools.msc import *
 from grmpy.tools.user import *

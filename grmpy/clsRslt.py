@@ -2,15 +2,11 @@
 """
 
 # standard library
+import pickle as pkl
 import numpy as np
 import random
 import scipy
 import copy
-
-try:
-    import cPickle as pkl
-except ImportError:
-    import pickle as pkl
 
 # project library
 from grmpy.clsMeta import MetaCls

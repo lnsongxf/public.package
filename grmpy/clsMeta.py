@@ -2,10 +2,7 @@
 """
 
 # standard library
-try:
-    import cPickle as pkl
-except ImportError:
-    import pickle as pkl
+import pickle as pkl
 
 class MetaCls(object):
     
