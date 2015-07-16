@@ -1,11 +1,10 @@
-''' Module contains all functions required to generate a parameter object
+""" Module contains all functions required to generate a parameter object
     from the processed initialization file.
-'''
+"""
 
 # standard library
-import statsmodels.api  as sm
-import numpy            as np
-
+import statsmodels.api as sm
+import numpy as np
 import sys
 
 # project library.
@@ -13,312 +12,284 @@ from grmpy.clsParas import ParasCls
 from grmpy.clsModel import ModelCls
 
 
-''' Main function.
-'''
-def constructParas(initDict, modelObj, isSimulation):
-    ''' Construct parameter object.
-    '''
-    # Antibugging.
-    assert (isinstance(initDict, dict))
-    assert (modelObj.get_status() == True)
+""" Main function.
+"""
+def construct_paras(init_dict, model_obj, is_simulation):
+    """ Construct parameter object.
+    """
+    # Antibugging 
+    assert (isinstance(init_dict, dict))
+    assert (model_obj.get_status() is True)
 
-    # Distribute auxiliary objects.
-    start = initDict['ESTIMATION']['start']
+    # Distribute auxiliary objects
+    start = init_dict['ESTIMATION']['start']
     
-    # Initialize with manual starting values.
-    parasObj = _initializeParameters(initDict, modelObj)
+    # Initialize with manual starting values
+    paras_obj = _initialize_parameters(init_dict, model_obj)
         
-    # Update with automatic starting values.
-    if(start == 'auto' and (not isSimulation)):
-    
-        parasObj = _autoStart(parasObj, modelObj)
+    # Update with automatic starting values
+    if start == 'auto' and (not is_simulation):
+        paras_obj = _auto_start(paras_obj, model_obj)
                 
-    # Quality.
-    assert (parasObj.get_status() == True)
+    # Quality
+    assert (paras_obj.get_status() is True)
 
-    # Finishing.
-    return parasObj
+    # Finishing
+    return paras_obj
 
-''' Private auxiliary functions.
-'''
-def _initializeParameters(initDict, modelObj):
-    ''' Get starting values from initialization file.
-    '''
-    def _getValues(group, subgroup, initDict):
-        ''' Order the starting values such that they are matched with the correct
+""" Private auxiliary functions.
+"""
+def _initialize_parameters(init_dict, model_obj):
+    """ Get starting values from initialization file.
+    """
+    def _get_values(group, subgroup, init_dict):
+        """ Order the starting values such that they are matched with the correct
             columns. This includes the intercept.
-        '''
-        def _collectInformation(positions, dict_):
-            ''' Order the information appropriately.
-            '''
-            # Antibugging.
+        """
+        def _collect_information(positions, dict_):
+            """ Order the information appropriately.
+            """
+            # Antibugging 
             assert (isinstance(positions, list))
             assert (isinstance(dict_, dict))
-            assert (set(dict_.keys()) ==  set(positions))
+            assert (set(dict_.keys()) == set(positions))
             
-            # Initialize containers.
-            values  = []
+            # Initialize containers 
+            values = []
+            is_frees = []
+            cols = []
             
-            isFrees = []
-            
-            cols    = []
-            
-            # Collect info.
+            # Collect info
             for pos in positions:
                 
-                values  += [dict_[pos]['value']]
-         
-                isFrees += [dict_[pos]['isFree']]
-                
-                cols    += [dict_[pos]['col']]
+                values += [dict_[pos]['value']]
+                is_frees += [dict_[pos]['is_free']]
+                cols += [dict_[pos]['col']]
         
-            # Quality.
-            assert (all(isinstance(value, float) for value  in values))
-            assert (all(isinstance(isFree, bool) for isFree in isFrees))
+            # Quality
+            assert all(isinstance(value, float) for value in values)
+            assert all(isinstance(is_free, bool) for is_free in is_frees)
     
-            # Finishing.
-            return values, cols, isFrees
+            # Finishing
+            return values, cols, is_frees
             
-        # Antibugging.
-        assert (isinstance(initDict, dict))
+        # Antibugging
+        assert (isinstance(init_dict, dict))
         assert (group in ['BENE', 'COST'])
         
-        if(group ==  'BENE'): assert (subgroup in ['TREATED', 'UNTREATED'])
+        if group == 'BENE':
+            assert (subgroup in ['TREATED', 'UNTREATED'])
     
-        if(group ==  'COST'): assert (subgroup is None)
+        if group == 'COST':
+            assert (subgroup is None)
     
         # Distribute information.
-        common         = initDict['DERIV']['common']['pos']
+        common = init_dict['DERIV']['common']['pos']
         
-        exclBeneExPost = initDict['DERIV']['excl_bene']['ex_post']['pos']
+        excl_bene_ex_post = init_dict['DERIV']['excl_bene']['ex_post']['pos']
     
-        exclCost       = initDict['DERIV']['excl_cost']['pos']
+        excl_cost = init_dict['DERIV']['excl_cost']['pos']
         
-        # Initialize container.
-        dict_ = {}
+        # Initialize container
+        dict_ = dict()
         
-        # Benefits.
-        if(group == 'BENE'):
+        # Benefits
+        if group == 'BENE':
             
             # Coefficients.
-            isFrees   = initDict['BENE'][subgroup]['coeffs']['free'][:]
+            is_frees = init_dict['BENE'][subgroup]['coeffs']['free'][:]
     
-            values    = initDict['BENE'][subgroup]['coeffs']['values'][:]
+            values = init_dict['BENE'][subgroup]['coeffs']['values'][:]
             
-            positions = initDict['BENE'][subgroup]['coeffs']['pos'][:]
+            positions = init_dict['BENE'][subgroup]['coeffs']['pos'][:]
             
-            for pos  in positions:
+            for pos in positions:
                 
                 dict_[pos] = {}
                 
-                dict_[pos]['value']  = values.pop(0)
+                dict_[pos]['value'] = values.pop(0)
     
-                dict_[pos]['isFree'] = isFrees.pop(0)
+                dict_[pos]['is_free'] = is_frees.pop(0)
                 
-                dict_[pos]['col']    = pos
+                dict_[pos]['col'] = pos
                    
             # Intercept.
-            dict_['int'] = {}
-            
-            dict_['int']['value']  = initDict['BENE'][subgroup]['int']['values'][0]
+            dict_['int'] = dict()
+            dict_['int']['value'] = init_dict[
+                'BENE'][subgroup]['int'][
+                'values'][0]
+            dict_['int']['is_free'] = init_dict['BENE'][subgroup]['int']['free'][0]
     
-            dict_['int']['isFree'] = initDict['BENE'][subgroup]['int']['free'][0]
+            dict_['int']['col'] = 'int'
     
-            dict_['int']['col']    = 'int'
-    
-            # Collect in order.
-            positions = exclBeneExPost + common + ['int']
+            # Collect in order
+            positions = excl_bene_ex_post + common + ['int']
            
-        # Costs.
-        if(group == 'COST'):
+        # Costs
+        if group == 'COST':
             
-            # Coefficients.
-            isFrees   = initDict['COST']['coeffs']['free'][:]
+            # Coefficients
+            is_frees = init_dict['COST']['coeffs']['free'][:]
     
-            values    = initDict['COST']['coeffs']['values'][:]
+            values = init_dict['COST']['coeffs']['values'][:]
             
-            positions = initDict['COST']['coeffs']['pos'][:]
+            positions = init_dict['COST']['coeffs']['pos'][:]
             
-            for pos  in positions:
+            for pos in positions:
                 
-                dict_[pos] = {}
+                dict_[pos] = dict()
                 
-                dict_[pos]['value']  = values.pop(0)
-    
-                dict_[pos]['isFree'] = isFrees.pop(0)
-                
-                dict_[pos]['col']    = pos 
+                dict_[pos]['value'] = values.pop(0)
+                dict_[pos]['is_free'] = is_frees.pop(0)
+                dict_[pos]['col'] = pos
             
             # Intercept.
             dict_['int'] = {}
             
-            dict_['int']['value']  = initDict['COST']['int']['values'][0]
+            dict_['int']['value'] = init_dict['COST']['int']['values'][0]
     
-            dict_['int']['isFree'] = initDict['COST']['int']['free'][0]
+            dict_['int']['is_free'] = init_dict['COST']['int']['free'][0]
     
-            dict_['int']['col']    = 'int'
-    
-            
-            positions = common + ['int'] + exclCost
+            dict_['int']['col'] = 'int'
+
+            positions = common + ['int'] + excl_cost
     
         # Create output.
-        values, cols, isFrees = _collectInformation(positions, dict_)
+        values, cols, is_frees = _collect_information(positions, dict_)
         
         # Finishing.
-        return values, cols, isFrees
+        return values, cols, is_frees
     
-    ''' Core function.
-    ''' 
+    """ Core function.
+    """ 
     # Antibugging.
-    assert (isinstance(initDict, dict))
-    assert (modelObj.get_status() == True)
+    assert (isinstance(init_dict, dict))
+    assert (model_obj.get_status() is True)
 
     # Distribute information
-    numCovarsExPost = len(initDict['BENE']['TREATED']['coeffs']['pos'])
+    num_covars_ex_post = len(init_dict['BENE']['TREATED']['coeffs']['pos'])
 
-    numCovarsCost   = len(initDict['COST']['coeffs']['pos'])
+    num_covars_cost = len(init_dict['COST']['coeffs']['pos'])
 
-    # Initialize parameter container.
-    parasObj = ParasCls(modelObj)
+    # Initialize parameter container
+    paras_obj = ParasCls(model_obj)
 
-    # Benefits.
+    # Benefits
     
-        # Treated
-    values, cols, isFrees  = _getValues('BENE', 'TREATED', initDict)
+    # Treated
+    values, cols, is_frees  = _get_values('BENE', 'TREATED', init_dict)
 
-    for i in range(numCovarsExPost + 1):
+    for i in range(num_covars_ex_post + 1):
     
-        type_    = 'outc'
-        
+        type_ = 'outc'
         subgroup = 'treated'
-        
-        value    = values[i]
-        
-        col      = cols[i]
+        value = values[i]
+        col = cols[i]
                 
-        isFree   = isFrees[i]
+        is_free = is_frees[i]
         
-        parasObj.add_parameter(type_, subgroup, value, is_free= isFree, bounds = (None, None), col = col)
+        paras_obj.add_parameter(type_, subgroup, value, is_free=is_free,
+                                bounds=(None, None), col=col)
     
-        # Untreated
-    values, cols, isFrees  = _getValues('BENE', 'UNTREATED', initDict)
+    # Untreated
+    values, cols, is_frees = _get_values('BENE', 'UNTREATED', init_dict)
 
-    for i in range(numCovarsExPost + 1):
+    for i in range(num_covars_ex_post + 1):
     
-        type_    = 'outc'
-        
+        type_ = 'outc'
         subgroup = 'untreated'
-        
-        value    = values[i]
-        
-        col      = cols[i]
-        
-        isFree   = isFrees[i]
-        
-        parasObj.add_parameter(type_, subgroup, value, is_free= isFree, bounds = (None, None), col = col)
+        value = values[i]
+        col = cols[i]
+        is_free = is_frees[i]
+        paras_obj.add_parameter(type_, subgroup, value, is_free=is_free,
+                                bounds=(None, None), col=col)
     
-    # Costs.
-    values, cols, isFrees  = _getValues('COST', None, initDict)
+    # Costs
+    values, cols, is_frees = _get_values('COST', None, init_dict)
     
-    for i in range(numCovarsCost + 1):
+    for i in range(num_covars_cost + 1):
     
-        type_    = 'cost'
+        type_ = 'cost'
                 
-        value    = values[i]
+        value = values[i]
         
-        col      = cols[i]
+        col = cols[i]
         
-        isFree   = isFrees[i]
+        is_free = is_frees[i]
         
-        parasObj.add_parameter(type_, None, value, is_free= isFree, bounds = (None, None), col = col)
+        paras_obj.add_parameter(type_, None, value, is_free=is_free, bounds=(None, None), col=col)
 
-    # Correlation parameters.
-    value  = initDict['RHO']['treated']['value']
-    isFree = initDict['RHO']['treated']['free']
+    # Correlation parameters
+    value = init_dict['RHO']['treated']['value']
+    is_free = init_dict['RHO']['treated']['free']
     
-    parasObj.add_parameter('rho', 'U1,V', value, isFree, (-0.99, 0.99), col = None)
+    paras_obj.add_parameter('rho', 'U1,V', value, is_free, (-0.99, 0.99), col=None)
     
-    value  = initDict['RHO']['untreated']['value']
-    isFree = initDict['RHO']['untreated']['free']
+    value = init_dict['RHO']['untreated']['value']
+    is_free = init_dict['RHO']['untreated']['free']
 
-    parasObj.add_parameter('rho', 'U0,V', value, isFree, (-0.99, 0.99), col = None)
+    paras_obj.add_parameter('rho', 'U0,V', value, is_free, (-0.99, 0.99), col=None)
     
-    # Disturbances.
-    value  = initDict['BENE']['UNTREATED']['sd']['values'][0]
-    isFree = initDict['BENE']['UNTREATED']['sd']['free'][0]
+    # Disturbances
+    value = init_dict['BENE']['UNTREATED']['sd']['values'][0]
+    is_free = init_dict['BENE']['UNTREATED']['sd']['free'][0]
             
-    parasObj.add_parameter('sd', 'U0', value, is_free= isFree, bounds = (0.01, None), col = None)
-   
-   
-    value  = initDict['BENE']['TREATED']['sd']['values'][0]
-    isFree = initDict['BENE']['TREATED']['sd']['free'][0]
+    paras_obj.add_parameter('sd', 'U0', value, is_free=is_free, bounds=(0.01, None), col=None)
+
+    value = init_dict['BENE']['TREATED']['sd']['values'][0]
+    is_free = init_dict['BENE']['TREATED']['sd']['free'][0]
       
-    parasObj.add_parameter('sd', 'U1', value, is_free= isFree, bounds = (0.01, None), col = None)
+    paras_obj.add_parameter('sd', 'U1', value, is_free=is_free, bounds=(0.01, None), col=None)
 
-    
-    value  = initDict['COST']['sd']['values'][0]
-    isFree = initDict['COST']['sd']['free'][0]
+    value = init_dict['COST']['sd']['values'][0]
+    is_free = init_dict['COST']['sd']['free'][0]
         
-    parasObj.add_parameter('sd', 'V', value, is_free= isFree, bounds = (0.01, None), col = None)
+    paras_obj.add_parameter('sd', 'V', value, is_free= is_free, bounds=(0.01, None), col=None)
         
-    parasObj.lock()
+    paras_obj.lock()
 
-    # Finishing.   
-    return parasObj
-    
-def _autoStart(parasObj, modelObj):
-    ''' Get automatic starting values.
-    '''   
-    def _computeStartingValues(modelObj, which):
-        ''' Get starting values.
-        '''
-        # Antibugging.
-        assert (modelObj.get_status() == True)
+    # Finishing
+    return paras_obj
+
+
+def _auto_start(paras_obj, model_obj):
+    """ Get automatic starting values.
+    """   
+    def _compute_starting_values(model_obj, which):
+        """ Get starting values.
+        """
+        # Antibugging
+        assert (model_obj.get_status() is True)
         assert (which in ['treated', 'untreated', 'cost'])
         
         # Data selection.
-        Y = modelObj.get_attr('Y')
-
-        D = modelObj.get_attr('D')
+        y = model_obj.get_attr('Y')
+        d = model_obj.get_attr('D')
+        x = model_obj.get_attr('X_ex_post')
+        g = model_obj.get_attr('G')
         
+        # Subset selection 
+        if which == 'treated':
+            y = y[d == 1]
+            x = x[(d == 1), :]
         
-        X = modelObj.get_attr('X_ex_post')
+        elif which == 'untreated':
+            y = y[d == 0]
+            x = x[(d == 0), :]
         
-        G = modelObj.get_attr('G')
-        
-        # Subset selection.
-        if(which == 'treated'):
-            
-            Y = Y[D == 1]
-            
-            X = X[(D == 1), :]
-        
-        elif(which == 'untreated'):
-            
-            Y = Y[D == 0]
-            
-            X = X[(D == 0), :]
-        
-        # Model selection. 
-        if(which in ['treated', 'untreated']):
-            
-            olsRslt = sm.OLS(Y, X).fit()
-
-            coeffs = olsRslt.params
-            sd     = np.array(np.sqrt(olsRslt.scale))
-        
-        elif(which == 'cost'):
-            
+        # Model selection 
+        if which in ['treated', 'untreated']:
+            ols_rslt = sm.OLS(y, x).fit()
+            coeffs = ols_rslt.params
+            sd = np.array(np.sqrt(ols_rslt.scale))
+        elif which == 'cost':
             sys.stdout = open('/dev/null', 'w')
-            
-            probitRslt =  sm.Probit(D, G).fit()
-            
-            coeffs = -probitRslt.params
-            sd     = np.array(1.0)
-            
+            probit_rslt = sm.Probit(d, g).fit()
+            coeffs = -probit_rslt.params
+            sd = np.array(1.0)
             sys.stdout = sys.__stdout__
             
-        # Quality checks.
+        # Quality checks
         assert (isinstance(coeffs, np.ndarray))
         assert (isinstance(sd, np.ndarray))
         
@@ -333,82 +304,81 @@ def _autoStart(parasObj, modelObj):
 
         # Type conversions.
         coeffs = coeffs.tolist()
-        sd     = float(sd)
+        sd = float(sd)
         
         # Finishing.
         return coeffs, sd
     
-    ''' Core function.
-    '''
-    # Antibugging.
-    assert (isinstance(parasObj, ParasCls))
-    assert (parasObj.get_status() == True)
+    """ Core function.
+    """
+    # Antibugging
+    assert (isinstance(paras_obj, ParasCls))
+    assert (paras_obj.get_status() is True)
 
-    assert (isinstance(modelObj, ModelCls))
-    assert (modelObj.get_status() == True)
+    assert (isinstance(model_obj, ModelCls))
+    assert (model_obj.get_status() is True)
     
-    # Benefits.
+    # Benefits 
     for subgroup in ['treated', 'untreated']:
 
-        paraObjs = parasObj.get_parameters('outc', subgroup, is_obj = True)
+        para_objs = paras_obj.get_parameters('outc', subgroup, is_obj = True)
         
-        coeffs, sd = _computeStartingValues(modelObj, subgroup)
+        coeffs, sd = _compute_starting_values(model_obj, subgroup)
         
-        assert (len(paraObjs) == len(coeffs))
+        assert (len(para_objs) == len(coeffs))
         
-        for paraObj in paraObjs:
+        for para_obj in para_objs:
             
             coeff = coeffs.pop(0)
             
-            paraObj.set_attr('value', coeff)
+            para_obj.set_attr('value', coeff)
         
-            parasObj._replace_paras_obj(paraObj)
+            paras_obj._replace_paras_obj(para_obj)
         
         label = 'U1'
         
-        if(subgroup == 'untreated'): label = 'U0'
+        if subgroup == 'untreated':
+            label = 'U0'
         
-        paraObj = parasObj.get_parameters('sd', label, is_obj = True)
+        para_obj = paras_obj.get_parameters('sd', label, is_obj=True)
         
-        paraObj.set_attr('value', sd)
+        para_obj.set_attr('value', sd)
         
-        parasObj._replace_paras_obj(paraObj)
+        paras_obj._replace_paras_obj(para_obj)
 
-    # Cost.
-    paraObjs = parasObj.get_parameters('cost', None, is_obj = True)
+    # Cost
+    para_objs = paras_obj.get_parameters('cost', None, is_obj=True)
         
-    coeffs, sd = _computeStartingValues(modelObj, 'cost')
+    coeffs, sd = _compute_starting_values(model_obj, 'cost')
         
-    assert (len(paraObjs) == len(coeffs))
+    assert (len(para_objs) == len(coeffs))
             
-    for paraObj in paraObjs:
+    for para_obj in para_objs:
             
         coeff = coeffs.pop(0)
             
-        paraObj.set_attr('value', coeff)
+        para_obj.set_attr('value', coeff)
         
-        parasObj._replace_paras_obj(paraObj)
-    
-    
-    paraObj = parasObj.get_parameters('sd', 'V', is_obj = True)
+        paras_obj._replace_paras_obj(para_obj)
+
+    para_obj = paras_obj.get_parameters('sd', 'V', is_obj=True)
         
-    paraObj.set_attr('value', sd)
+    para_obj.set_attr('value', sd)
         
-    parasObj._replace_paras_obj(paraObj)
+    paras_obj._replace_paras_obj(para_obj)
     
-    # Correlations.
+    # Correlations
     for corr in ['U1,V', 'U0,V']:
 
-        paraObj = parasObj.get_parameters('rho', corr, is_obj = True)
+        para_obj = paras_obj.get_parameters('rho', corr, is_obj=True)
             
-        paraObj.set_attr('value', 0.0)
+        para_obj.set_attr('value', 0.0)
             
-        parasObj._replace_paras_obj(paraObj)
-    
+        paras_obj._replace_paras_obj(para_obj)
 
     # Quality.
-    assert (parasObj.get_status() == True)
+    assert (paras_obj.get_status() == True)
     
     # Finishing.
-    return parasObj
+    return paras_obj
     

@@ -31,7 +31,7 @@ def initialize(init_file, use_simulation = False, is_simulation = False):
     
     # Construct objects
     model_obj = construct_model(init_dict)
-    paras_obj = constructParas(init_dict, model_obj, is_simulation)
+    paras_obj = construct_paras(init_dict, model_obj, is_simulation)
 
     # Quality checks
     for obj in [model_obj, paras_obj]:
