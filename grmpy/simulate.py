@@ -267,15 +267,12 @@ def _write_info(paras_obj, target, rslt, likl):
 
     fval = str(likl)
 
-    # Write out structural parameters
     paras = paras_obj.get_values('internal', 'all')
-
-    np.savetxt(file_name + '.paras.grmpy.out', paras, fmt='%15.10f')
 
     # Write out information on agent experiences
     with open(file_name + '.infos.grmpy.out', 'w') as file_:
 
-        file_.write('\n Simulated Economy\n\n')
+        file_.write('\n SIMULATED ECONOMY\n\n')
 
         file_.write('   Number of Observations: ' + num_agents + '\n')
 
@@ -300,3 +297,10 @@ def _write_info(paras_obj, target, rslt, likl):
         file_.write(string.format(['     Untreated', np.mean(rslt['Y'][rslt['D'] == 0])]))
 
         file_.write('\n\n')
+
+        # Parameters
+        file_.write('''\n  TRUE PARAMETERS \n\n''')
+
+        for para in paras:
+
+            file_.write('  {:25.18f}'.format(para) + '\n')
