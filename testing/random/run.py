@@ -18,8 +18,8 @@ from modules.auxiliary import *
 import modules.tests as lib
 
 # virtual environment
-#if not hasattr(sys, 'real_prefix'):
-#   raise AssertionError('Please use a virtual environment for testing')
+if not hasattr(sys, 'real_prefix'):
+   raise AssertionError('Please use a virtual environment for testing')
 
 PYTHON_VERSION = sys.version_info[0]
 
@@ -33,9 +33,7 @@ def run(hours):
     start, timeout = datetime.now(), timedelta(hours=hours)
 
     # Define list of admissible tests
-#    labels = ['A', 'B', 'C', 'D', 'E']
-    print('C removed')
-    labels = ['A', 'B', 'D', 'E']
+    labels = ['A', 'B', 'C', 'D', 'E']
 
     # Initialize counter
     dict_ = dict()
