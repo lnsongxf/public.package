@@ -1,44 +1,43 @@
-''' Module that holds the parasCls, which manages all things related to the
+""" Module that holds the parasCls, which manages all things related to the
     parameter management.
-'''
+"""
 # standard library
-import numpy   as np
+import numpy as np
 
 # project library
 from grmpy.clsMeta import MetaCls
 from grmpy.clsModel import ModelCls
 
-class parasCls(MetaCls):
-    ''' Class for the parameter management.
-    '''
-    def __init__(self, modelObj):
+class ParasCls(MetaCls):
+    """ Class for the parameter management.
+    """
+    def __init__(self, model_obj):
         
         # Antibugging.
-        assert (isinstance(modelObj, ModelCls))
-        assert (modelObj.get_status() is True)
+        assert (isinstance(model_obj, ModelCls))
+        assert (model_obj.get_status() is True)
         
         # Attach attributes.
-        self.attr = {}
+        self.attr = dict()
 
-         
         self.attr['paraObjs']   = []
         self.attr['numParas']   = 0
         self.attr['numFree']    = 0
         self.attr['factor']     = None
 
-        self.attr['num_covars_excl_bene_ex_ante'] = modelObj.get_attr('num_covars_excl_bene_ex_ante')
-        self.attr['num_covars_excl_cost']       = modelObj.get_attr('num_covars_excl_cost')
+        self.attr['num_covars_excl_bene_ex_ante'] = model_obj.get_attr('num_covars_excl_bene_ex_ante')
+        self.attr['num_covars_excl_cost']       = model_obj.get_attr('num_covars_excl_cost')
 
-        self.attr['without_prediction']       = modelObj.get_attr('without_prediction')
-        self.attr['surp_estimation']          = modelObj.get_attr('surp_estimation')
+        self.attr['without_prediction']       = model_obj.get_attr('without_prediction')
+        self.attr['surp_estimation']          = model_obj.get_attr('surp_estimation')
 
-        self.attr['X_ex_ante']                 = modelObj.get_attr('X_ex_ante')
-        self.attr['X_ex_post']                 = modelObj.get_attr('X_ex_post')
+        self.attr['X_ex_ante']                 = model_obj.get_attr('X_ex_ante')
+        self.attr['X_ex_post']                 = model_obj.get_attr('X_ex_post')
 
-        self.attr['num_agents']               = modelObj.get_attr('num_agents')
+        self.attr['num_agents']               = model_obj.get_attr('num_agents')
         
         # Initialization.
-        self.attr['modelObj']  = modelObj    
+        self.attr['modelObj']  = model_obj
         
         self.isFirst = True
     
@@ -46,8 +45,8 @@ class parasCls(MetaCls):
         self.is_locked = False
     
     def addParameter(self, type_, subgroup, value, isFree, bounds, col):
-        ''' Add parameters to class instance.
-        '''
+        """ Add parameters to class instance.
+        """
         # Antibugging.
         assert (isFree in  [True, False])
         assert (len(bounds) == 2)
@@ -110,10 +109,10 @@ class parasCls(MetaCls):
             self.attr['numFree'] += 1
 
     def getParameter(self, count):
-        ''' Get a single parameter object identified by its count. It is 
+        """ Get a single parameter object identified by its count. It is 
             important to note, that the selection mechanism refers to all
             parameters not just the true ones. 
-        '''
+        """
         # Antibugging.
         assert (self.get_status() == True)
         assert (count < self.get_attr('numParas'))
@@ -133,8 +132,8 @@ class parasCls(MetaCls):
         assert(False == True)
 
     def getParameters(self, type_, subgroup, isObj = False):
-        ''' Get parameter groups.
-        '''
+        """ Get parameter groups.
+        """
         # Antibugging.
         assert (self._checkRequest(type_, subgroup, isObj) == True)
             
@@ -229,8 +228,8 @@ class parasCls(MetaCls):
         return rslt
 
     def getValues(self, version, which):
-        ''' Get all free parameter values.
-        '''    
+        """ Get all free parameter values.
+        """    
         # Antibugging.
         assert (self.get_status() == True)
         assert (self._checkIntegrity() == True)
@@ -275,11 +274,11 @@ class parasCls(MetaCls):
         # Finishing.
         return rslt
 
-    ''' All methods related to updating the parameters. 
-    '''             
+    """ All methods related to updating the parameters. 
+    """             
     def update(self, x, version, which):
-        ''' Update all free parameters.
-        '''
+        """ Update all free parameters.
+        """
         # Antibugging.
         assert (self.get_status() == True)
         assert (self._checkIntegrity() == True)
@@ -323,9 +322,9 @@ class parasCls(MetaCls):
         return True
     
     def _transformToExternal(self, paraObj, internalValue):
-        ''' Transform internal values for external use by maximization 
+        """ Transform internal values for external use by maximization 
             routine.
-        '''
+        """
         # Antibugging.
         assert (isinstance(paraObj, _paraContainer))
         assert (paraObj.get_status() == True)
@@ -372,8 +371,8 @@ class parasCls(MetaCls):
         return externalValue
     
     def _transformToInternal(self, paraObj, externalValue):
-        ''' Transform external values to internal paraObj.
-        '''
+        """ Transform external values to internal paraObj.
+        """
         # Antibugging.
         assert (isinstance(paraObj, _paraContainer))
         assert (paraObj.get_status() == True)
@@ -425,8 +424,8 @@ class parasCls(MetaCls):
         return internalValue
      
     def _clipInternalValue(self, paraObj, internalValue):
-        ''' Assure that internal value not exactly equal to bounds.
-        '''
+        """ Assure that internal value not exactly equal to bounds.
+        """
         # Antibugging.
         assert (isinstance(paraObj, _paraContainer))
         assert (paraObj.get_status() == True)
@@ -458,12 +457,12 @@ class parasCls(MetaCls):
         # Finishing.
         return internalValue
     
-    ''' Additional private methods.
-    '''
+    """ Additional private methods.
+    """
     def _predictionStep(self):
-        ''' Prediction step to account for benefit shifters unknown to the agent
+        """ Prediction step to account for benefit shifters unknown to the agent
             at the time of treatment decision. 
-        '''
+        """
         # Antibugging.
         assert (self.get_status() == True)
 
@@ -500,8 +499,8 @@ class parasCls(MetaCls):
         return rslt
     
     def _replaceParasObj(self, paraObj):
-        ''' Replace parameter object.
-        '''
+        """ Replace parameter object.
+        """
         # Update attributes.
         parasList = self.attr['paraObjs']
         
@@ -527,11 +526,11 @@ class parasCls(MetaCls):
         
         self.lock()
 
-    ''' Check integrity of class instance and attribute requests.
-    '''
+    """ Check integrity of class instance and attribute requests.
+    """
     def _checkRequest(self, type_, subgroup, obj):
-        ''' Check the validity of the parameter request.
-        '''
+        """ Check the validity of the parameter request.
+        """
         # Check type.
         assert (type_ in ['outc', 'cost', 'rho', 'sd', \
                           'var', 'cov', 'bene', 'choice'])
@@ -555,16 +554,16 @@ class parasCls(MetaCls):
         
         return True
 
-''' Private methods and classes of the module. 
-'''
+""" Private methods and classes of the module. 
+"""
 class _paraContainer(MetaCls):
-    ''' Container for parameter class.
-    '''
+    """ Container for parameter class.
+    """
     counter = 0
     
     def __init__(self):
-        ''' Parameter initialization.
-        '''
+        """ Parameter initialization.
+        """
         
         # Attach attributes.
         self.attr = {}
@@ -588,11 +587,11 @@ class _paraContainer(MetaCls):
 
         self.is_locked          = False
         
-    ''' Public get/set methods.
-    '''
+    """ Public get/set methods.
+    """
     def set_value(self, arg):
-        ''' Set value of parameter object.
-        '''
+        """ Set value of parameter object.
+        """
         # Antibugging.
         assert (isinstance(arg, float))
         
@@ -618,33 +617,33 @@ class _paraContainer(MetaCls):
         self.attr['value'] = arg
         
     def set_attr(self, key, arg):
-        ''' Set attribute.
+        """ Set attribute.
         
             Development Note:
             
                 This function overrides the metaCls method. Otherwise, 
                 the updating step during estimation is too tedious.
         
-        '''
+        """
         # Antibugging.
         assert (self.check_key(key) == True)
 
         # Set attribute.
         self.attr[key] = arg
 
-    ''' Private methods
-    '''
+    """ Private methods
+    """
     def derived_attributes(self):
-        ''' Update endogenous attributes.
-        '''
+        """ Update endogenous attributes.
+        """
         
         if(np.any(self.attr['bounds']) is not None):
             
             self.attr['hasBounds'] = True
     
     def _check_integrity(self):
-        ''' Check integrity.
-        '''
+        """ Check integrity.
+        """
         # type.
         assert (self.get_attr('type') in ['outc', 'cost', 'rho', 'sd'])
 
