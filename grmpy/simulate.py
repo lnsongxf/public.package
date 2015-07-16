@@ -94,7 +94,7 @@ def _get_likelihood(init):
     crit_obj.lock()
 
     # Evaluate at true values.
-    x = paras_obj.getValues('external', 'free')
+    x = paras_obj.get_values('external', 'free')
 
     likl = scipy_wrapper_function(x, crit_obj)
 
@@ -152,19 +152,19 @@ def _simulate_endogenous(sim_dat, paras_obj, init_dict):
     all_ = init_dict['DERIV']['pos']['all']
 
     # Sampling of unobservables.
-    var_v = paras_obj.getParameters('var',  'V')
+    var_v = paras_obj.get_parameters('var',  'V')
 
-    var_u1 = paras_obj.getParameters('var',  'U1')
+    var_u1 = paras_obj.get_parameters('var',  'U1')
 
-    var_u0 = paras_obj.getParameters('var',  'U0')
+    var_u0 = paras_obj.get_parameters('var',  'U0')
 
     mean = np.tile(0.0, 3)
 
     cov_mat = np.diag([var_u1, var_u0, var_v])
 
-    cov_mat[2,0] = cov_mat[0,2] = paras_obj.getParameters('cov', 'U1,V')
+    cov_mat[2,0] = cov_mat[0,2] = paras_obj.get_parameters('cov', 'U1,V')
 
-    cov_mat[2,1] = cov_mat[1,2] = paras_obj.getParameters('cov', 'U0,V')
+    cov_mat[2,1] = cov_mat[1,2] = paras_obj.get_parameters('cov', 'U0,V')
 
     u1, u0, v = np.random.multivariate_normal(mean, cov_mat, sim_agents).T
 
@@ -176,13 +176,13 @@ def _simulate_endogenous(sim_dat, paras_obj, init_dict):
     z = rslt['Z']
 
     # Simulate choices.
-    coeffs_choc = paras_obj.getParameters('choice', None)
+    coeffs_choc = paras_obj.get_parameters('choice', None)
 
     d = (np.dot(coeffs_choc, z.T) - v > 0.0)
 
     # Potential Outcomes
-    outc_treated = paras_obj.getParameters('outc', 'treated')
-    outc_untreated = paras_obj.getParameters('outc', 'untreated')
+    outc_treated = paras_obj.get_parameters('outc', 'treated')
+    outc_untreated = paras_obj.get_parameters('outc', 'untreated')
 
     y1 = np.dot(outc_treated, x.T) + u1
     y0 = np.dot(outc_untreated, x.T) + u0
@@ -274,7 +274,7 @@ def _write_info(paras_obj, target, rslt, likl):
     fval = str(likl)
 
     # Write out structural parameters.
-    paras = paras_obj.getValues(version='internal', which='all')
+    paras = paras_obj.get_values(version='internal', which='all')
 
     np.savetxt(file_name + '.paras.grmpy.out', paras, fmt='%15.10f')
 

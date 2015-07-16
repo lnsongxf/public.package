@@ -31,7 +31,7 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
     if resume:
         paras_obj = updateParameters(paras_obj)
 
-    paras = paras_obj.getValues('internal', 'all')
+    paras = paras_obj.get_values('internal', 'all')
 
     # Note starting values
     _write_starting_values(paras)
@@ -128,7 +128,7 @@ def _write_optimization_results(maxRslt, paras_obj):
     # Write stop values to file
     paras_obj.update(maxRslt['xopt'], 'external', 'free')
 
-    paras = paras_obj.getValues('internal', 'all')
+    paras = paras_obj.get_values('internal', 'all')
 
     with open('info.grmpy.out', 'a') as file_:
 

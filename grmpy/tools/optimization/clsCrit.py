@@ -7,7 +7,7 @@ import numpy as np
 # project library
 from grmpy.clsMeta import MetaCls
 from grmpy.clsModel import ModelCls
-from grmpy.clsParas import parasCls
+from grmpy.clsParas import ParasCls
 
 class CritCls(MetaCls):
     
@@ -15,7 +15,7 @@ class CritCls(MetaCls):
 
         # Antibugging
         assert (isinstance(model_obj, ModelCls))
-        assert (isinstance(paras_obj, parasCls))
+        assert (isinstance(paras_obj, ParasCls))
 
         assert (model_obj.get_status() is True)
         assert (paras_obj.get_status() is True)
@@ -78,7 +78,7 @@ class CritCls(MetaCls):
         differences = model_obj.get_attr('differences')
          
         # Auxiliary statistics
-        num_free = paras_obj.get_attr('numFree')
+        num_free = paras_obj.get_attr('num_free')
         
         # Antibugging.
         assert (x.shape == (num_free, ))
@@ -174,17 +174,17 @@ class CritCls(MetaCls):
         z = model_obj.get_attr('Z')
 
         # Distribute current parametrization
-        outc_treated = paras_obj.getParameters('outc', 'treated')
-        outc_untreated = paras_obj.getParameters('outc', 'untreated')
-        coeffs_choc = paras_obj.getParameters('choice', None)
+        outc_treated = paras_obj.get_parameters('outc', 'treated')
+        outc_untreated = paras_obj.get_parameters('outc', 'untreated')
+        coeffs_choc = paras_obj.get_parameters('choice', None)
 
-        sd_u1 = paras_obj.getParameters('sd',  'U1')
-        sd_u0 = paras_obj.getParameters('sd',  'U0')
-        sd_v = paras_obj.getParameters('sd',  'V')
-        var_v = paras_obj.getParameters('var',  'V')
+        sd_u1 = paras_obj.get_parameters('sd',  'U1')
+        sd_u0 = paras_obj.get_parameters('sd',  'U0')
+        sd_v = paras_obj.get_parameters('sd',  'V')
+        var_v = paras_obj.get_parameters('var',  'V')
 
-        rho_u1_v = paras_obj.getParameters('rho', 'U1,V')
-        rho_u0_v = paras_obj.getParameters('rho', 'U0,V')
+        rho_u1_v = paras_obj.get_parameters('rho', 'U1,V')
+        rho_u0_v = paras_obj.get_parameters('rho', 'U0,V')
 
         # Construct choice index
         choice_indices = np.dot(coeffs_choc, z.T)
@@ -218,16 +218,16 @@ class CritCls(MetaCls):
         z = model_obj.get_attr('Z')
 
         # Distribute current parametrization
-        outc_treated = paras_obj.getParameters('outc', 'treated')
-        outc_untreated = paras_obj.getParameters('outc', 'untreated')
-        coeffs_choc = paras_obj.getParameters('choice', None)
+        outc_treated = paras_obj.get_parameters('outc', 'treated')
+        outc_untreated = paras_obj.get_parameters('outc', 'untreated')
+        coeffs_choc = paras_obj.get_parameters('choice', None)
 
-        sd_u1 = paras_obj.getParameters('sd', 'U1')
-        sd_u0 = paras_obj.getParameters('sd', 'U0')
-        sd_v = paras_obj.getParameters('sd', 'V')
+        sd_u1 = paras_obj.get_parameters('sd', 'U1')
+        sd_u0 = paras_obj.get_parameters('sd', 'U0')
+        sd_v = paras_obj.get_parameters('sd', 'V')
 
-        rho_u1_v = paras_obj.getParameters('rho', 'U1,V')
-        rho_u0_v = paras_obj.getParameters('rho', 'U0,V')
+        rho_u1_v = paras_obj.get_parameters('rho', 'U1,V')
+        rho_u0_v = paras_obj.get_parameters('rho', 'U0,V')
 
         # Initialize containers
         likl = np.tile(np.nan, num_agents)

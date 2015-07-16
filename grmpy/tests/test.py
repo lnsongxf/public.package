@@ -51,9 +51,9 @@ class testParasCls(object):
             
             value = para_obj.get_attr('value')
             
-            ext = paras_obj._transformToExternal(para_obj, value)
+            ext = paras_obj._transform_to_external(para_obj, value)
             
-            int_ = paras_obj._transformToInternal(para_obj, ext)
+            int_ = paras_obj._transform_to_internal(para_obj, ext)
 
             assert_almost_equal(value, int_)
                     

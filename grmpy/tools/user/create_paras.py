@@ -9,7 +9,7 @@ import numpy            as np
 import sys
 
 # project library.
-from grmpy.clsParas import parasCls
+from grmpy.clsParas import ParasCls
 from grmpy.clsModel import ModelCls
 
 
@@ -179,7 +179,7 @@ def _initializeParameters(initDict, modelObj):
     numCovarsCost   = len(initDict['COST']['coeffs']['pos'])
 
     # Initialize parameter container.
-    parasObj = parasCls(modelObj)
+    parasObj = ParasCls(modelObj)
 
     # Benefits.
     
@@ -198,7 +198,7 @@ def _initializeParameters(initDict, modelObj):
                 
         isFree   = isFrees[i]
         
-        parasObj.addParameter(type_, subgroup, value, isFree = isFree, bounds = (None, None), col = col)
+        parasObj.add_parameter(type_, subgroup, value, is_free= isFree, bounds = (None, None), col = col)
     
         # Untreated
     values, cols, isFrees  = _getValues('BENE', 'UNTREATED', initDict)
@@ -215,7 +215,7 @@ def _initializeParameters(initDict, modelObj):
         
         isFree   = isFrees[i]
         
-        parasObj.addParameter(type_, subgroup, value, isFree = isFree, bounds = (None, None), col = col)
+        parasObj.add_parameter(type_, subgroup, value, is_free= isFree, bounds = (None, None), col = col)
     
     # Costs.
     values, cols, isFrees  = _getValues('COST', None, initDict)
@@ -230,36 +230,36 @@ def _initializeParameters(initDict, modelObj):
         
         isFree   = isFrees[i]
         
-        parasObj.addParameter(type_, None, value, isFree = isFree, bounds = (None, None), col = col)
+        parasObj.add_parameter(type_, None, value, is_free= isFree, bounds = (None, None), col = col)
 
     # Correlation parameters.
     value  = initDict['RHO']['treated']['value']
     isFree = initDict['RHO']['treated']['free']
     
-    parasObj.addParameter('rho', 'U1,V', value, isFree, (-0.99, 0.99), col = None)
+    parasObj.add_parameter('rho', 'U1,V', value, isFree, (-0.99, 0.99), col = None)
     
     value  = initDict['RHO']['untreated']['value']
     isFree = initDict['RHO']['untreated']['free']
 
-    parasObj.addParameter('rho', 'U0,V', value, isFree, (-0.99, 0.99), col = None)    
+    parasObj.add_parameter('rho', 'U0,V', value, isFree, (-0.99, 0.99), col = None)
     
     # Disturbances.
     value  = initDict['BENE']['UNTREATED']['sd']['values'][0]
     isFree = initDict['BENE']['UNTREATED']['sd']['free'][0]
             
-    parasObj.addParameter('sd', 'U0', value, isFree = isFree, bounds = (0.01, None), col = None) 
+    parasObj.add_parameter('sd', 'U0', value, is_free= isFree, bounds = (0.01, None), col = None)
    
    
     value  = initDict['BENE']['TREATED']['sd']['values'][0]
     isFree = initDict['BENE']['TREATED']['sd']['free'][0]
       
-    parasObj.addParameter('sd', 'U1', value, isFree = isFree, bounds = (0.01, None), col = None) 
+    parasObj.add_parameter('sd', 'U1', value, is_free= isFree, bounds = (0.01, None), col = None)
 
     
     value  = initDict['COST']['sd']['values'][0]
     isFree = initDict['COST']['sd']['free'][0]
         
-    parasObj.addParameter('sd', 'V', value, isFree = isFree, bounds = (0.01, None), col = None) 
+    parasObj.add_parameter('sd', 'V', value, is_free= isFree, bounds = (0.01, None), col = None)
         
     parasObj.lock()
 
@@ -341,7 +341,7 @@ def _autoStart(parasObj, modelObj):
     ''' Core function.
     '''
     # Antibugging.
-    assert (isinstance(parasObj, parasCls))
+    assert (isinstance(parasObj, ParasCls))
     assert (parasObj.get_status() == True)
 
     assert (isinstance(modelObj, ModelCls))
@@ -350,7 +350,7 @@ def _autoStart(parasObj, modelObj):
     # Benefits.
     for subgroup in ['treated', 'untreated']:
 
-        paraObjs = parasObj.getParameters('outc', subgroup, isObj = True)
+        paraObjs = parasObj.get_parameters('outc', subgroup, is_obj = True)
         
         coeffs, sd = _computeStartingValues(modelObj, subgroup)
         
@@ -362,20 +362,20 @@ def _autoStart(parasObj, modelObj):
             
             paraObj.set_attr('value', coeff)
         
-            parasObj._replaceParasObj(paraObj)
+            parasObj._replace_paras_obj(paraObj)
         
         label = 'U1'
         
         if(subgroup == 'untreated'): label = 'U0'
         
-        paraObj = parasObj.getParameters('sd', label, isObj = True)
+        paraObj = parasObj.get_parameters('sd', label, is_obj = True)
         
         paraObj.set_attr('value', sd)
         
-        parasObj._replaceParasObj(paraObj)
+        parasObj._replace_paras_obj(paraObj)
 
     # Cost.
-    paraObjs = parasObj.getParameters('cost', None, isObj = True)
+    paraObjs = parasObj.get_parameters('cost', None, is_obj = True)
         
     coeffs, sd = _computeStartingValues(modelObj, 'cost')
         
@@ -387,23 +387,23 @@ def _autoStart(parasObj, modelObj):
             
         paraObj.set_attr('value', coeff)
         
-        parasObj._replaceParasObj(paraObj)
+        parasObj._replace_paras_obj(paraObj)
     
     
-    paraObj = parasObj.getParameters('sd', 'V', isObj = True)
+    paraObj = parasObj.get_parameters('sd', 'V', is_obj = True)
         
     paraObj.set_attr('value', sd)
         
-    parasObj._replaceParasObj(paraObj)
+    parasObj._replace_paras_obj(paraObj)
     
     # Correlations.
     for corr in ['U1,V', 'U0,V']:
 
-        paraObj = parasObj.getParameters('rho', corr, isObj = True)
+        paraObj = parasObj.get_parameters('rho', corr, is_obj = True)
             
         paraObj.set_attr('value', 0.0)
             
-        parasObj._replaceParasObj(paraObj)
+        parasObj._replace_paras_obj(paraObj)
     
 
     # Quality.

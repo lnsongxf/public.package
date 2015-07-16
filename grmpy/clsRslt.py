@@ -11,7 +11,7 @@ import copy
 # project library
 from grmpy.clsMeta import MetaCls
 from grmpy.clsModel import ModelCls
-from grmpy.clsParas import parasCls
+from grmpy.clsParas import ParasCls
 
 class RsltCls(MetaCls):
     """ This class contains all results provided back to the user from the
@@ -21,7 +21,7 @@ class RsltCls(MetaCls):
 
         # Antibugging
         assert (isinstance(model_obj, ModelCls))
-        assert (isinstance(paras_obj, parasCls))
+        assert (isinstance(paras_obj, ParasCls))
 
         assert (model_obj.get_status() is True)
         assert (paras_obj.get_status() is True)
@@ -77,7 +77,7 @@ class RsltCls(MetaCls):
         # Auxiliary objects.
         paras_copy = copy.deepcopy(paras_obj)
         
-        para_objs  = paras_obj.get_attr('paraObjs')
+        para_objs  = paras_obj.get_attr('para_objs')
         
         scale = 1.0 / num_agents
         cov = scale * cov_mat
@@ -85,7 +85,7 @@ class RsltCls(MetaCls):
         # Sampling.
         np.random.seed(123), random.seed(456)
         
-        external_values = paras_obj.getValues(version='external', which='free')
+        external_values = paras_obj.get_values(version='external', which='free')
          
         if with_asymptotics:
 
@@ -102,7 +102,7 @@ class RsltCls(MetaCls):
         
         for para_obj in para_objs:
             
-            if (para_obj.get_attr('isFree') == False) or (not with_asymptotics):
+            if (para_obj.get_attr('is_free') == False) or (not with_asymptotics):
                 
                 para_obj.set_attr('confi', ('---', '---'))
 
@@ -116,7 +116,7 @@ class RsltCls(MetaCls):
    
                     paras_copy.update(random_para, version='external', which='free')
        
-                    para_copy = paras_copy.getParameter(counter)
+                    para_copy = paras_copy.get_parameter(counter)
        
                     rslt.append(para_copy.get_attr('value'))
                 
@@ -149,7 +149,7 @@ class RsltCls(MetaCls):
         
         self.attr['paras_obj'] = paras_obj
 
-        self.attr['paras'] = paras_obj.getValues('internal', 'all')
+        self.attr['paras'] = paras_obj.get_values('internal', 'all')
 
         # Cleanup.
         self.attr.pop('paras_obj', None)
@@ -308,7 +308,7 @@ class RsltCls(MetaCls):
         assert (self.get_status() == True)
         assert (isinstance(model_obj, ModelCls))
         assert (model_obj.get_status() == True)
-        assert (isinstance(paras_obj, parasCls))
+        assert (isinstance(paras_obj, ParasCls))
         assert (paras_obj.get_status() == True)
 
         # Distribute class attributes.
@@ -317,16 +317,16 @@ class RsltCls(MetaCls):
         c_eval = model_obj.get_attr('c_eval')
 
         # Marginal benefit of treatment.
-        rho_u1_v = paras_obj.getParameters('rho', 'U1,V')
-        rho_u0_v = paras_obj.getParameters('rho', 'U0,V')
+        rho_u1_v = paras_obj.get_parameters('rho', 'U1,V')
+        rho_u0_v = paras_obj.get_parameters('rho', 'U0,V')
 
-        coeffs_bene_ex_post = paras_obj.getParameters('bene', 'exPost')
-        coeffs_cost = paras_obj.getParameters('cost', None)
-        coeffs_choc = paras_obj.getParameters('choice', None)
+        coeffs_bene_ex_post = paras_obj.get_parameters('bene', 'exPost')
+        coeffs_cost = paras_obj.get_parameters('cost', None)
+        coeffs_choc = paras_obj.get_parameters('choice', None)
 
-        sd_v = paras_obj.getParameters('sd', 'V')
-        sd_u1 = paras_obj.getParameters('sd', 'U1')
-        sd_u0 = paras_obj.getParameters('sd', 'U0')
+        sd_v = paras_obj.get_parameters('sd', 'V')
+        sd_u1 = paras_obj.get_parameters('sd', 'U1')
+        sd_u0 = paras_obj.get_parameters('sd', 'U0')
 
         bmte_level = np.dot(coeffs_bene_ex_post, x_ex_post_eval)
         smte_level = np.dot(coeffs_choc, z_eval)

@@ -11,7 +11,7 @@ from grmpy.tools.optimization import *
 
 from grmpy.clsMeta import MetaCls
 from grmpy.clsModel import ModelCls
-from grmpy.clsParas import parasCls
+from grmpy.clsParas import ParasCls
 
 
 class MaxCls(MetaCls):
@@ -20,7 +20,7 @@ class MaxCls(MetaCls):
 
         # Antibugging
         assert (isinstance(model_obj, ModelCls))
-        assert (isinstance(paras_obj, parasCls))
+        assert (isinstance(paras_obj, ParasCls))
 
         assert (model_obj.get_status() is True)
         assert (paras_obj.get_status() is True)
@@ -71,7 +71,7 @@ class MaxCls(MetaCls):
         max_rslt = None
 
         if maxiter == 0:
-            x = paras_obj.getValues('external', 'free')
+            x = paras_obj.get_values('external', 'free')
             
             max_rslt = dict()
             max_rslt['fun'] = scipy_wrapper_function(x, crit_func)
@@ -107,7 +107,7 @@ class MaxCls(MetaCls):
         crit_func = self.get_attr('crit_func')
         
         # Staring values
-        starting_values = paras_obj.getValues('external', 'free')
+        starting_values = paras_obj.get_values('external', 'free')
         
         rslt = fmin_powell(func=scipy_wrapper_function, x0=starting_values,
                            args=(crit_func, ), xtol=0.0000000001,
@@ -152,7 +152,7 @@ class MaxCls(MetaCls):
         epsilon = model_obj.get_attr('epsilon')
 
         # Staring values
-        starting_values = paras_obj.getValues(version='external', which='free')
+        starting_values = paras_obj.get_values(version='external', which='free')
         
         # Maximization
         rslt = fmin_bfgs(f=scipy_wrapper_function,
