@@ -332,7 +332,11 @@ def _auto_start(paras_obj, model_obj):
         for para_obj in para_objs:
             
             coeff = coeffs.pop(0)
-            
+
+            # Check applicability
+            if not para_obj.get_attr('is_free'):
+                continue
+
             para_obj.set_attr('value', coeff)
 
         label = 'U1'
@@ -341,7 +345,12 @@ def _auto_start(paras_obj, model_obj):
             label = 'U0'
         
         para_obj = paras_obj.get_parameters('sd', label, is_obj=True)
-        
+
+        # Check applicability
+        if not para_obj.get_attr('is_free'):
+            continue
+
+
         para_obj.set_attr('value', sd)
 
     # Cost
@@ -354,7 +363,11 @@ def _auto_start(paras_obj, model_obj):
     for para_obj in para_objs:
             
         coeff = coeffs.pop(0)
-            
+
+        # Check applicability
+        if not para_obj.get_attr('is_free'):
+            continue
+
         para_obj.set_attr('value', coeff)
 
     para_obj = paras_obj.get_parameters('sd', 'V', is_obj=True)
@@ -365,8 +378,13 @@ def _auto_start(paras_obj, model_obj):
     for corr in ['U1,V', 'U0,V']:
 
         para_obj = paras_obj.get_parameters('rho', corr, is_obj=True)
-            
+
+        # Check applicability
+        if not para_obj.get_attr('is_free'):
+            continue
+
         para_obj.set_attr('value', 0.0)
+
 
     # Quality.
     assert (paras_obj.get_status() is True)
