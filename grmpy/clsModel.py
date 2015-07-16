@@ -1,177 +1,193 @@
-''' Module that contains the model object.
-'''
+""" Module that contains the model object.
+"""
 
 # standard library.
+import statsmodels.api as sm
+import numpy as np
 import sys
 
-import statsmodels.api  as sm
-import numpy            as np
-
 # project library
-from grmpy.clsMeta import metaCls
+from grmpy.clsMeta import MetaCls
 
 
-class modelCls(metaCls):
+class ModelCls(MetaCls):
     
     def __init__(self):
         
-        self.attr = {}
+        self.attr = dict()
         
         # Data matrices.
-        self.attr['numAgents'] = None
-
+        self.attr['num_agents'] = None
         self.attr['Y'] = None
-        
         self.attr['D'] = None
-        
-        self.attr['xExPost'] = None
-        
-        self.attr['xExAnte'] = None
-        
-        self.attr['G']       = None
-        
-        self.attr['Z']       = None
-
-
-        self.attr['numCovarsExclBeneExPost'] = None
-
-        self.attr['numCovarsExclBeneExAnte'] = None
-
-        self.attr['numCovarsExclCost']       = None
+        self.attr['X_ex_post'] = None
+        self.attr['X_ex_ante'] = None
+        self.attr['G'] = None
+        self.attr['Z'] = None
+        self.attr['num_covars_excl_bene_ex_post'] = None
+        self.attr['num_covars_excl_bene_ex_ante'] = None
+        self.attr['num_covars_excl_cost'] = None
         
         # Endogenous objects.
-        self.attr['P']       = None
-                
+        self.attr['P'] = None
+        self.attr['x_ex_post_eval'] = None
+        self.attr['x_ex_ante_eval'] = None
+        self.attr['z_eval'] = None
+        self.attr['c_eval'] = None
+        self.attr['common_support'] = None
+        self.attr['without_prediction'] = None
+        self.attr['surp_estimation'] = None
 
-        self.attr['xExPostEval'] = None 
+        # Optional arguments.
+        self.attr['algorithm'] = None
+        self.attr['epsilon'] = None
+        self.attr['differences'] = None
+        self.attr['gtol'] = None
+        self.attr['maxiter'] = None
+        self.attr['with_asymptotics'] = None
+        self.attr['numDraws'] = None
+        self.attr['version'] = None
+        self.attr['hessian'] = None
+        self.attr['alpha'] = None
 
-        self.attr['xExAnteEval'] = None 
-
-        self.attr['zEval']       = None
-
-        self.attr['cEval']       = None  
-
-        
-        self.attr['commonSupport']      = None
-
-
-        self.attr['withoutPrediction']  = None
-        
-        self.attr['surpEstimation']     = None
-        
         # Status.               
-        self.isLocked = False
+        self.is_locked = False
     
-    ''' Private class methods.
-    '''    
-    def _derivedAttributes(self):
-        ''' Calculate derived attributes.
-        '''
-        # Number of agents.
-        self.attr['numAgents']   = self.attr['xExPost'].shape[0]
+    """ Private class methods.
+    """    
+    def derived_attributes(self):
+        """ Calculate derived attributes.
+        """
+        # Number of agents 
+        self.attr['num_agents'] = self.attr['X_ex_post'].shape[0]
         
-        # Evaluation points.
-        self.attr['xExPostEval'] = self.attr['xExPost'].mean(axis = 0)
-
-        self.attr['xExAnteEval'] = self.attr['xExAnte'].mean(axis = 0)
-
-        self.attr['zEval']       = self.attr['Z'].mean(axis = 0)
-
-        self.attr['cEval']       = self.attr['G'].mean(axis = 0)
+        # Evaluation points 
+        self.attr['x_ex_post_eval'] = self.attr['X_ex_post'].mean(axis=0)
+        self.attr['x_ex_ante_eval'] = self.attr['X_ex_ante'].mean(axis=0)
+        self.attr['z_eval'] = self.attr['Z'].mean(axis=0)
+        self.attr['c_eval'] = self.attr['G'].mean(axis=0)
                 
-        # Common Support.
-        self.attr['P'], self.attr['commonSupport'] = self._getCommonSupport()
+        # Common Support 
+        self.attr['P'], self.attr['common_support'] = self._get_common_support()
 
-        # Prediction.
-        self.attr['withoutPrediction'] = \
-            (self.attr['xExPost'].shape[1] == self.attr['xExAnte'].shape[1])
+        # Prediction 
+        self.attr['without_prediction'] = \
+            (self.attr['X_ex_post'].shape[1] == self.attr['X_ex_ante'].shape[1])
             
-        # Surplus estimation.
-        self.attr['surpEstimation'] = \
-            (self.attr['numCovarsExclBeneExAnte'] > 0)
-        
-    def _getCommonSupport(self):
-        ''' Calculate common support.
-        '''
+        # Surplus estimation 
+        self.attr['surp_estimation'] = \
+            (self.attr['num_covars_excl_bene_ex_ante'] > 0)
+
+    def _get_common_support(self):
+        """ Calculate common support.
+        """
         # Antibugging.
-        assert (self.getStatus() == True)
-        
-        # Distribute attributes.
-        D = self.getAttr('D') 
-        
-        Z = self.getAttr('Z')
+        assert (self.get_status() is True)
+
+        # Distribute attributes
+        d = self.get_attr('D')
+        z = self.get_attr('Z')
                 
-        # Probit estimation.            
+        # Probit estimation
         sys.stdout = open('/dev/null', 'w')
-            
-        rslt = sm.Probit(D, Z)
-        
-        P    = rslt.predict(rslt.fit().params)
-            
+        rslt = sm.Probit(d, z)
+        p = rslt.predict(rslt.fit().params)
         sys.stdout = sys.__stdout__
             
-        # Determine common support.
-        lowerBound = np.round(max(min(P[D == 1]), min(P[D == 0])), decimals = 2)
-        
-        upperBound = np.round(min(max(P[D == 1]), max(P[D == 0])), decimals = 2)
+        # Determine common support
+        lower_bound = np.round(max(min(p[d == 1]), min(p[d == 0])), decimals=2)
+        upper_bound = np.round(min(max(p[d == 1]), max(p[d == 0])), decimals=2)
             
-        # Finishing.
-        return P, (lowerBound, upperBound)
+        # Finishing
+        return p, (lower_bound, upper_bound)
 
-    def _checkIntegrity(self):
-        ''' Check integrity of class instance.
-        '''
-        # Antibugging.
-        assert (self.getStatus() == True)
+    def _check_integrity(self):
+        """ Check integrity of class instance.
+        """
+        # Antibugging
+        assert (self.get_status() is True)
         
-        # Outcome and treatment variable.
+        # Outcome and treatment variable
         for type_ in ['Y', 'D']:
 
             assert (isinstance(self.attr[type_], np.ndarray))
             assert (np.all(np.isfinite(self.attr[type_])))
             assert (self.attr[type_].dtype == 'float')
-            assert (self.attr[type_].shape == (self.attr['numAgents'],))
+            assert (self.attr[type_].shape == (self.attr['num_agents'],))
         
-        # Prediction step.
-        assert (self.attr['withoutPrediction'] in [True, False])
+        # Prediction step
+        assert (self.attr['without_prediction'] in [True, False])
         
-        # Surplus estimation.
-        assert (self.attr['surpEstimation'] in [True, False])
+        # Surplus estimation
+        assert (self.attr['surp_estimation'] in [True, False])
         
-        # Number of agents.
-        assert (isinstance(self.attr['numAgents'], int))
-        assert (self.attr['numAgents'] > 0)
+        # Number of agents
+        assert (isinstance(self.attr['num_agents'], int))
+        assert (self.attr['num_agents'] > 0)
         
-        # Class status.
-        assert (self.isLocked in [True, False])
+        # Class status
+        assert (self.is_locked in [True, False])
         
-        # Covariate containers.
-        for type_ in ['xExPost', 'xExAnte', 'G', 'Z']:
-
-            if(self.attr[type_] is not None):
-
+        # Covariate containers
+        for type_ in ['X_ex_post', 'X_ex_ante', 'G', 'Z']:
+            if self.attr[type_] is not None:
                 assert (isinstance(self.attr[type_], np.ndarray))
                 assert (np.all(np.isfinite(self.attr[type_])))
                 assert (self.attr[type_].ndim == 2)
 
-        # Propensity score.
+        # Propensity score 
         assert (isinstance(self.attr['P'], np.ndarray))
         assert (np.all(np.isfinite(self.attr['P'])))
         assert (self.attr['P'].ndim == 1)
 
-        # Counts.
-        for type_ in ['numCovarsExclCost', 'numCovarsExclBeneExAnte']:
-            
+        # Counts 
+        for type_ in ['num_covars_excl_cost', 'num_covars_excl_bene_ex_ante']:
             assert (isinstance(self.attr[type_], int))
             assert (self.attr[type_] >= 0)
         
-        # Evaluation points.
-        for type_ in ['xExPostEval', 'xExAnteEval', 'zEval', 'cEval']:
-        
+        # Evaluation points 
+        for type_ in ['x_ex_post_eval', 'x_ex_ante_eval', 'z_eval', 'c_eval']:
             assert (isinstance(self.attr[type_], np.ndarray))
             assert (np.all(np.isfinite(self.attr[type_])))
             assert (self.attr[type_].ndim == 1)
         
-        # Common support.
-        assert (isinstance(self.attr['commonSupport'], tuple))
-        assert (len(self.attr['commonSupport']) == 2)       
+        # Common support 
+        assert (isinstance(self.attr['common_support'], tuple))
+        assert (len(self.attr['common_support']) == 2)       
+
+        # version
+        assert (self.attr['version'] in ['fast', 'slow'])
+
+        # with_asymptotics 
+        assert (self.attr['with_asymptotics'] in [True, False])
+
+        # Algorithm
+        assert (self.attr['algorithm'] in ['bfgs', 'powell'])
+
+        # Maximum iteration 
+        if self.attr['maxiter'] is not None:
+            assert (isinstance(self.attr['maxiter'], int))
+            assert (self.attr['maxiter'] >= 0)
+
+        # alpha
+        assert (isinstance(self.attr['alpha'], float))
+        assert (0.0 < self.attr['alpha'] < 1.0)
+
+        # gtol
+        assert (isinstance(self.attr['gtol'], float))
+        assert (self.attr['gtol'] > 0.00)
+
+        # epsilon
+        assert (isinstance(self.attr['epsilon'], float))
+        assert (self.attr['epsilon'] > 0.00)
+
+        # differences
+        assert (self.attr['differences'] in ['one-sided', 'two-sided'])
+
+        # hessian
+        assert (self.attr['hessian'] in ['bfgs', 'numdiff'])
+
+        if self.attr['algorithm'] == 'powell':
+            assert(self.attr['hessian'] == 'numdiff')
+
+

@@ -1,97 +1,93 @@
-''' Meta class for the moment models.
-'''
+""" Meta class used throughout the GRMPY package.
+"""
 
 # standard library
 import pickle as pkl
-try:
-   import cPickle as pkl
-except:
-   import pickle as pkl
 
-class metaCls(object):
+
+class MetaCls(object):
     
     def __init__(self):
         
-        pass
+        self.is_locked = False
     
     ''' Meta methods.
     '''
-    def getStatus(self):
-        ''' Get status of class instance.
-        '''
-        
-        return self.isLocked
+    def get_status(self):
+        """ Get status of class instance.
+        """
+        return self.is_locked
 
     def lock(self):
-        ''' Lock class instance.
-        '''
+        """ Lock class instance.
+        """
         # Antibugging.
-        assert (self.getStatus() == False)
+        assert (self.get_status() is False)
 
         # Update class attributes.
-        self.isLocked = True
+        self.is_locked = True
         
         # Finalize.
-        self._derivedAttributes()
+        self.derived_attributes()
         
-        self._checkIntegrity()
+        self._check_integrity()
     
     def unlock(self):
-        ''' Unlock class instance.
-        '''
+        """ Unlock class instance.
+        """
         # Antibugging.
-        assert (self.getStatus() == True)
+        assert (self.get_status() is True)
 
         # Update class attributes.
-        self.isLocked = False
+        self.is_locked = False
 
-    def getAttr(self, key):
-        ''' Get attributes.
-        '''
+    def get_attr(self, key):
+        """ Get attributes.
+        """
         # Antibugging.
-        assert (self.getStatus() == True)
-        assert (self._checkKey(key) == True)
+        assert (self.get_status() is True)
+        assert (self.check_key(key) is True)
         
         # Finishing.
         return self.attr[key]
 
-    def setAttr(self, key, value):
-        ''' Get attributes.
-        '''
+    def set_attr(self, key, value):
+        """ Get attributes.
+        """
         # Antibugging.
-        assert (self.getStatus() == False)
-        assert (self._checkKey(key) == True)
+        assert (self.get_status() is False)
+        assert (self.check_key(key) is True)
         
         # Finishing.
         self.attr[key] = value
     
-    def store(self, fileName):
-        ''' Store class instance.
-        '''
+    def store(self, file_name):
+        """ Store class instance.
+        """
         # Antibugging.
-        assert (self.getStatus() == True)      
-        assert (isinstance(fileName, str))
+        assert (self.get_status() is True)
+        assert (isinstance(file_name, str))
         
         # Store.
-        pkl.dump(self, open(fileName, 'wb'))
+        pkl.dump(self, open(file_name, 'wb'))
         
-    def _checkKey(self, key):
-        ''' Check that key is present.
-        '''        
+    def check_key(self, key):
+        """ Check that key is present.
+        """
         # Check presence.
         assert (key in self.attr.keys())
         
         # Finishing.
         return True
     
-    def _derivedAttributes(self):
-        ''' Calculate derived attributes.
-        '''
+    def derived_attributes(self):
+        """ Calculate derived attributes.
+        """
         
         pass
     
-    def _checkIntegrity(self):
-        ''' Check integrity of class instance.
-        '''
-        
+    def _check_integrity(self):
+        """ Check integrity of class instance.
+        """
+
         pass
