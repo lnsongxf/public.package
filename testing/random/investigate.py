@@ -16,12 +16,16 @@ from grmpy import *
 
 ''' Request
 '''
-label, seed = 'A', 543534
+label, seed = 'B', 185423
+#label, seed = 'C', 110836
 
 ''' Error Reproduction
 '''
 test = getattr(lib, 'test_' + label)
 
+
 np.random.seed(seed)
+
+label = np.random.choice(['A', 'B', 'C', 'D', 'E'])
 
 test()

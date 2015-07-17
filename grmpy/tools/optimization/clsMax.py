@@ -5,6 +5,8 @@
 from scipy.optimize import fmin_bfgs
 from scipy.optimize import fmin_powell
 
+import numpy as np
+
 # project library
 from grmpy.tools.optimization.wrappers import *
 from grmpy.tools.optimization import *
@@ -117,7 +119,7 @@ class MaxCls(MetaCls):
         # Prepare result dictionary
         max_rslt = dict()
         
-        max_rslt['xopt'] = rslt[0]
+        max_rslt['xopt'] = np.array(rslt[0], ndmin=1)
         max_rslt['fun'] = rslt[1]
         max_rslt['grad'] = None
         max_rslt['success'] = (rslt[5] == 0)
@@ -164,7 +166,7 @@ class MaxCls(MetaCls):
         # Prepare result dictionary
         max_rslt = dict()
        
-        max_rslt['xopt'] = rslt[0]
+        max_rslt['xopt'] = np.array(rslt[0], ndmin=1)
         max_rslt['fun'] = rslt[1]
         max_rslt['grad'] = rslt[2]
         max_rslt['covMat'] = rslt[3]
