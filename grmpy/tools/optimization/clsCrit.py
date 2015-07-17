@@ -21,9 +21,7 @@ class CritCls(MetaCls):
         assert (paras_obj.get_status() is True)
 
         self.attr = dict()
-        
         self.attr['model_obj'] = model_obj
-
         self.attr['paras_obj'] = paras_obj
 
         # Status
@@ -33,8 +31,7 @@ class CritCls(MetaCls):
         """ Update parameter object.
         """
         # Antibugging
-        assert (self.get_status() == True)
-        
+        assert (self.get_status() is True)
         assert (isinstance(x, np.ndarray))
         assert (np.all(np.isfinite(x)))
         assert (x.dtype == 'float')
@@ -57,14 +54,13 @@ class CritCls(MetaCls):
         # Finishing
         return rslt
 
-    ''' Private methods for the calculation of the gradient.
+    ''' Private methods for the calculation of the gradient and function.
     '''
     def _evaluate_gradient(self, x):
         """ Numerical approximation of gradient.
         """
         # Antibugging
         assert (self.get_status() is True)
-        
         assert (isinstance(x, np.ndarray))
         assert (np.all(np.isfinite(x)))
         assert (x.dtype == 'float')
@@ -76,8 +72,6 @@ class CritCls(MetaCls):
 
         epsilon = model_obj.get_attr('epsilon')
         differences = model_obj.get_attr('differences')
-         
-        # Auxiliary statistics
         num_free = paras_obj.get_attr('num_free')
         
         # Antibugging.
@@ -97,9 +91,9 @@ class CritCls(MetaCls):
             ei[k] = 1.0
             d = epsilon*ei
     
-            # Gradient approximation.
+            # Gradient approximations
             if differences == 'one-sided':
-                upper = self._evaluate_function(x + d,  False)
+                upper = self._evaluate_function(x + d, False)
                 lower = f0
                 grad[k] = (upper - lower)/d[k]
             
@@ -120,12 +114,11 @@ class CritCls(MetaCls):
         # Finishing
         return grad
     
-    def _evaluate_function(self, x, logging = True):
-        """ Negative log-likelihood function of the grmEstimatorToolbox.
+    def _evaluate_function(self, x, logging=True):
+        """ Negative log-likelihood function.
         """
         # Antibugging
-        assert (self.get_status() == True)
-        
+        assert (self.get_status() is True)
         assert (isinstance(x, np.ndarray))
         assert (np.all(np.isfinite(x)))
         assert (x.dtype == 'float')
@@ -144,10 +137,8 @@ class CritCls(MetaCls):
         # Likelihood calculation
         if version == 'slow':
             likl = self._evaluate_function_slow(paras_obj, model_obj)
-
         elif version == 'fast':
             likl = self._evaluate_function_fast(paras_obj, model_obj)
-
         else:
             raise AssertionError
 

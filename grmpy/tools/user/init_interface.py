@@ -67,7 +67,7 @@ def process_input(init_file):
 
             ''' Process major blocks.
             '''
-            if keyword ==  'DATA':
+            if keyword == 'DATA':
 
                 init_dict = _process_data(init_dict, current_line)
 
@@ -79,7 +79,7 @@ def process_input(init_file):
 
                 init_dict = _process_cost(init_dict, current_line)
 
-            if keyword ==  'RHO':
+            if keyword == 'RHO':
 
                 init_dict = _process_rho(init_dict, current_line)
 
@@ -95,7 +95,7 @@ def process_input(init_file):
     init_dict = _add_deriv(init_dict)
 
     # Check quality.
-    assert (check_input(init_dict) == True)
+    assert (check_input(init_dict) is True)
 
     # Type transformation.
     init_dict = _type_transformations(init_dict)
@@ -536,7 +536,7 @@ def _process_simulation(init_dict, current_line):
     if keyword in ['agents', 'seed']:
         flag = int(flag)
 
-    # Construct dictionary.
+    # Construct dictionary
     init_dict['SIMULATION'][keyword] = flag
 
     # Finishing.

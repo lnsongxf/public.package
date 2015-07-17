@@ -6,6 +6,7 @@ import numpy as np
 import shlex
 import os
 
+
 def update_parameters(paras_obj):
     """ Update parameter object if possible.
     """

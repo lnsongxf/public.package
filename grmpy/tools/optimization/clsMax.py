@@ -29,7 +29,6 @@ class MaxCls(MetaCls):
 
         # Attributes
         self.attr = dict()
-
         self.attr['model_obj'] = model_obj
         self.attr['paras_obj'] = paras_obj
 
@@ -38,23 +37,6 @@ class MaxCls(MetaCls):
                 
         # Status
         self.is_locked = False
-    
-    def derived_attributes(self):
-        """ Construct derived attributes.
-        """
-        # Antibugging
-        assert (self.get_status() is True)
-        
-        # Distribute class attributes
-        model_obj = self.get_attr('model_obj')
-        paras_obj = self.get_attr('paras_obj')
-
-        # Criterion function
-        crit_func = CritCls(model_obj, paras_obj)
-        
-        crit_func.lock()
-    
-        self.attr['crit_func'] = crit_func
     
     def maximize(self):
         """ Maximization
@@ -93,7 +75,24 @@ class MaxCls(MetaCls):
 
         # Finishing.
         return max_rslt
-        
+
+    def derived_attributes(self):
+        """ Construct derived attributes.
+        """
+        # Antibugging
+        assert (self.get_status() is True)
+
+        # Distribute class attributes
+        model_obj = self.get_attr('model_obj')
+        paras_obj = self.get_attr('paras_obj')
+
+        # Criterion function
+        crit_func = CritCls(model_obj, paras_obj)
+
+        crit_func.lock()
+
+        self.attr['crit_func'] = crit_func
+
     ''' Private Methods.
     '''
     def _powell(self):
@@ -172,7 +171,7 @@ class MaxCls(MetaCls):
         max_rslt['covMat'] = rslt[3]
         max_rslt['success'] = (rslt[6] == 0)
 
-        # Message:
+        # Message
         max_rslt['message'] = rslt[6]
         
         if max_rslt['message'] == 1:
