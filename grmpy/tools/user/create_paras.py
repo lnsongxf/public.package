@@ -39,6 +39,8 @@ def construct_paras(init_dict, model_obj, is_simulation):
 
 """ Private auxiliary functions.
 """
+
+
 def _initialize_parameters(init_dict, model_obj):
     """ Get starting values from initialization file.
     """
@@ -177,7 +179,7 @@ def _initialize_parameters(init_dict, model_obj):
     # Benefits
     
     # Treated
-    values, cols, is_frees  = _get_values('BENE', 'TREATED', init_dict)
+    values, cols, is_frees = _get_values('BENE', 'TREATED', init_dict)
 
     for i in range(num_covars_ex_post + 1):
     
@@ -321,7 +323,7 @@ def _auto_start(paras_obj, model_obj):
     # Benefits 
     for subgroup in ['treated', 'untreated']:
 
-        para_objs = paras_obj.get_parameters('outc', subgroup, is_obj = True)
+        para_objs = paras_obj.get_parameters('outc', subgroup, is_obj=True)
         
         coeffs, sd = _compute_starting_values(model_obj, subgroup)
         
@@ -330,21 +332,26 @@ def _auto_start(paras_obj, model_obj):
         for para_obj in para_objs:
             
             coeff = coeffs.pop(0)
-            
+
+            # Check applicability
+            if not para_obj.get_attr('is_free'):
+                continue
+
             para_obj.set_attr('value', coeff)
-        
-            paras_obj._replace_paras_obj(para_obj)
-        
+
         label = 'U1'
         
         if subgroup == 'untreated':
             label = 'U0'
         
         para_obj = paras_obj.get_parameters('sd', label, is_obj=True)
-        
+
+        # Check applicability
+        if not para_obj.get_attr('is_free'):
+            continue
+
+
         para_obj.set_attr('value', sd)
-        
-        paras_obj._replace_paras_obj(para_obj)
 
     # Cost
     para_objs = paras_obj.get_parameters('cost', None, is_obj=True)
@@ -356,28 +363,31 @@ def _auto_start(paras_obj, model_obj):
     for para_obj in para_objs:
             
         coeff = coeffs.pop(0)
-            
+
+        # Check applicability
+        if not para_obj.get_attr('is_free'):
+            continue
+
         para_obj.set_attr('value', coeff)
-        
-        paras_obj._replace_paras_obj(para_obj)
 
     para_obj = paras_obj.get_parameters('sd', 'V', is_obj=True)
         
     para_obj.set_attr('value', sd)
-        
-    paras_obj._replace_paras_obj(para_obj)
-    
+
     # Correlations
     for corr in ['U1,V', 'U0,V']:
 
         para_obj = paras_obj.get_parameters('rho', corr, is_obj=True)
-            
+
+        # Check applicability
+        if not para_obj.get_attr('is_free'):
+            continue
+
         para_obj.set_attr('value', 0.0)
-            
-        paras_obj._replace_paras_obj(para_obj)
+
 
     # Quality.
-    assert (paras_obj.get_status() == True)
+    assert (paras_obj.get_status() is True)
     
     # Finishing.
     return paras_obj

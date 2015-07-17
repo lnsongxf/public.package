@@ -38,7 +38,7 @@ def test_A():
         generate_init_file()
 
         # Simulation
-        simulate('test.grm.ini')
+        simulate('test.grmpy.ini')
 
         # Finishing
         return True
@@ -51,7 +51,7 @@ def test_B():
     generate_init_file()
 
     # Simulation
-    simulate('test.grm.ini')
+    simulate('test.grmpy.ini')
 
     # Set signal for five seconds.
     signal.alarm(5)
@@ -59,7 +59,7 @@ def test_B():
     try:
 
         # Estimate
-        estimate(use_simulation=True, init='test.grm.ini')
+        estimate(use_simulation=True, init='test.grmpy.ini')
 
     except TimedOutError:
 
@@ -77,10 +77,10 @@ def test_C():
     generate_init_file()
 
     # Simulation
-    simulate('test.grm.ini')
+    simulate('test.grmpy.ini')
 
     # Estimate
-    estimate(use_simulation=True, init='test.grm.ini')
+    estimate(use_simulation=True, init='test.grmpy.ini')
 
     # Finishing
     return True
@@ -102,7 +102,7 @@ def test_D():
     dict_ = generate_init_file(dict_)
 
     # Lock in simulated dataset
-    simulate('test.grm.ini')
+    simulate('test.grmpy.ini')
 
     # Loop over fast and slow evaluation of criterion function.
     for version in ['fast', 'slow']:
@@ -114,7 +114,7 @@ def test_D():
         print_dict(dict_)
 
         # Estimate
-        rslt = estimate(use_simulation=True, init='test.grm.ini')
+        rslt = estimate(use_simulation=True, init='test.grmpy.ini')
 
         rslt = rslt.get_attr('max_rslt')
 

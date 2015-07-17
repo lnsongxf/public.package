@@ -217,7 +217,7 @@ def print_dict(dict_):
     assert (isinstance(dict_, dict))
 
     # Create initialization
-    with open('test.grm.ini', 'w') as file_:
+    with open('test.grmpy.ini', 'w') as file_:
     
         ''' DATA
         '''

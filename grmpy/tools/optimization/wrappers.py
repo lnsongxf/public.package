@@ -22,6 +22,7 @@ def scipy_wrapper_gradient(x, crit_func):
     assert (np.all(np.isfinite(grad)))
     assert (grad.dtype == 'float')
 
+    # Finishing
     return grad
 
 

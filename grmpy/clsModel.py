@@ -16,7 +16,7 @@ class ModelCls(MetaCls):
         
         self.attr = dict()
         
-        # Data matrices.
+        # Data matrices
         self.attr['num_agents'] = None
         self.attr['Y'] = None
         self.attr['D'] = None
@@ -28,7 +28,7 @@ class ModelCls(MetaCls):
         self.attr['num_covars_excl_bene_ex_ante'] = None
         self.attr['num_covars_excl_cost'] = None
         
-        # Endogenous objects.
+        # Endogenous objects
         self.attr['P'] = None
         self.attr['x_ex_post_eval'] = None
         self.attr['x_ex_ante_eval'] = None
@@ -38,7 +38,7 @@ class ModelCls(MetaCls):
         self.attr['without_prediction'] = None
         self.attr['surp_estimation'] = None
 
-        # Optional arguments.
+        # Optional arguments
         self.attr['algorithm'] = None
         self.attr['epsilon'] = None
         self.attr['differences'] = None
@@ -50,7 +50,7 @@ class ModelCls(MetaCls):
         self.attr['hessian'] = None
         self.attr['alpha'] = None
 
-        # Status.               
+        # Status
         self.is_locked = False
     
     """ Private class methods.

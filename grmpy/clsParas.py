@@ -8,6 +8,7 @@ import numpy as np
 from grmpy.clsMeta import MetaCls
 from grmpy.clsModel import ModelCls
 
+
 class ParasCls(MetaCls):
     """ Class for the parameter management.
     """
@@ -61,7 +62,7 @@ class ParasCls(MetaCls):
             assert (col is None)
         if type_ == 'rho':
             assert (bounds[0] > -1.00)
-            assert (bounds[1] <  1.00)
+            assert (bounds[1] < 1.00)
             assert (col is None)
             
         # Initialize parameters.
@@ -97,7 +98,7 @@ class ParasCls(MetaCls):
             parameters not just the true ones. 
         """
         # Antibugging 
-        assert (self.get_status() == True)
+        assert (self.get_status() is True)
         assert (count < self.get_attr('num_paras'))
         
         # Algorithm 
@@ -198,8 +199,8 @@ class ParasCls(MetaCls):
         """ Get all free parameter values.
         """    
         # Antibugging  
-        assert (self.get_status() == True)
-        assert (self._check_integrity() == True)
+        assert (self.get_status() is True)
+        assert (self._check_integrity() is True)
         assert (version in ['external', 'internal'])
         assert (which in ['free', 'all'])
 
@@ -210,7 +211,7 @@ class ParasCls(MetaCls):
         
         for para_obj in para_objs:
 
-            is_fixed = (para_obj.get_attr('is_free') == False)
+            is_fixed = (para_obj.get_attr('is_free') is False)
             
             if is_fixed and (which == 'free'):
                 continue
@@ -244,8 +245,8 @@ class ParasCls(MetaCls):
         """ Update all free parameters.
         """
         # Antibugging
-        assert (self.get_status() == True)
-        assert (self._check_integrity() == True)
+        assert (self.get_status() is True)
+        assert (self._check_integrity() is True)
         assert (version in ['external', 'internal'])
         assert (which in ['free', 'all'])
         
@@ -302,7 +303,7 @@ class ParasCls(MetaCls):
         internal_value = self._clip_internal_value(para_obj, internal_value)
         
         # Upper bound only
-        if (not has_lower_bound) and (has_upper_bound):
+        if (not has_lower_bound) and has_upper_bound:
             external_value = np.log(upper_bound - internal_value)
         
         # Lower bound only
@@ -331,7 +332,7 @@ class ParasCls(MetaCls):
         """
         # Antibugging 
         assert (isinstance(para_obj, _para_container))
-        assert (para_obj.get_status() == True)
+        assert (para_obj.get_status() is True)
         assert (isinstance(external_value, float))
         assert (np.isfinite(external_value))
         
@@ -372,8 +373,9 @@ class ParasCls(MetaCls):
         
         # Finishing.
         return internal_value
-     
-    def _clip_internal_value(self, para_obj, internal_value):
+
+    @staticmethod
+    def _clip_internal_value(para_obj, internal_value):
         """ Assure that internal value not exactly equal to bounds.
         """
         # Antibugging.
@@ -447,32 +449,6 @@ class ParasCls(MetaCls):
         
         # Finishing 
         return rslt
-    
-    def _replace_paras_obj(self, para_obj):
-        """ Replace parameter object.
-        """
-        # Update attributes.
-        paras_list = self.attr['para_objs']
-        
-        id_ = 0
-        
-        for para_obj in paras_list:
-            
-            para_obj.unlock()
-            
-            para_obj.set_attr('id', None)
-             
-            para_obj.lock()
-
-            if para_obj.get_attr('is_free'):
-                para_obj.set_attr('id', id_)
-                id_ += 1
-
-        self.unlock()
-        
-        self.set_attr('num_free', id_)
-        
-        self.lock()
 
     """ Check integrity of class instance and attribute requests.
     """
@@ -481,7 +457,7 @@ class ParasCls(MetaCls):
         """ Check the validity of the parameter request.
         """
         # Check type
-        assert (type_ in ['outc', 'cost', 'rho', 'sd', \
+        assert (type_ in ['outc', 'cost', 'rho', 'sd',
                           'var', 'cov', 'bene', 'choice'])
         
         # Check object
@@ -497,12 +473,15 @@ class ParasCls(MetaCls):
         # Finishing
         return True
 
-    def _check_integrity(self):
+    @staticmethod
+    def _check_integrity():
 
         return True
 
 """ Private methods and classes of the module.
 """
+
+
 class _para_container(MetaCls):
     """ Container for parameter class.
     """
@@ -522,7 +501,7 @@ class _para_container(MetaCls):
         
         self.attr['bounds'] = (None, None)
           
-        self.attr['subgroup']  = None
+        self.attr['subgroup'] = None
         self.attr['type'] = None
         self.attr['value'] = None
         self.attr['is_free'] = None
@@ -575,7 +554,7 @@ class _para_container(MetaCls):
         
         """
         # Antibugging
-        assert (self.check_key(key) == True)
+        assert (self.check_key(key) is True)
 
         # Set attribute
         self.attr[key] = arg
@@ -600,7 +579,8 @@ class _para_container(MetaCls):
             col = self.get_attr('col')
 
             assert (isinstance(col, int) or (col == 'int'))
-            if col != 'int': assert (col >= 0)
+            if col != 'int':
+                assert (col >= 0)
 
         # subgroup
         if self.get_attr('subgroup') is not None:
