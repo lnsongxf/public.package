@@ -9,7 +9,7 @@ import os
 
 # project library
 from modules.randominit import *
-from modules.exceptions import TimedOutError
+from modules.exceptions import *
 
 # Setting up signal handler
 def signal_handler(signum, frame):
@@ -35,10 +35,10 @@ def test_A():
     for _ in range(10):
 
         # Generate a random initialization file.
-        generateInitFile()
+        generate_init_file()
 
         # Simulation
-        simulate('test.grm.ini')
+        simulate('test.grmpy.ini')
 
         # Finishing
         return True
@@ -48,13 +48,10 @@ def test_B():
     """ Testing if a random estimation task can be handled without complaints for five seconds.
     """
     # Generate a random initialization file.
-    generateInitFile()
+    generate_init_file()
 
     # Simulation
-    simulate('test.grm.ini')
-
-    # Perturb
-    perturb(scale=0.01, seed=123, init='test.grm.ini', useSimulation=True)
+    simulate('test.grmpy.ini')
 
     # Set signal for five seconds.
     signal.alarm(5)
@@ -62,7 +59,7 @@ def test_B():
     try:
 
         # Estimate
-        estimate(useSimulation=True, init='test.grm.ini')
+        estimate(use_simulation=True, init='test.grmpy.ini')
 
     except TimedOutError:
 
@@ -74,75 +71,52 @@ def test_B():
     return True
 
 def test_C():
-    """ Testing if the perturbation function works properly
-    """
-    # Generate a random initialization file.
-    generateInitFile()
-
-    # Simulation
-    simulate('test.grm.ini')
-
-    # Perturb
-    for _ in range(100):
-
-        # Draw scale
-        scale = np.random.random()
-
-        # Perturb parameter values
-        perturb(scale=scale, seed=123, init='test.grm.ini', useSimulation=True)
-
-    # Finishing
-    return True
-
-def test_D():
     """ Testing if a random estimation task can be handled without complaints from beginning till end.
     """
     # Generate a random initialization file.
-    generateInitFile()
+    generate_init_file()
 
     # Simulation
-    simulate('test.grm.ini')
-
-    # Perturb
-    perturb(scale=0.01, seed=123, init='test.grm.ini', useSimulation=True)
+    simulate('test.grmpy.ini')
 
     # Estimate
-    estimate(useSimulation=True, init='test.grm.ini')
+    estimate(use_simulation=True, init='test.grmpy.ini')
 
     # Finishing
     return True
 
 
-def test_E():
-    """ Testing if the fast and slow evaluation of the criterion function result in same value.
+def test_D():
+    """ Testing if the fast and slow evaluation of the criterion function
+    result in same value.
     """
-    # Get a seeed
-    seed = np.random.randint(1)
-
     # Initialize containers
     fval = None
+
+    #  Generate a random request with several constraints.
+    dict_ = dict()
+
+    dict_['asymptotics'] = 'false'
+    dict_['maxiter'] = 0
+
+    dict_ = generate_init_file(dict_)
+
+    # Lock in simulated dataset
+    simulate('test.grmpy.ini')
 
     # Loop over fast and slow evaluation of criterion function.
     for version in ['fast', 'slow']:
 
-        np.random.seed(seed)
-
         # Impose constraints to initialization file
-        dict_ = dict()
-        dict_['maxiter'] = 0
-        dict_['version'] = version
-        dict_['asymptotics'] = 'false'
+        dict_['ESTIMATION']['version'] = version
 
-        # Generate random request
-        generateInitFile(dict_)
-
-        # Simulation
-        simulate('test.grm.ini')
+        # Print revised initialization file
+        print_dict(dict_)
 
         # Estimate
-        rslt = estimate(useSimulation=True, init='test.grm.ini')
+        rslt = estimate(use_simulation=True, init='test.grmpy.ini')
 
-        rslt = rslt.getAttr('maxRslt')
+        rslt = rslt.get_attr('max_rslt')
 
         # Check evaluation result
         if fval is None:
@@ -153,14 +127,14 @@ def test_E():
     # Finishing
     return True
 
-def test_F():
+def test_E():
     """ Testing if a thousand random initialization requests can be simulated
     """
 
     for _ in range(1000):
 
         # Generate a random initialization file.
-        generateInitFile()
+        generate_init_file()
 
         # Finishing
         return True

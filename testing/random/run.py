@@ -33,10 +33,10 @@ def run(hours):
     start, timeout = datetime.now(), timedelta(hours=hours)
 
     # Define list of admissible tests
-    labels = ['A', 'B', 'C', 'D', 'E', 'F']
+    labels = ['A', 'B', 'C', 'D', 'E']
 
     # Initialize counter
-    dict_ = {}
+    dict_ = dict()
 
     for label in labels:
 
@@ -56,15 +56,15 @@ def run(hours):
     # Evaluation loop
     while True:
 
+        # Set seed
+        seed = int(datetime.now().microsecond)
+
+        np.random.seed(seed)
+
         # Setup of test case
         label = np.random.choice(labels)
 
         test = getattr(lib,'test_' + label)
-
-        # Set seed
-        seed = random.randrange(1, 100000)
-
-        np.random.seed(seed)
 
         try:
 
@@ -104,9 +104,9 @@ if __name__ == '__main__':
     parser.add_argument('--notification', action='store_true', dest='notification', default=False, \
                         help='send notification')
 
-    hours, notification = distributeInput(parser)
+    hours, notification = distribute_input(parser)
 
-    startLogging()
+    start_logging()
 
     dict_ = run(hours)
 

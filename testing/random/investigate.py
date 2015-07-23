@@ -3,19 +3,29 @@
 """
 # standard library
 import numpy as np
+import sys
+import os
 
 # project library
 import modules.tests as lib
+from modules.randominit import *
+
+# GRMPY import
+sys.path.insert(0, os.environ['GRMPY'])
+from grmpy import *
 
 ''' Request
 '''
-label, seed = 'E', 96222
+label, seed = 'C', 110836
 
 ''' Error Reproduction
 '''
-
 test = getattr(lib, 'test_' + label)
 
 np.random.seed(seed)
+
+# This is required to set the seeds identical to the
+# case in the run.py script.
+label = np.random.choice(['A', 'B', 'C', 'D', 'E'])
 
 test()

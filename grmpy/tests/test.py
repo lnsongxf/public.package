@@ -2,8 +2,10 @@
 """ Module for unit tests related to the parameter management and updating.
 """
 # standard library
-import os
+import shutil
+import glob
 import sys
+import os
 
 # module variables
 FILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -13,53 +15,90 @@ TEST_PATH = os.getcwd()
 from nose.core import runmodule
 from nose.tools import *
 
-# Pythonpath
+# PYTHONPATH
 dir_ = FILE_PATH.replace('/tests', '')
 sys.path.insert(0, dir_)
 
 # project library
-from grmpy.tools.auxiliary import cleanup
-from grmpy.user._createParas import constructParas
-from grmpy.user._createDictionary import  processInput
-from grmpy.user._createModel import constructModel
+from grmpy.tools.user import *
+
 
 ''' Test class.
 '''
-class testParasCls(object):
+class TestParasCls(object):
     """ Test class.
     """
-    def setup(self):
-
+    @staticmethod
+    def setup():
         os.chdir(FILE_PATH)
 
-    def teardown(self):
-
+    @staticmethod
+    def teardown():
         os.chdir(TEST_PATH)
 
-    def testA(self):
+    @staticmethod
+    def cleanup():
+        """ Cleanup after test battery.
+        """
+        files = []
+
+        files = files + glob.glob('*.grmpy.*')
+
+        files = files + glob.glob('*.ini')
+
+        files = files + glob.glob('*.pkl')
+
+        files = files + glob.glob('*.txt')
+
+        files = files + glob.glob('*.dat')
+
+        for file_ in files:
+
+            if 'logging' in file_:
+                continue
+
+            try:
+
+                os.remove(file_)
+
+            except OSError:
+
+                pass
+
+            try:
+
+                shutil.rmtree(file_)
+
+            except OSError:
+
+                pass
+
+    def test_a(self):
         """ Test parameter transformations.
         """
-        init_dict = processInput('../data/test.ini')
+        init_dict = process_input('../data/test.ini')
 
-        model_obj = constructModel(init_dict)
+        model_obj = construct_model(init_dict)
 
-        paras_obj = constructParas(init_dict, model_obj, False)
+        paras_obj = construct_paras(init_dict, model_obj, False)
 
-        para_objs = paras_obj.getAttr('paraObjs')
+        para_objs = paras_obj.get_attr('para_objs')
         
         for para_obj in para_objs:
             
-            value = para_obj.getAttr('value')
+            value = para_obj.get_attr('value')
             
-            ext = paras_obj._transformToExternal(para_obj, value)
+            ext = paras_obj._transform_to_external(para_obj, value)
             
-            int_ = paras_obj._transformToInternal(para_obj, ext)
+            int_ = paras_obj._transform_to_internal(para_obj, ext)
 
             assert_almost_equal(value, int_)
-                    
-        # Cleanup.
-        cleanup(resume=False)
 
-if __name__ == '__main__': 
+        # Cleanup.
+        self.cleanup()
+
+
+
+if __name__ == '__main__':
     
     runmodule()   
