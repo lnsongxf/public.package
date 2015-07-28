@@ -22,5 +22,4 @@ http://grmToolbox.github.io
 #### Quality Assurance
 
 [![Build Status](https://travis-ci.org/grmToolbox/package.svg?branch=master)](https://travis-ci.org/grmToolbox/grmToolbox)
-[![Coverage Status](https://coveralls.io/repos/grmToolbox/package/badge.svg)](https://coveralls.io/r/grmToolbox/package)
-
+[![Coverage Status](https://coveralls.io/repos/grmToolbox/package/badge.svg?branch=master&service=github)](https://coveralls.io/github/grmToolbox/package?branch=master)
