@@ -68,7 +68,7 @@ class ParasCls(MetaCls):
         # Initialize parameters.
         count = self.attr['num_paras']
         
-        para_obj = _para_container()
+        para_obj = _ParaContainer()
 
         if is_free:
             id_ = self.attr['num_free']
@@ -288,7 +288,7 @@ class ParasCls(MetaCls):
             routine.
         """
         # Antibugging 
-        assert (isinstance(para_obj, _para_container))
+        assert (isinstance(para_obj, _ParaContainer))
         assert (para_obj.get_status() is True)
         assert (isinstance(internal_value, float))
         assert (np.isfinite(internal_value))
@@ -331,7 +331,7 @@ class ParasCls(MetaCls):
         """ Transform external values to internal para_obj.
         """
         # Antibugging 
-        assert (isinstance(para_obj, _para_container))
+        assert (isinstance(para_obj, _ParaContainer))
         assert (para_obj.get_status() is True)
         assert (isinstance(external_value, float))
         assert (np.isfinite(external_value))
@@ -379,7 +379,7 @@ class ParasCls(MetaCls):
         """ Assure that internal value not exactly equal to bounds.
         """
         # Antibugging.
-        assert (isinstance(para_obj, _para_container))
+        assert (isinstance(para_obj, _ParaContainer))
         assert (para_obj.get_status() is True)
         assert (isinstance(internal_value, float))
         assert (np.isfinite(internal_value))
@@ -482,7 +482,7 @@ class ParasCls(MetaCls):
 """
 
 
-class _para_container(MetaCls):
+class _ParaContainer(MetaCls):
     """ Container for parameter class.
     """
     counter = 0
