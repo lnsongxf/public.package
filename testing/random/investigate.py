@@ -10,8 +10,8 @@ import os
 import modules.tests as lib
 
 # GRMPY import
-sys.path.insert(0, os.environ['GRMPY'])
-from grmpy import *
+#sys.path.insert(0, os.environ['GRMPY'])
+#import grmpy
 
 ''' Request
 '''
