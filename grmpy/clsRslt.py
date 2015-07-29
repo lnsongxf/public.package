@@ -37,7 +37,7 @@ class RsltCls(MetaCls):
         # Constructed objects.
         self.attr['bmte_ex_post'] = None
         self.attr['cmte_ex_ante'] = None
-        self.attr['smte_ex_ante'] = None
+        self.attr['smteExAnte'] = None
 
         # Status indicator
         self.is_locked = False
@@ -176,7 +176,7 @@ class RsltCls(MetaCls):
 
             parameter_list = ['bmteExPost']
 
-            if(surp_estimation): parameter_list += ['cmte_ex_ante', 'smte_ex_ante']
+            if(surp_estimation): parameter_list += ['cmte_ex_ante', 'smteExAnte']
 
             for parameter in parameter_list:
 
@@ -196,7 +196,7 @@ class RsltCls(MetaCls):
 
                     title = ' MARGINAL COST OF TREATMENT '
 
-                if parameter == 'smte_ex_ante':
+                if parameter == 'smteExAnte':
 
                     title = ' MARGINAL SURPLUS OF TREATMENT '
 
@@ -244,7 +244,7 @@ class RsltCls(MetaCls):
         parameter_list = ['bmteExPost']
 
         if surp_estimation:
-            parameter_list += ['smte_ex_ante', 'cmte_ex_ante']
+            parameter_list += ['smteExAnte', 'cmte_ex_ante']
         
         for parameter in parameter_list:
             self.attr[parameter] = {}
@@ -334,7 +334,7 @@ class RsltCls(MetaCls):
 
         bmteExPost = np.tile(np.nan, 99)
         cmte_ex_post = np.tile(np.nan, 99)
-        smte_ex_ante = np.tile(np.nan, 99)
+        smteExAnte = np.tile(np.nan, 99)
 
         eval_points = np.round(np.arange(0.01, 1.0, 0.01), decimals=2)
         quantiles = scipy.stats.norm.ppf(eval_points, loc=0, scale=sd_v)
@@ -353,7 +353,7 @@ class RsltCls(MetaCls):
         # Construct marginal surplus of treatment (ex ante).
         for i in range(99):
 
-            smte_ex_ante[i] = smte_level + smte_slopes[i]
+            smteExAnte[i] = smte_level + smte_slopes[i]
 
         # Construct marginal cost of treatment (ex ante).
         for i in range(99):
@@ -368,9 +368,9 @@ class RsltCls(MetaCls):
 
             rslt = cmte_ex_post
 
-        elif args['which'] == 'smte_ex_ante':
+        elif args['which'] == 'smteExAnte':
 
-            rslt = smte_ex_ante
+            rslt = smteExAnte
 
         # Quality checks.
         assert (isinstance(rslt, np.ndarray))
