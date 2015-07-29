@@ -89,10 +89,11 @@ class ModelCls(MetaCls):
         z = self.get_attr('Z')
                 
         # Probit estimation
+        stdout_current = sys.stdout
         sys.stdout = open('/dev/null', 'w')
         rslt = sm.Probit(d, z)
         p = rslt.predict(rslt.fit().params)
-        sys.stdout = sys.__stdout__
+        sys.stdout = stdout_current
             
         # Determine common support
         lower_bound = np.round(max(min(p[d == 1]), min(p[d == 0])), decimals=2)

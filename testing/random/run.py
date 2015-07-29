@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-""" Script to start development test battery for the grmToolbox.
+""" Script to start development test battery for the grmpy package. We draw
+random test cases for a fixed amount of time. The tests are defined in tests.py
+, which if found in the modules subdirectory.
 """
 
 # standard library

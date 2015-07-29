@@ -272,15 +272,15 @@ def _write_info(paras_obj, target, rslt, likl):
     # Write out information on agent experiences
     with open(file_name + '.infos.grmpy.out', 'w') as file_:
 
-        file_.write('\n SIMULATED ECONOMY\n\n')
+        file_.write('\n SIMULATED DATASET\n\n')
 
-        file_.write('   Number of Observations: ' + num_agents + '\n')
+        file_.write('   Number of Observations  ' + num_agents + '\n')
 
-        file_.write('   Function Value:         ' + fval + '\n\n')
+        file_.write('   Function Value          ' + fval + '\n\n')
 
-        string = '''{0[0]:<10} {0[1]:>12}\n'''
+        string = '''{0[0]:<10} {0[1]:>11}\n'''
 
-        file_.write('   Choices:  \n\n')
+        file_.write('   Treatment Status:  \n\n')
 
         file_.write(string.format(['     Treated  ', num_treated]))
 
@@ -290,7 +290,7 @@ def _write_info(paras_obj, target, rslt, likl):
 
         string = '''{0[0]:<10} {0[1]:15.5f}\n'''
 
-        file_.write('   Outcomes:  \n\n')
+        file_.write('   Average Outcomes by Treatment Status:  \n\n')
 
         file_.write(string.format(['     Treated  ', np.mean(rslt['Y'][rslt['D'] == 1])]))
 

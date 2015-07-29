@@ -285,11 +285,12 @@ def _auto_start(paras_obj, model_obj):
             coeffs = ols_rslt.params
             sd = np.array(np.sqrt(ols_rslt.scale))
         elif which == 'cost':
+            stdout_current = sys.stdout
             sys.stdout = open('/dev/null', 'w')
             probit_rslt = sm.Probit(d, g).fit()
             coeffs = -probit_rslt.params
             sd = np.array(1.0)
-            sys.stdout = sys.__stdout__
+            sys.stdout = stdout_current
             
         # Quality checks
         assert (isinstance(coeffs, np.ndarray))

@@ -51,11 +51,13 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
 
     max_obj.lock()
 
+    stdout_current = sys.stdout
+
     sys.stdout = open('/dev/null', 'w')
 
     max_rslt = max_obj.maximize()
 
-    sys.stdout = sys.__stdout__
+    sys.stdout = stdout_current
 
     # Write optimization results to file
     _write_optimization_results(max_rslt, paras_obj)
