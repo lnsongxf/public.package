@@ -333,7 +333,7 @@ def _process_cases(current_line):
         # Evaluate list.
         is_keyword = False
 
-        if len(current_line) > 0:
+        if current_line:
 
             is_keyword = (current_line[0].isupper())
 
