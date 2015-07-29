@@ -115,26 +115,26 @@ class TestEstimationRuns(object):
         # Assertions
         assert_almost_equal(rslt_dict['max_rslt']['fun'], 1.628181660180656)
 
-        assert_almost_equal(rslt_dict['BmteExPost']['estimate'][50],
+        assert_almost_equal(rslt_dict['bmte_ex_post']['estimate'][50],
         -0.10666320040952278)
-        assert_almost_equal(rslt_dict['BmteExPost']['confi']['upper'][50],
+        assert_almost_equal(rslt_dict['bmte_ex_post']['confi']['upper'][50],
         -0.079594731462436979)
-        assert_almost_equal(rslt_dict['BmteExPost']['confi']['lower'][50],
+        assert_almost_equal(rslt_dict['bmte_ex_post']['confi']['lower'][50],
         -0.1345556517240841)
    
-        assert_almost_equal(rslt_dict['SmteExAnte']['estimate'][50],
+        assert_almost_equal(rslt_dict['smte_ex_ante']['estimate'][50],
         -0.13443516496559108)
-        assert_almost_equal(rslt_dict['SmteExAnte']['confi']['upper'][50],
+        assert_almost_equal(rslt_dict['smte_ex_ante']['confi']['upper'][50],
         -0.10380872727729094)
-        assert_almost_equal(rslt_dict['SmteExAnte']['confi']['lower'][50],
+        assert_almost_equal(rslt_dict['smte_ex_ante']['confi']['lower'][50],
         -0.16786079416740679)
    
         # Assert relationship between parameters
         for i in range(99):
             
-            cmte_ex_ante = rslt_dict['CmteExAnte']['estimate'][i]
-            smte_ex_ante = rslt_dict['SmteExAnte']['estimate'][i]
-            bmte_ex_post = rslt_dict['BmteExPost']['estimate'][i]
+            cmte_ex_ante = rslt_dict['cmte_ex_ante']['estimate'][i]
+            smte_ex_ante = rslt_dict['smte_ex_ante']['estimate'][i]
+            bmte_ex_post = rslt_dict['bmte_ex_post']['estimate'][i]
             
             assert_almost_equal(smte_ex_ante, bmte_ex_post - cmte_ex_ante)
    
