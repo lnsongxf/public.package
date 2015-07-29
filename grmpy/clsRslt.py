@@ -174,7 +174,7 @@ class RsltCls(MetaCls):
             struct = '''   {0[0]}        {0[1]}          {0[2]} / {0[3]}\n'''
             idx = np.arange(0.01, 1.00, 0.01)
 
-            parameter_list = ['bmte_ex_post']
+            parameter_list = ['bmteExPost']
 
             if(surp_estimation): parameter_list += ['cmte_ex_ante', 'smte_ex_ante']
 
@@ -188,7 +188,7 @@ class RsltCls(MetaCls):
 
                     lower_bound = self.attr[parameter]['confi']['lower']
 
-                if parameter == 'bmte_ex_post':
+                if parameter == 'bmteExPost':
 
                     title = ' MARGINAL BENEFIT OF TREATMENT (EX POST)'
 
@@ -241,7 +241,7 @@ class RsltCls(MetaCls):
         paras_copy = copy.deepcopy(paras_obj)
         
         # Initialize parameters.
-        parameter_list = ['bmte_ex_post']
+        parameter_list = ['bmteExPost']
 
         if surp_estimation:
             parameter_list += ['smte_ex_ante', 'cmte_ex_ante']
@@ -332,7 +332,7 @@ class RsltCls(MetaCls):
         smte_level = np.dot(coeffs_choc, z_eval)
         cmte_level = np.dot(coeffs_cost, c_eval)
 
-        bmte_ex_post = np.tile(np.nan, 99)
+        bmteExPost = np.tile(np.nan, 99)
         cmte_ex_post = np.tile(np.nan, 99)
         smte_ex_ante = np.tile(np.nan, 99)
 
@@ -348,7 +348,7 @@ class RsltCls(MetaCls):
         # Construct marginal benefit of treatment (ex post)
         for i in range(99):
 
-            bmte_ex_post[i] = bmte_level + bmte_slopes[i]
+            bmteExPost[i] = bmte_level + bmte_slopes[i]
 
         # Construct marginal surplus of treatment (ex ante).
         for i in range(99):
@@ -360,9 +360,9 @@ class RsltCls(MetaCls):
 
             cmte_ex_post[i] = cmte_level + cmte_slopes[i]
 
-        if args['which'] == 'bmte_ex_post':
+        if args['which'] == 'bmteExPost':
 
-            rslt = bmte_ex_post
+            rslt = bmteExPost
 
         elif args['which'] == 'cmte_ex_ante':
 

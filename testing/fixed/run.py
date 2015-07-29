@@ -115,11 +115,11 @@ class TestEstimationRuns(object):
         # Assertions
         assert_almost_equal(rslt_dict['max_rslt']['fun'], 1.628181660180656)
 
-        assert_almost_equal(rslt_dict['bmte_ex_post']['estimate'][50],
+        assert_almost_equal(rslt_dict['bmteExPost']['estimate'][50],
         -0.10666320040952278)
-        assert_almost_equal(rslt_dict['bmte_ex_post']['confi']['upper'][50],
+        assert_almost_equal(rslt_dict['bmteExPost']['confi']['upper'][50],
         -0.079594731462436979)
-        assert_almost_equal(rslt_dict['bmte_ex_post']['confi']['lower'][50],
+        assert_almost_equal(rslt_dict['bmteExPost']['confi']['lower'][50],
         -0.1345556517240841)
    
         assert_almost_equal(rslt_dict['smte_ex_ante']['estimate'][50],
@@ -134,7 +134,7 @@ class TestEstimationRuns(object):
             
             cmteExAnte = rslt_dict['cmte_ex_ante']['estimate'][i]
             smteExAnte = rslt_dict['smte_ex_ante']['estimate'][i]
-            bmteExPost = rslt_dict['bmte_ex_post']['estimate'][i]
+            bmteExPost = rslt_dict['bmteExPost']['estimate'][i]
             
             assert_almost_equal(smteExAnte, bmteExPost - cmteExAnte)
    
