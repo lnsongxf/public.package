@@ -316,7 +316,7 @@ def _process_cases(current_line):
         assert (isinstance(current_line, list))
 
         # Evaluate list
-        is_empty = (len(current_line) == 0)
+        is_empty = (not current_line)
 
         # Check integrity
         assert (isinstance(is_empty, bool))

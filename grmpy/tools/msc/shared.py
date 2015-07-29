@@ -24,7 +24,7 @@ def update_parameters(paras_obj):
 
             current_line = shlex.split(line)
 
-            if len(current_line) == 0:
+            if not current_line:
                 continue
 
             if len(current_line) > 1:
