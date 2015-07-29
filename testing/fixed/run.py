@@ -132,7 +132,7 @@ class TestEstimationRuns(object):
         # Assert relationship between parameters
         for i in range(99):
             
-            cmteExAnte = rslt_dict['cmte_ex_ante']['estimate'][i]
+            cmteExAnte = rslt_dict['cmteExAnte']['estimate'][i]
             smteExAnte = rslt_dict['smteExAnte']['estimate'][i]
             bmteExPost = rslt_dict['bmteExPost']['estimate'][i]
             

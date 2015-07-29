@@ -35,8 +35,8 @@ class RsltCls(MetaCls):
         self.attr['cov_mat'] = None
 
         # Constructed objects.
-        self.attr['bmte_ex_post'] = None
-        self.attr['cmte_ex_ante'] = None
+        self.attr['bmteExPost'] = None
+        self.attr['cmteExAnte'] = None
         self.attr['smteExAnte'] = None
 
         # Status indicator
@@ -176,7 +176,7 @@ class RsltCls(MetaCls):
 
             parameter_list = ['bmteExPost']
 
-            if(surp_estimation): parameter_list += ['cmte_ex_ante', 'smteExAnte']
+            if(surp_estimation): parameter_list += ['cmteExAnte', 'smteExAnte']
 
             for parameter in parameter_list:
 
@@ -192,7 +192,7 @@ class RsltCls(MetaCls):
 
                     title = ' MARGINAL BENEFIT OF TREATMENT (EX POST)'
 
-                if parameter == 'cmte_ex_ante':
+                if parameter == 'cmteExAnte':
 
                     title = ' MARGINAL COST OF TREATMENT '
 
@@ -244,7 +244,7 @@ class RsltCls(MetaCls):
         parameter_list = ['bmteExPost']
 
         if surp_estimation:
-            parameter_list += ['smteExAnte', 'cmte_ex_ante']
+            parameter_list += ['smteExAnte', 'cmteExAnte']
         
         for parameter in parameter_list:
             self.attr[parameter] = {}
@@ -333,7 +333,7 @@ class RsltCls(MetaCls):
         cmte_level = np.dot(coeffs_cost, c_eval)
 
         bmteExPost = np.tile(np.nan, 99)
-        cmte_ex_post = np.tile(np.nan, 99)
+        cmteExPost = np.tile(np.nan, 99)
         smteExAnte = np.tile(np.nan, 99)
 
         eval_points = np.round(np.arange(0.01, 1.0, 0.01), decimals=2)
@@ -358,15 +358,15 @@ class RsltCls(MetaCls):
         # Construct marginal cost of treatment (ex ante).
         for i in range(99):
 
-            cmte_ex_post[i] = cmte_level + cmte_slopes[i]
+            cmteExPost[i] = cmte_level + cmte_slopes[i]
 
         if args['which'] == 'bmteExPost':
 
             rslt = bmteExPost
 
-        elif args['which'] == 'cmte_ex_ante':
+        elif args['which'] == 'cmteExAnte':
 
-            rslt = cmte_ex_post
+            rslt = cmteExPost
 
         elif args['which'] == 'smteExAnte':
 
