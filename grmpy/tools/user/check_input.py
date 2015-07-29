@@ -7,49 +7,49 @@ import numpy as np
 
 ''' Main function.
 '''
-def check_input(init_dict):
+def check_input(initDict):
     """ Check the input from the initialization file.
     """
     # Antibugging.
-    assert (isinstance(init_dict, dict))
+    assert (isinstance(initDict, dict))
     
     # Check keys.
     keys = set(['DATA', 'BENE', 'COST', 'RHO', 'ESTIMATION', 'SIMULATION', 'DERIV'])
     
-    assert (keys == set(init_dict.keys()))
+    assert (keys == set(initDict.keys()))
     
     ''' Check subgroups.
     '''
-    _check_eqn(init_dict)
+    _check_eqn(initDict)
     
-    _check_data(init_dict)
+    _check_data(initDict)
 
-    _check_estimation(init_dict)
+    _check_estimation(initDict)
     
-    _check_simulation(init_dict)
+    _check_simulation(initDict)
 
-    _check_rho(init_dict)
+    _check_rho(initDict)
     
-    _check_msc(init_dict)
+    _check_msc(initDict)
     
-    _check_deriv(init_dict)
+    _check_deriv(initDict)
 
     # Finishing
     return True
 
 ''' Private auxiliary functions.
 ''' 
-def _check_deriv(init_dict):
+def _check_deriv(initDict):
     """ Check derived information.
     """
-    assert (isinstance(init_dict, dict))
+    assert (isinstance(initDict, dict))
 
     ''' Positions.
     '''
     # Distribute
-    all_ = init_dict['DERIV']['pos']['all']
+    all_ = initDict['DERIV']['pos']['all']
 
-    max_ = init_dict['DERIV']['pos']['max']
+    max_ = initDict['DERIV']['pos']['max']
     
     # Checks
     assert (isinstance(max_, int))
@@ -63,9 +63,9 @@ def _check_deriv(init_dict):
     # Benefit shifters
     for info in ['ex_post', 'ex_ante']:
         
-        list_ = init_dict['DERIV']['excl_bene'][info]['pos']
+        list_ = initDict['DERIV']['excl_bene'][info]['pos']
         
-        num = init_dict['DERIV']['excl_bene'][info]['num']
+        num = initDict['DERIV']['excl_bene'][info]['num']
         
         assert (isinstance(list_, list))
         assert (isinstance(num, int))
@@ -73,8 +73,8 @@ def _check_deriv(init_dict):
         assert (num >= 0)
     
     # Cost shifters
-    list_ = init_dict['DERIV']['excl_cost']['pos']
-    num = init_dict['DERIV']['excl_cost']['num']
+    list_ = initDict['DERIV']['excl_cost']['pos']
+    num = initDict['DERIV']['excl_cost']['num']
         
     assert (isinstance(list_, list))
     assert (isinstance(num, int))
@@ -83,9 +83,9 @@ def _check_deriv(init_dict):
     assert (num >= 0)
 
     # Common elements.
-    list_ = init_dict['DERIV']['common']['pos']
+    list_ = initDict['DERIV']['common']['pos']
     
-    pos = init_dict['DERIV']['common']['num']
+    pos = initDict['DERIV']['common']['num']
     
     assert (isinstance(list_, list))
     assert (isinstance(num, int))
@@ -97,50 +97,50 @@ def _check_deriv(init_dict):
     return True
 
 
-def _check_msc(init_dict):
+def _check_msc(initDict):
     """ Check selected additional constraints.
     """
-    assert (isinstance(init_dict, dict))
+    assert (isinstance(initDict, dict))
     
     ''' Check that the covariates in the treated and untreated state are
         identical.
     '''
-    treated = set(init_dict['BENE']['TREATED']['coeffs']['pos'])
-    untreated = set(init_dict['BENE']['UNTREATED']['coeffs']['pos'])
+    treated = set(initDict['BENE']['TREATED']['coeffs']['pos'])
+    untreated = set(initDict['BENE']['UNTREATED']['coeffs']['pos'])
     
     assert (treated == untreated)
     
-    treated = init_dict['BENE']['TREATED']['coeffs']['info']
-    untreated = init_dict['BENE']['UNTREATED']['coeffs']['info']
+    treated = initDict['BENE']['TREATED']['coeffs']['info']
+    untreated = initDict['BENE']['UNTREATED']['coeffs']['info']
     numInfo = len(treated)
     
     assert (all((treated[i] == untreated[i]) for i in range(numInfo)))
     
     ''' Check that there are no duplicates in either benefit or cost equation.
     '''
-    treated = init_dict['BENE']['TREATED']['coeffs']['pos']
-    untreated = init_dict['BENE']['UNTREATED']['coeffs']['pos']
-    cost = init_dict['BENE']['UNTREATED']['coeffs']['pos']
+    treated = initDict['BENE']['TREATED']['coeffs']['pos']
+    untreated = initDict['BENE']['UNTREATED']['coeffs']['pos']
+    cost = initDict['BENE']['UNTREATED']['coeffs']['pos']
     
     for obj in [treated, untreated, cost]:
         assert (len(obj) == len(set(obj)))
     
     ''' Check identification.
     '''
-    is_free = init_dict['COST']['sd']['free'][0]
+    is_free = initDict['COST']['sd']['free'][0]
     
     if is_free:
-        assert (init_dict['DERIV']['excl_bene']['ex_ante']['num'] > 0)
+        assert (initDict['DERIV']['excl_bene']['ex_ante']['num'] > 0)
 
     ''' Check that outcome and treated are not columns in either benefit or
         cost equations.
     '''
-    treated = set(init_dict['BENE']['TREATED']['coeffs']['pos'])
-    untreated = set(init_dict['BENE']['UNTREATED']['coeffs']['pos'])
-    cost = set(init_dict['BENE']['UNTREATED']['coeffs']['pos'])
+    treated = set(initDict['BENE']['TREATED']['coeffs']['pos'])
+    untreated = set(initDict['BENE']['UNTREATED']['coeffs']['pos'])
+    cost = set(initDict['BENE']['UNTREATED']['coeffs']['pos'])
     
-    y = set([init_dict['DATA']['outcome']])
-    d = set([init_dict['DATA']['treatment']])
+    y = set([initDict['DATA']['outcome']])
+    d = set([initDict['DATA']['treatment']])
 
     for obj in [treated, untreated, cost]:
         
@@ -150,8 +150,8 @@ def _check_msc(init_dict):
     ''' Check that at least one regressor in choice, either ex ante benefit
         or cost shifters.
     '''
-    bene = len(init_dict['BENE']['TREATED']['coeffs']['pos'])
-    cost = len(init_dict['COST']['coeffs']['pos'])
+    bene = len(initDict['BENE']['TREATED']['coeffs']['pos'])
+    cost = len(initDict['COST']['coeffs']['pos'])
     
     no_benefit_shifters = (bene == 0)
     no_cost_shifters = (cost == 0)
@@ -160,21 +160,21 @@ def _check_msc(init_dict):
         assert (cost > 0)
         
     if no_cost_shifters:
-        info = sum(init_dict['BENE']['TREATED']['coeffs']['info'])
+        info = sum(initDict['BENE']['TREATED']['coeffs']['info'])
         assert (info > 0)
 
     ''' Check that no covariates that are unknown to the agent at the time of
         the treatment decision are specified as cost shifters.
     '''   
-    info = np.array(init_dict['BENE']['TREATED']['coeffs']['info'])
+    info = np.array(initDict['BENE']['TREATED']['coeffs']['info'])
     
     benefit_shifters = (len(info) > 0)
     
     if benefit_shifters:
        
-        pos = np.array(init_dict['BENE']['TREATED']['coeffs']['pos'])
+        pos = np.array(initDict['BENE']['TREATED']['coeffs']['pos'])
         unknown = set(pos[info == False])
-        pos = set(init_dict['COST']['coeffs']['pos'])
+        pos = set(initDict['COST']['coeffs']['pos'])
      
         assert (len(unknown.intersection(pos)) == 0)
         
@@ -182,13 +182,13 @@ def _check_msc(init_dict):
     return True
 
 
-def _check_eqn(init_dict):
+def _check_eqn(initDict):
     """ Check EQN block.
     """
-    assert (isinstance(init_dict, dict))
+    assert (isinstance(initDict, dict))
 
     # Check keys.
-    assert (set(['TREATED', 'UNTREATED']) == set(init_dict['BENE'].keys()))
+    assert (set(['TREATED', 'UNTREATED']) == set(initDict['BENE'].keys()))
     
     ''' BENE.
     '''
@@ -206,19 +206,19 @@ def _check_eqn(init_dict):
             
             if subgroup == 'coeffs':
                 
-                positions = init_dict['BENE'][group][subgroup]['pos']
+                positions = initDict['BENE'][group][subgroup]['pos']
                 
-                values = init_dict['BENE'][group][subgroup]['values']
+                values = initDict['BENE'][group][subgroup]['values']
                 
-                infos = init_dict['BENE'][group][subgroup]['info']
+                infos = initDict['BENE'][group][subgroup]['info']
                 
-                free = init_dict['BENE'][group][subgroup]['free']
+                free = initDict['BENE'][group][subgroup]['free']
                 
             if subgroup in ['sd', 'int']:
                 
-                values = init_dict['BENE'][group][subgroup]['values']
+                values = initDict['BENE'][group][subgroup]['values']
                 
-                free = init_dict['BENE'][group][subgroup]['free']
+                free = initDict['BENE'][group][subgroup]['free']
                 
             # Position
             if positions is not None:
@@ -246,13 +246,13 @@ def _check_eqn(init_dict):
         free = None
             
         if subgroup == 'coeffs':
-            positions = init_dict['COST'][subgroup]['pos']
-            values = init_dict['COST'][subgroup]['values']
-            free = init_dict['COST'][subgroup]['free']
+            positions = initDict['COST'][subgroup]['pos']
+            values = initDict['COST'][subgroup]['values']
+            free = initDict['COST'][subgroup]['free']
                 
         if subgroup in ['sd', 'int']:
-            values = init_dict['COST'][subgroup]['values']
-            free = init_dict['COST'][subgroup]['free']
+            values = initDict['COST'][subgroup]['values']
+            free = initDict['COST'][subgroup]['free']
                 
         # Position
         if positions is not None:
@@ -274,21 +274,21 @@ def _check_eqn(init_dict):
     return True
 
 
-def _check_data(init_dict):
+def _check_data(initDict):
     """ Check DATA block.
     """
-    assert (isinstance(init_dict, dict))
+    assert (isinstance(initDict, dict))
 
     # Check keys.
     keys = set(['source', 'agents', 'outcome', 'treatment'])
 
-    assert (keys == set(init_dict['DATA'].keys()))
+    assert (keys == set(initDict['DATA'].keys()))
 
     # Distribute elements.
-    source = init_dict['DATA']['source']
-    agents = init_dict['DATA']['agents']
-    outcome = init_dict['DATA']['outcome']
-    treatment = init_dict['DATA']['treatment']
+    source = initDict['DATA']['source']
+    agents = initDict['DATA']['agents']
+    outcome = initDict['DATA']['outcome']
+    treatment = initDict['DATA']['treatment']
 
     # Checks.
     assert (isinstance(source, str))
@@ -402,21 +402,21 @@ def _check_estimation(initDict):
     return True
 
 
-def _check_simulation(init_dict):
+def _check_simulation(initDict):
     """ Check SIMULATION block.
     '"""
     # Antibugging
-    assert (isinstance(init_dict, dict))
+    assert (isinstance(initDict, dict))
     
     # Check keys
     keys = set(['agents', 'seed', 'target'])
 
-    assert (keys == set(init_dict['SIMULATION'].keys()))
+    assert (keys == set(initDict['SIMULATION'].keys()))
     
     # Distribute elements
-    agents = init_dict['SIMULATION']['agents']
-    seed = init_dict['SIMULATION']['seed']
-    target = init_dict['SIMULATION']['target']
+    agents = initDict['SIMULATION']['agents']
+    seed = initDict['SIMULATION']['seed']
+    target = initDict['SIMULATION']['target']
     
     # Checks
     assert (isinstance(agents, int))

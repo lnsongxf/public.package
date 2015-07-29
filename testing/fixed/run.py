@@ -106,35 +106,35 @@ class TestEstimationRuns(object):
         grmpy.estimate(init_file, resume=False, use_simulation=False)
 
         # Assessment of results
-        rslt_dict = pkl.load(open('rslt.grmpy.pkl', 'rb'))
+        rslDict = pkl.load(open('rslt.grmpy.pkl', 'rb'))
 
         # This test only succeeds on our testing server. 
         if socket.gethostname() != 'zeus':
             return True
 
         # Assertions
-        assert_almost_equal(rslt_dict['max_rslt']['fun'], 1.628181660180656)
+        assert_almost_equal(rslDict['max_rslt']['fun'], 1.628181660180656)
 
-        assert_almost_equal(rslt_dict['bmteExPost']['estimate'][50],
+        assert_almost_equal(rslDict['bmteExPost']['estimate'][50],
         -0.10666320040952278)
-        assert_almost_equal(rslt_dict['bmteExPost']['confi']['upper'][50],
+        assert_almost_equal(rslDict['bmteExPost']['confi']['upper'][50],
         -0.079594731462436979)
-        assert_almost_equal(rslt_dict['bmteExPost']['confi']['lower'][50],
+        assert_almost_equal(rslDict['bmteExPost']['confi']['lower'][50],
         -0.1345556517240841)
    
-        assert_almost_equal(rslt_dict['smteExAnte']['estimate'][50],
+        assert_almost_equal(rslDict['smteExAnte']['estimate'][50],
         -0.13443516496559108)
-        assert_almost_equal(rslt_dict['smteExAnte']['confi']['upper'][50],
+        assert_almost_equal(rslDict['smteExAnte']['confi']['upper'][50],
         -0.10380872727729094)
-        assert_almost_equal(rslt_dict['smteExAnte']['confi']['lower'][50],
+        assert_almost_equal(rslDict['smteExAnte']['confi']['lower'][50],
         -0.16786079416740679)
    
         # Assert relationship between parameters
         for i in range(99):
             
-            cmteExAnte = rslt_dict['cmteExAnte']['estimate'][i]
-            smteExAnte = rslt_dict['smteExAnte']['estimate'][i]
-            bmteExPost = rslt_dict['bmteExPost']['estimate'][i]
+            cmteExAnte = rslDict['cmteExAnte']['estimate'][i]
+            smteExAnte = rslDict['smteExAnte']['estimate'][i]
+            bmteExPost = rslDict['bmteExPost']['estimate'][i]
             
             assert_almost_equal(smteExAnte, bmteExPost - cmteExAnte)
    
