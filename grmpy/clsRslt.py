@@ -35,9 +35,9 @@ class RsltCls(MetaCls):
         self.attr['cov_mat'] = None
 
         # Constructed objects.
-        self.attr['bmteExPost'] = None
-        self.attr['cmteExAnte'] = None
-        self.attr['smteExAnte'] = None
+        self.attr['BmteExPost'] = None
+        self.attr['CmteExAnte'] = None
+        self.attr['SmteExAnte'] = None
 
         # Status indicator
         self.is_locked = False
@@ -174,9 +174,9 @@ class RsltCls(MetaCls):
             struct = '''   {0[0]}        {0[1]}          {0[2]} / {0[3]}\n'''
             idx = np.arange(0.01, 1.00, 0.01)
 
-            parameter_list = ['bmteExPost']
+            parameter_list = ['BmteExPost']
 
-            if(surp_estimation): parameter_list += ['cmteExAnte', 'smteExAnte']
+            if(surp_estimation): parameter_list += ['CmteExAnte', 'SmteExAnte']
 
             for parameter in parameter_list:
 
@@ -188,15 +188,15 @@ class RsltCls(MetaCls):
 
                     lower_bound = self.attr[parameter]['confi']['lower']
 
-                if parameter == 'bmteExPost':
+                if parameter == 'BmteExPost':
 
                     title = ' MARGINAL BENEFIT OF TREATMENT (EX POST)'
 
-                if parameter == 'cmteExAnte':
+                if parameter == 'CmteExAnte':
 
                     title = ' MARGINAL COST OF TREATMENT '
 
-                if parameter == 'smteExAnte':
+                if parameter == 'SmteExAnte':
 
                     title = ' MARGINAL SURPLUS OF TREATMENT '
 
@@ -241,10 +241,10 @@ class RsltCls(MetaCls):
         paras_copy = copy.deepcopy(paras_obj)
         
         # Initialize parameters.
-        parameter_list = ['bmteExPost']
+        parameter_list = ['BmteExPost']
 
         if surp_estimation:
-            parameter_list += ['smteExAnte', 'cmteExAnte']
+            parameter_list += ['SmteExAnte', 'CmteExAnte']
         
         for parameter in parameter_list:
             self.attr[parameter] = {}
@@ -360,15 +360,15 @@ class RsltCls(MetaCls):
 
             cmteExPost[i] = cmte_level + cmte_slopes[i]
 
-        if args['which'] == 'bmteExPost':
+        if args['which'] == 'BmteExPost':
 
             rslt = bmteExPost
 
-        elif args['which'] == 'cmteExAnte':
+        elif args['which'] == 'CmteExAnte':
 
             rslt = cmteExPost
 
-        elif args['which'] == 'smteExAnte':
+        elif args['which'] == 'SmteExAnte':
 
             rslt = smteExAnte
 
