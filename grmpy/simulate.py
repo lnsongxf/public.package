@@ -7,9 +7,9 @@ import random
 import os
 
 # project library
-from grmpy.tools.msc import *
-from grmpy.tools.user import *
-from grmpy.tools.optimization import *
+import grmpy.tools.msc as msc
+import grmpy.tools.user as user
+import grmpy.tools.optimization as opt
 
 ''' Main functions
 '''
@@ -20,7 +20,7 @@ def simulate(init='init.ini', update=False):
     is_mock = _create_mock(init)
 
     # Process initialization file
-    _, paras_obj, init_dict = initialize(init, is_simulation=True)
+    _, paras_obj, init_dict = user.initialize(init, is_simulation=True)
 
     # Distribute information
     target = init_dict['SIMULATION']['target']
@@ -33,7 +33,7 @@ def simulate(init='init.ini', update=False):
 
     # Update parameter class
     if update:
-        paras_obj = update_parameters(paras_obj)
+        paras_obj = msc.update_parameters(paras_obj)
 
     # Create simulated dataset
     if is_mock:
@@ -52,7 +52,7 @@ def simulate(init='init.ini', update=False):
     sim_dat = _simulate_endogenous(sim_dat, paras_obj, init_dict)
 
     # Update for prediction step
-    rslt = create_matrices(sim_dat, init_dict)
+    rslt = msc.create_matrices(sim_dat, init_dict)
 
     paras_obj.unlock()
 
@@ -80,17 +80,17 @@ def _get_likelihood(init):
     assert (isinstance(init, str))
 
     # Process model ingredients
-    model_obj, paras_obj, _ = initialize(init, True)
+    model_obj, paras_obj, _ = user.initialize(init, True)
 
     # Initialize container
-    crit_obj = CritCls(model_obj, paras_obj)
+    crit_obj = opt.CritCls(model_obj, paras_obj)
 
     crit_obj.lock()
 
     # Evaluate at true values
     x = paras_obj.get_values('external', 'free')
 
-    likl = scipy_wrapper_function(x, crit_obj)
+    likl = opt.scipy_wrapper_function(x, crit_obj)
 
     # Cleanup
     try:
@@ -105,7 +105,7 @@ def _create_mock(init):
     """ Create a mock dataset which allows for use of existing routines
         in the case of a missing source dataset.
     """
-    init_dict = process_input(init)
+    init_dict = user.process_input(init)
 
     is_mock = (os.path.exists(init_dict['DATA']['source']) == False)
 
@@ -163,7 +163,7 @@ def _simulate_endogenous(sim_dat, paras_obj, init_dict):
     u1, u0, v = np.random.multivariate_normal(mean, cov_mat, sim_agents).T
 
     # Create data matrices
-    rslt = create_matrices(sim_dat, init_dict)
+    rslt = msc.create_matrices(sim_dat, init_dict)
 
     x = rslt['X_ex_post']
 

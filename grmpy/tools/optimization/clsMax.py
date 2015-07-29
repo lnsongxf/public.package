@@ -8,8 +8,9 @@ from scipy.optimize import fmin_powell
 import numpy as np
 
 # project library
-from grmpy.tools.optimization.wrappers import *
-from grmpy.tools.optimization import *
+from grmpy.tools.optimization.wrappers import scipy_wrapper_function
+from grmpy.tools.optimization.wrappers import scipy_wrapper_gradient
+from grmpy.tools.optimization.clsCrit import CritCls
 
 from grmpy.clsMeta import MetaCls
 from grmpy.clsModel import ModelCls

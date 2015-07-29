@@ -8,8 +8,8 @@ import sys
 import os
 
 # project library
-from modules.randominit import *
-from modules.exceptions import *
+from modules.exceptions import TimedOutError
+import modules.randominit as aux
 
 # Setting up signal handler
 def signal_handler(signum, frame):
@@ -19,7 +19,7 @@ signal.signal(signal.SIGALRM, signal_handler)
 
 # GRMPY import
 sys.path.insert(0, os.environ['GRMPY'])
-from grmpy import *
+import grmpy
 
 # Module-wide variables
 SMALL = 10e-10
@@ -35,10 +35,10 @@ def test_1():
     for _ in range(10):
 
         # Generate a random initialization file.
-        generate_init_file()
+        aux.generate_init_file()
 
         # Simulation
-        simulate('test.grmpy.ini')
+        grmpy.simulate('test.grmpy.ini')
 
         # Finishing
         return True
@@ -48,10 +48,10 @@ def test_2():
     """ Testing if a random estimation task can be handled without complaints for five seconds.
     """
     # Generate a random initialization file.
-    generate_init_file()
+    aux.generate_init_file()
 
     # Simulation
-    simulate('test.grmpy.ini')
+    grmpy.simulate('test.grmpy.ini')
 
     # Set signal for five seconds.
     signal.alarm(5)
@@ -59,7 +59,7 @@ def test_2():
     try:
 
         # Estimate
-        estimate(use_simulation=True, init='test.grmpy.ini')
+        grmpy.estimate(use_simulation=True, init='test.grmpy.ini')
 
     except TimedOutError:
 
@@ -74,13 +74,13 @@ def test_3():
     """ Testing if a random estimation task can be handled without complaints from beginning till end.
     """
     # Generate a random initialization file.
-    generate_init_file()
+    aux.generate_init_file()
 
     # Simulation
-    simulate('test.grmpy.ini')
+    grmpy.simulate('test.grmpy.ini')
 
     # Estimate
-    estimate(use_simulation=True, init='test.grmpy.ini')
+    grmpy.estimate(use_simulation=True, init='test.grmpy.ini')
 
     # Finishing
     return True
@@ -99,10 +99,10 @@ def test_4():
     dict_['asymptotics'] = 'false'
     dict_['maxiter'] = 0
 
-    dict_ = generate_init_file(dict_)
+    dict_ = aux.generate_init_file(dict_)
 
     # Lock in simulated dataset
-    simulate('test.grmpy.ini')
+    grmpy.simulate('test.grmpy.ini')
 
     # Loop over fast and slow evaluation of criterion function.
     for version in ['fast', 'slow']:
@@ -111,10 +111,10 @@ def test_4():
         dict_['ESTIMATION']['version'] = version
 
         # Print revised initialization file
-        print_dict(dict_)
+        aux.print_dict(dict_)
 
         # Estimate
-        rslt = estimate(use_simulation=True, init='test.grmpy.ini')
+        rslt = grmpy.estimate(use_simulation=True, init='test.grmpy.ini')
 
         rslt = rslt.get_attr('max_rslt')
 
@@ -134,7 +134,7 @@ def test_5():
     for _ in range(1000):
 
         # Generate a random initialization file.
-        generate_init_file()
+        aux.generate_init_file()
 
         # Finishing
         return True

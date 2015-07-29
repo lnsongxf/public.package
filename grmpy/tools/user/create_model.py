@@ -7,7 +7,7 @@ import numpy as np
 
 # project library
 from grmpy.clsModel import ModelCls
-from grmpy.tools.msc import *
+import grmpy.tools.msc as msc
 
 
 ''' Main function.
@@ -29,7 +29,7 @@ def construct_model(init_dict):
     # Construct data array
     dataset = _process_dataset(init_dict)
     
-    rslt = create_matrices(dataset, init_dict)
+    rslt = msc.create_matrices(dataset, init_dict)
 
     # Initialize model object
     model_obj = ModelCls()

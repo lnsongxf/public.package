@@ -9,9 +9,9 @@ import sys
 import os
 
 # project library
-from grmpy.tools.msc import *
-from grmpy.tools.user import *
-from grmpy.tools.optimization import *
+import grmpy.tools.msc as msc
+import grmpy.tools.user as user
+import grmpy.tools.optimization as opt
 
 from grmpy.clsRslt import RsltCls
 
@@ -27,11 +27,11 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
     _cleanup(resume)
 
     # Process initialization file
-    model_obj, paras_obj, _ = initialize(init, use_simulation)
+    model_obj, paras_obj, _ = user.initialize(init, use_simulation)
 
     # Update parameter objects.
     if resume:
-        paras_obj = update_parameters(paras_obj)
+        paras_obj = msc.update_parameters(paras_obj)
 
     paras = paras_obj.get_values('internal', 'all')
 
@@ -47,7 +47,7 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
     with_asymptotics = model_obj.get_attr('with_asymptotics')
 
     # Distribute auxiliary objects
-    max_obj = MaxCls(model_obj, paras_obj)
+    max_obj = opt.MaxCls(model_obj, paras_obj)
 
     max_obj.lock()
 
@@ -103,7 +103,7 @@ def _add_asymptotics(max_rslt, max_obj, hessian):
         cov_mat = max_rslt['covMat']
     elif hessian == 'numdiff':
         crit_func = max_obj.get_attr('crit_func')
-        nd_obj = nd.Hessian(lambda x: scipy_wrapper_function(x, crit_func))
+        nd_obj = nd.Hessian(lambda x: opt.scipy_wrapper_function(x, crit_func))
         hess = nd_obj(xopt)
         cov_mat = np.linalg.pinv(hess)
 

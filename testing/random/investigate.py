@@ -8,7 +8,6 @@ import os
 
 # project library
 import modules.tests as lib
-from modules.randominit import *
 
 # GRMPY import
 sys.path.insert(0, os.environ['GRMPY'])

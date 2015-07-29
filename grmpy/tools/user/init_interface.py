@@ -8,9 +8,9 @@ import shlex
 import os
 
 # project library
-from grmpy.tools.user.create_model import *
-from grmpy.tools.user.create_paras import *
-from grmpy.tools.user.check_input import *
+from grmpy.tools.user.create_model import construct_model
+from grmpy.tools.user.create_paras import construct_paras
+from grmpy.tools.user.check_input import check_input
 
 ''' Main function.
 '''
