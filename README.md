@@ -15,6 +15,8 @@ sign up for our mailing list [here](http://eepurl.com/RStEH). Please feel free t
     $ pip install grmpy
     $ python -c "import grmpy; grmpy.test()"
 
+We only distribute a limited number of tests with the package [(sources)](https://github.com/grmToolbox/package/blob/master/grmpy/tests/test.py). However, we have many more tests set up as part of our development process [(sources)](https://github.com/grmToolbox/package/tree/master/testing).
+
 #### Online Documentation
 
 http://grmToolbox.github.io
