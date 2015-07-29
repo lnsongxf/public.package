@@ -195,7 +195,7 @@ class RsltCls(MetaCls):
 
                 points = self.attr[parameter]['estimate']
 
-                if (with_asymptotics):
+                if with_asymptotics:
                     upper_bound = self.attr[parameter]['confi']['upper']
 
                     lower_bound = self.attr[parameter]['confi']['lower']

@@ -101,7 +101,7 @@ def _get_likelihood(init):
     # Cleanup
     try:
         os.remove('info.grmpy.out')
-    except Exception:
+    except OSError:
         pass
 
     # Finishing.

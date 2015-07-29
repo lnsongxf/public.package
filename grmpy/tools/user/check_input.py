@@ -16,8 +16,7 @@ def check_input(init_dict):
     assert (isinstance(init_dict, dict))
 
     # Check keys.
-    keys = set(
-        ['DATA', 'BENE', 'COST', 'RHO', 'ESTIMATION', 'SIMULATION', 'DERIV'])
+    keys = {'DATA', 'BENE', 'COST', 'RHO', 'ESTIMATION', 'SIMULATION', 'DERIV'}
 
     assert (keys == set(init_dict.keys()))
 
@@ -90,7 +89,7 @@ def _check_deriv(init_dict):
     # Common elements.
     list_ = init_dict['DERIV']['common']['pos']
 
-    pos = init_dict['DERIV']['common']['num']
+    num = init_dict['DERIV']['common']['num']
 
     assert (isinstance(list_, list))
     assert (isinstance(num, int))
@@ -144,8 +143,8 @@ def _check_msc(init_dict):
     untreated = set(init_dict['BENE']['UNTREATED']['coeffs']['pos'])
     cost = set(init_dict['BENE']['UNTREATED']['coeffs']['pos'])
 
-    y = set([init_dict['DATA']['outcome']])
-    d = set([init_dict['DATA']['treatment']])
+    y = {init_dict['DATA']['outcome']}
+    d = {init_dict['DATA']['treatment']}
 
     for obj in [treated, untreated, cost]:
         assert (len(obj.intersection(y)) == 0)
@@ -191,7 +190,7 @@ def _check_eqn(init_dict):
     assert (isinstance(init_dict, dict))
 
     # Check keys.
-    assert (set(['TREATED', 'UNTREATED']) == set(init_dict['BENE'].keys()))
+    assert ({'TREATED', 'UNTREATED'} == set(init_dict['BENE'].keys()))
 
     ''' BENE.
     '''
@@ -281,7 +280,7 @@ def _check_data(init_dict):
     assert (isinstance(init_dict, dict))
 
     # Check keys.
-    keys = set(['source', 'agents', 'outcome', 'treatment'])
+    keys = {'source', 'agents', 'outcome', 'treatment'}
 
     assert (keys == set(init_dict['DATA'].keys()))
 
@@ -315,7 +314,7 @@ def _check_rho(init_dict):
     assert (isinstance(init_dict, dict))
 
     # Check keys
-    keys = set(['treated', 'untreated'])
+    keys = {'treated', 'untreated'}
 
     assert (keys == set(init_dict['RHO'].keys()))
 
@@ -343,9 +342,8 @@ def _check_estimation(init_dict):
     assert (isinstance(init_dict, dict))
 
     # Check keys.
-    keys = set(['algorithm', 'maxiter', 'start', 'gtol', 'epsilon', \
-                'asymptotics', 'hessian', \
-                'draws', 'alpha', 'differences', 'version'])
+    keys = {'algorithm', 'maxiter', 'start', 'gtol', 'epsilon', 'asymptotics',
+            'hessian', 'draws', 'alpha', 'differences', 'version'}
 
     assert (keys == set(init_dict['ESTIMATION'].keys()))
 
@@ -406,7 +404,7 @@ def _check_simulation(init_dict):
     assert (isinstance(init_dict, dict))
 
     # Check keys
-    keys = set(['agents', 'seed', 'target'])
+    keys = {'agents', 'seed', 'target'}
 
     assert (keys == set(init_dict['SIMULATION'].keys()))
 

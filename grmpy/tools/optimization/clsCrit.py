@@ -94,13 +94,13 @@ class CritCls(MetaCls):
 
             # Gradient approximations
             if differences == 'one-sided':
-                upper = self._evaluate_function(x + d, False)
+                upper = self._evaluate_function(x + d)
                 lower = f0
                 grad[k] = (upper - lower) / d[k]
 
             if differences == 'two-sided':
-                upper = self._evaluate_function(x + d, False)
-                lower = self._evaluate_function(x - d, False)
+                upper = self._evaluate_function(x + d)
+                lower = self._evaluate_function(x - d)
                 grad[k] = (upper - lower) / (2.0 * d[k])
 
             # Reset step size
@@ -115,7 +115,7 @@ class CritCls(MetaCls):
         # Finishing
         return grad
 
-    def _evaluate_function(self, x, logging=True):
+    def _evaluate_function(self, x):
         """ Negative log-likelihood function.
         """
         # Antibugging
