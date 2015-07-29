@@ -16,11 +16,12 @@ MAX_DRAWS = 5
 
 ''' Public Function
 '''
-def generate_init_file(dict_={}):
+def generate_init_file(dict_=None):
     """ Get a random initialization file.
     """
-    # Antibugging
-    assert (isinstance(dict_, dict))
+    # Antibugging. This interface is using a sentinal value.
+    if dict_ is not None:
+        assert (isinstance(dict_, dict))
         
     dict_ = random_dict(dict_)
         
@@ -30,12 +31,15 @@ def generate_init_file(dict_={}):
     return dict_
 
 
-def random_dict(dict_={}):
+def random_dict(dict_=None):
     """ Draw random dictionary instance that can be processed into an
         initialization file.
     """
-    # Antibugging
-    assert ((dict_ is None) or (isinstance(dict_, dict)))
+    # Antibugging. This interface is using a sentinal value.
+    if dict_ is not None:
+        assert (isinstance(dict_, dict))
+    else:
+        dict_ = dict()
 
     if 'version' in dict_.keys():
         version = dict_['version']
