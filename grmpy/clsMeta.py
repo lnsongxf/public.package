@@ -79,15 +79,12 @@ class MetaCls(object):
         
         # Finishing.
         return True
-    
-    def derived_attributes(self):
+
+    @staticmethod
+    def derived_attributes():
         """ Calculate derived attributes.
         """
-        
-        pass
-    
-    def _check_integrity(self):
+    @staticmethod
+    def _check_integrity():
         """ Check integrity of class instance.
         """
-
-        pass

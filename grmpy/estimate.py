@@ -150,19 +150,17 @@ def _write_optimization_results(max_rslt, paras_obj):
             file_.write('  {:25.18f}'.format(para) + '\n')
 
     # Write optimization report file
-    file_ = open('info.grmpy.out', 'a')
+    with open('info.grmpy.out', 'a') as file_:
 
-    file_.write('''\n OPTIMIZATION REPORT \n''')
+        file_.write('''\n OPTIMIZATION REPORT \n''')
 
-    file_.write('''\n      Function:   ''' + fval)
+        file_.write('''\n      Function:   ''' + fval)
 
-    file_.write('''\n      Gradient:   ''' + grad + '\n')
+        file_.write('''\n      Gradient:   ''' + grad + '\n')
 
-    file_.write('''\n      Success:    ''' + success)
+        file_.write('''\n      Success:    ''' + success)
 
-    file_.write('''\n      Message:    ''' + msg + '\n\n\n\n')
-
-    file_.close()
+        file_.write('''\n      Message:    ''' + msg + '\n\n\n\n')
 
 
 def _cleanup(resume):

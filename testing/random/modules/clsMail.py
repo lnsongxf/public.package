@@ -102,17 +102,14 @@ class MetaCls(object):
         # Finishing
         self.attr[key] = attr
 
-    def _derived_attributes(self):
+    @staticmethod
+    def _derived_attributes():
         """ Calculate derived attributes.
         """
-
-        pass
-
-    def _check_integrity(self):
+    @staticmethod
+    def _check_integrity():
         """ Check integrity of class instance.
         """
-
-        pass
 
     def store(self, file_name):
         """ Store class instance.

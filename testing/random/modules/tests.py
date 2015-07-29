@@ -28,7 +28,7 @@ SMALL = 10e-10
 '''
 
 
-def test_A():
+def test_1():
     """ Testing if a ten random initialization files can be used to simulate a model.
     """
 
@@ -44,7 +44,7 @@ def test_A():
         return True
 
 
-def test_B():
+def test_2():
     """ Testing if a random estimation task can be handled without complaints for five seconds.
     """
     # Generate a random initialization file.
@@ -70,7 +70,7 @@ def test_B():
     # Finishing
     return True
 
-def test_C():
+def test_3():
     """ Testing if a random estimation task can be handled without complaints from beginning till end.
     """
     # Generate a random initialization file.
@@ -86,7 +86,7 @@ def test_C():
     return True
 
 
-def test_D():
+def test_4():
     """ Testing if the fast and slow evaluation of the criterion function
     result in same value.
     """
@@ -127,7 +127,7 @@ def test_D():
     # Finishing
     return True
 
-def test_E():
+def test_5():
     """ Testing if a thousand random initialization requests can be simulated
     """
 

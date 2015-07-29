@@ -16,7 +16,7 @@ from grmpy import *
 
 ''' Request
 '''
-label, seed = 'C', 110836
+label, seed = '3', 110836
 
 ''' Error Reproduction
 '''
@@ -26,6 +26,6 @@ np.random.seed(seed)
 
 # This is required to set the seeds identical to the
 # case in the run.py script.
-label = np.random.choice(['A', 'B', 'C', 'D', 'E'])
+label = np.random.choice(['1', '2', '3', '4', '5'])
 
 test()
