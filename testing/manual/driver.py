@@ -13,7 +13,7 @@ import os
 
 # GRMPY import
 sys.path.insert(0, os.environ['GRMPY'])
-from grmpy import *
+import grmpy
 
 """ Auxiliary functions
 """
@@ -72,9 +72,9 @@ def get_parameters():
 
 
 
-simulate('test.grmpy.ini')
+grmpy.simulate('test.grmpy.ini')
 
-estimate(use_simulation=True, init='test.grmpy.ini')
+grmpy.estimate(use_simulation=True, init='test.grmpy.ini')
 
 
 str_ = '{0:10.2f}{1:10.2f}{2:10.2f}{3:10.2f}'

@@ -16,7 +16,7 @@ import random
 import sys
 
 # project library
-from modules.auxiliary import *
+import modules.auxiliary as aux
 import modules.tests as lib
 
 # virtual environment
@@ -106,12 +106,12 @@ if __name__ == '__main__':
     parser.add_argument('--notification', action='store_true', dest='notification', default=False, \
                         help='send notification')
 
-    hours, notification = distribute_input(parser)
+    hours, notification = aux.distribute_input(parser)
 
-    start_logging()
+    aux.start_logging()
 
     dict_ = run(hours)
 
-    finish(dict_, hours, notification)
+    aux.finish(dict_, hours, notification)
 
-    cleanup()
+    aux.cleanup()

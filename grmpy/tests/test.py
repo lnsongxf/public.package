@@ -13,14 +13,14 @@ TEST_PATH = os.getcwd()
 
 # testing library
 from nose.core import runmodule
-from nose.tools import *
+from nose.tools import assert_almost_equal
 
 # PYTHONPATH
 dir_ = FILE_PATH.replace('/tests', '')
 sys.path.insert(0, dir_)
 
 # project library
-from grmpy.tools.user import *
+import grmpy.tools.user as user
 
 
 ''' Test class.
@@ -76,11 +76,11 @@ class TestParasCls(object):
     def test_a(self):
         """ Test parameter transformations.
         """
-        init_dict = process_input('../data/test.ini')
+        init_dict = user.process_input('../data/test.ini')
 
-        model_obj = construct_model(init_dict)
+        model_obj = user.construct_model(init_dict)
 
-        paras_obj = construct_paras(init_dict, model_obj, False)
+        paras_obj = user.construct_paras(init_dict, model_obj, False)
 
         para_objs = paras_obj.get_attr('para_objs')
         

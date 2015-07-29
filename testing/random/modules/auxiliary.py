@@ -12,10 +12,6 @@ import sys
 # subproject library
 import modules.clsMail
 
-# GRMPY import
-sys.path.insert(0, os.environ['GRMPY'])
-from grmpy import *
-
 ''' Logging.
 '''
 def start_logging():
@@ -94,7 +90,7 @@ def finish(dict_, HOURS, notification):
     # Send notification
     if notification:
 
-        mail_obj= modules.clsMail.MailCls()
+        mail_obj = modules.clsMail.MailCls()
 
         mail_obj.set_attr('subject', subject)
 

@@ -15,8 +15,8 @@ import glob
 import sys
 import os
 
-from nose.core import *
-from nose.tools import *
+from nose.core import runmodule
+from nose.tools import assert_almost_equal
 
 # Pythonpath
 sys.path.insert(0, os.environ['GRMPY'])
