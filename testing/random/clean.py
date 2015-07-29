@@ -12,15 +12,11 @@ files = []
 
 ''' Clean main.
 '''
-files += glob.glob('.waf*')
-
 files += glob.glob('*.grmpy.*')
 
 files += glob.glob('.pkl*')
 
 files += glob.glob('.txt*')
-
-files += glob.glob('.grm.*')
 
 files += glob.glob('*.pkl')
 
@@ -32,11 +28,7 @@ files += glob.glob('*.ini')
 
 files += glob.glob('*.pyc')
 
-files += glob.glob('.seed')
-
-files += glob.glob('.slave-*')
-
-# files += glob.glob('.dat*')
+files += glob.glob('*.dat')
 
 ''' Clean modules.
 '''
@@ -48,15 +40,11 @@ files += glob.glob('modules/*.pyc')
 for file_ in files:
 
     try:
-
         os.remove(file_)
+    except OSError:
+        pass
 
-    except:
-
-        try:
-
-            shutil.rmtree(file_)
-
-        except:
-
-            pass
+    try:
+        shutil.rmtree(file_)
+    except OSError:
+        pass
