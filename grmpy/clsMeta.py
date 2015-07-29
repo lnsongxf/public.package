@@ -6,13 +6,12 @@ import pickle as pkl
 
 
 class MetaCls(object):
-    
     def __init__(self):
-        
         self.is_locked = False
-    
+
     ''' Meta methods.
     '''
+
     def get_status(self):
         """ Get status of class instance.
         """
@@ -26,12 +25,12 @@ class MetaCls(object):
 
         # Update class attributes.
         self.is_locked = True
-        
+
         # Finalize.
         self.derived_attributes()
-        
+
         self._check_integrity()
-    
+
     def unlock(self):
         """ Unlock class instance.
         """
@@ -47,7 +46,7 @@ class MetaCls(object):
         # Antibugging.
         assert (self.get_status() is True)
         assert (self.check_key(key) is True)
-        
+
         # Finishing.
         return self.attr[key]
 
@@ -57,26 +56,26 @@ class MetaCls(object):
         # Antibugging.
         assert (self.get_status() is False)
         assert (self.check_key(key) is True)
-        
+
         # Finishing.
         self.attr[key] = value
-    
+
     def store(self, file_name):
         """ Store class instance.
         """
         # Antibugging.
         assert (self.get_status() is True)
         assert (isinstance(file_name, str))
-        
+
         # Store.
         pkl.dump(self, open(file_name, 'wb'))
-        
+
     def check_key(self, key):
         """ Check that key is present.
         """
         # Check presence.
         assert (key in self.attr.keys())
-        
+
         # Finishing.
         return True
 
@@ -84,6 +83,7 @@ class MetaCls(object):
     def derived_attributes():
         """ Calculate derived attributes.
         """
+
     @staticmethod
     def _check_integrity():
         """ Check integrity of class instance.

@@ -18,7 +18,6 @@ from grmpy.clsParas import ParasCls
 
 
 class MaxCls(MetaCls):
-    
     def __init__(self, model_obj, paras_obj):
 
         # Antibugging
@@ -35,42 +34,42 @@ class MaxCls(MetaCls):
 
         # Results container
         self.attr['max_rslt'] = None
-                
+
         # Status
         self.is_locked = False
-    
+
     def maximize(self):
         """ Maximization
         """
         # Antibugging
         assert (self.get_status() is True)
-        
+
         # Distribute class attributes
         crit_func = self.get_attr('crit_func')
         paras_obj = self.get_attr('paras_obj')
         model_obj = self.get_attr('model_obj')
         algorithm = model_obj.get_attr('algorithm')
         maxiter = model_obj.get_attr('maxiter')
-        
+
         # Maximization
         max_rslt = None
 
         if maxiter == 0:
             x = paras_obj.get_values('external', 'free')
-            
+
             max_rslt = dict()
             max_rslt['fun'] = scipy_wrapper_function(x, crit_func)
             max_rslt['grad'] = scipy_wrapper_gradient(x, crit_func)
             max_rslt['xopt'] = x
             max_rslt['success'] = False
-    
+
             # Message:
             max_rslt['message'] = 'Single function evaluation at ' \
-                                 'starting values.'
-                
+                                  'starting values.'
+
         elif algorithm == 'bfgs':
             max_rslt = self._bfgs()
-            
+
         elif algorithm == 'powell':
             max_rslt = self._powell()
 
@@ -96,6 +95,7 @@ class MaxCls(MetaCls):
 
     ''' Private Methods.
     '''
+
     def _powell(self):
         """ Method that performs the Powell maximization.
         """
@@ -107,38 +107,38 @@ class MaxCls(MetaCls):
         paras_obj = self.get_attr('paras_obj')
         maxiter = model_obj.get_attr('maxiter')
         crit_func = self.get_attr('crit_func')
-        
+
         # Staring values
         starting_values = paras_obj.get_values('external', 'free')
-        
+
         rslt = fmin_powell(func=scipy_wrapper_function, x0=starting_values,
-                           args=(crit_func, ), xtol=0.0000000001,
+                           args=(crit_func,), xtol=0.0000000001,
                            ftol=0.0000000001, maxiter=maxiter, maxfun=None,
                            full_output=True, disp=1, callback=None)
-        
+
         # Prepare result dictionary
         max_rslt = dict()
-        
+
         max_rslt['xopt'] = np.array(rslt[0], ndmin=1)
         max_rslt['fun'] = rslt[1]
         max_rslt['grad'] = None
         max_rslt['success'] = (rslt[5] == 0)
-        
+
         # Message
         max_rslt['message'] = rslt[5]
-        
+
         if max_rslt['message'] == 1:
             max_rslt['message'] = 'Maximum number of function evaluations.'
 
         if max_rslt['message'] == 0:
             max_rslt['message'] = 'None'
-            
+
         if max_rslt['message'] == 2:
-            max_rslt['message'] = 'Maximum number of iterations.'       
-            
-        # Finishing.
+            max_rslt['message'] = 'Maximum number of iterations.'
+
+            # Finishing.
         return max_rslt
-        
+
     def _bfgs(self):
         """ Method that performs a BFGS maximization.
         """
@@ -155,17 +155,17 @@ class MaxCls(MetaCls):
 
         # Staring values
         starting_values = paras_obj.get_values(version='external', which='free')
-        
+
         # Maximization
         rslt = fmin_bfgs(f=scipy_wrapper_function,
                          fprime=scipy_wrapper_gradient, x0=starting_values,
                          args=(crit_func,), gtol=gtol, epsilon=epsilon,
                          maxiter=maxiter, full_output=True, disp=1, retall=0,
                          callback=None)
-        
+
         # Prepare result dictionary
         max_rslt = dict()
-       
+
         max_rslt['xopt'] = np.array(rslt[0], ndmin=1)
         max_rslt['fun'] = rslt[1]
         max_rslt['grad'] = rslt[2]
@@ -174,15 +174,15 @@ class MaxCls(MetaCls):
 
         # Message
         max_rslt['message'] = rslt[6]
-        
+
         if max_rslt['message'] == 1:
             max_rslt['message'] = 'Maximum number of function evaluations.'
-            
+
         if max_rslt['message'] == 0:
             max_rslt['message'] = 'None'
-            
+
         if max_rslt['message'] == 2:
             max_rslt['message'] = 'Gradient and/or function calls not changing.'
-            
+
         # Finishing.
         return max_rslt

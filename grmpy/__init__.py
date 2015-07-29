@@ -8,6 +8,7 @@ import os
 from grmpy.estimate import estimate
 from grmpy.simulate import simulate
 
+
 def test():
     """ Run nose tester for the package.
     """

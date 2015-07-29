@@ -3,9 +3,12 @@
 """
 
 # standard library
-import numpy as np
 import shlex
 import os
+
+import numpy as np
+
+
 
 # project library
 from grmpy.tools.user.create_model import construct_model
@@ -14,21 +17,23 @@ from grmpy.tools.user.check_input import check_input
 
 ''' Main function.
 '''
-def initialize(init_file, use_simulation = False, is_simulation = False):
+
+
+def initialize(init_file, use_simulation=False, is_simulation=False):
     """ Read initialization file and construct the objects required for the
         estimation runs.
     """
     # Antibugging
     assert (os.path.exists(init_file))
-    
+
     # Process initialization file
     init_dict = process_input(init_file)
-    
+
     # Use SIMULATION info
     if use_simulation:
         init_dict['DATA']['source'] = init_dict['SIMULATION']['target']
         init_dict['DATA']['agents'] = init_dict['SIMULATION']['agents']
-    
+
     # Construct objects
     model_obj = construct_model(init_dict)
     paras_obj = construct_paras(init_dict, model_obj, is_simulation)
@@ -36,9 +41,10 @@ def initialize(init_file, use_simulation = False, is_simulation = False):
     # Quality checks
     for obj in [model_obj, paras_obj]:
         assert (obj.get_status() is True)
-    
+
     # Finishing
     return model_obj, paras_obj, init_dict
+
 
 def process_input(init_file):
     """ Create dictionary from information in initialization file.
@@ -68,27 +74,21 @@ def process_input(init_file):
             ''' Process major blocks.
             '''
             if keyword == 'DATA':
-
                 init_dict = _process_data(init_dict, current_line)
 
             if keyword == 'BENE':
-
                 init_dict = _process_bene(init_dict, current_line)
 
             if keyword == 'COST':
-
                 init_dict = _process_cost(init_dict, current_line)
 
             if keyword == 'RHO':
-
                 init_dict = _process_rho(init_dict, current_line)
 
             if keyword == 'ESTIMATION':
-
                 init_dict = _process_estimation(init_dict, current_line)
 
             if keyword == 'SIMULATION':
-
                 init_dict = _process_simulation(init_dict, current_line)
 
     # Add derived information.
@@ -103,8 +103,11 @@ def process_input(init_file):
     # Finishing.
     return init_dict
 
+
 ''' Private auxiliary functions.
 '''
+
+
 def _add_deriv(init_dict):
     """ Add useful derived information for easy access.
     """
@@ -218,6 +221,7 @@ def _add_deriv(init_dict):
     # Finishing.
     return init_dict
 
+
 def _type_transformations(init_dict):
     """ Type transformations
     """
@@ -231,6 +235,7 @@ def _type_transformations(init_dict):
 
     # Finishing
     return init_dict
+
 
 def _construct_dictionary():
     """ Construct dictionary from initialization file.
@@ -249,7 +254,6 @@ def _construct_dictionary():
     init_dict['COST']['coeffs']['values'] = []
     init_dict['COST']['coeffs']['pos'] = []
     init_dict['COST']['coeffs']['free'] = []
-
 
     init_dict['COST']['sd']['values'] = []
     init_dict['COST']['sd']['free'] = []
@@ -306,9 +310,11 @@ def _construct_dictionary():
 
     return init_dict
 
+
 def _process_cases(current_line):
     """ Process special cases of empty list and keywords.
     """
+
     def _check_empty(current_line):
         """ Check whether the list is empty.
         """
@@ -334,7 +340,6 @@ def _process_cases(current_line):
         is_keyword = False
 
         if current_line:
-
             is_keyword = (current_line[0].isupper())
 
         # Check integrity
@@ -356,8 +361,11 @@ def _process_cases(current_line):
     # Finishing
     return is_empty, is_keyword
 
+
 ''' Processing of major blocks.
 '''
+
+
 def _process_bene(init_dict, current_line):
     """ Process BENE block.
     """
@@ -381,13 +389,13 @@ def _process_bene(init_dict, current_line):
         info = (current_line[4].upper() == 'TRUE')
 
         is_free = (current_line[2][0] != '!')
-        value = current_line[2].replace('!','')
+        value = current_line[2].replace('!', '')
 
         init_dict['BENE']['TREATED']['coeffs']['values'] += [float(value)]
         init_dict['BENE']['TREATED']['coeffs']['free'] += [is_free]
 
         is_free = (current_line[3][0] != '!')
-        value = current_line[3].replace('!','')
+        value = current_line[3].replace('!', '')
 
         init_dict['BENE']['UNTREATED']['coeffs']['values'] += [float(value)]
         init_dict['BENE']['UNTREATED']['coeffs']['free'] += [is_free]
@@ -397,23 +405,23 @@ def _process_bene(init_dict, current_line):
             init_dict['BENE'][subgroup]['coeffs']['pos'] += [int(pos)]
 
     if type_ in ['sd', 'int']:
-
         assert (len(current_line) == 3)
 
         is_free = (current_line[1][0] != '!')
-        value = current_line[1].replace('!','')
+        value = current_line[1].replace('!', '')
 
         init_dict['BENE']['TREATED'][type_]['values'] += [float(value)]
         init_dict['BENE']['TREATED'][type_]['free'] += [is_free]
 
         is_free = (current_line[2][0] != '!')
-        value = current_line[2].replace('!','')
+        value = current_line[2].replace('!', '')
 
         init_dict['BENE']['UNTREATED'][type_]['values'] += [float(value)]
         init_dict['BENE']['UNTREATED'][type_]['free'] += [is_free]
 
     # Finishing.
     return init_dict
+
 
 def _process_cost(init_dict, current_line):
     """ Process COST block.
@@ -428,29 +436,28 @@ def _process_cost(init_dict, current_line):
     assert (type_ in ['coeff', 'int', 'sd'])
 
     if type_ == 'coeff':
-
         assert (len(current_line) == 3)
 
         pos = current_line[1]
         is_free = (current_line[2][0] != '!')
-        value = current_line[2].replace('!','')
+        value = current_line[2].replace('!', '')
 
         init_dict['COST']['coeffs']['values'] += [float(value)]
         init_dict['COST']['coeffs']['pos'] += [int(pos)]
         init_dict['COST']['coeffs']['free'] += [is_free]
 
     if type_ in ['sd', 'int']:
-
         assert (len(current_line) == 2)
 
         is_free = (current_line[1][0] != '!')
-        value = current_line[1].replace('!','')
+        value = current_line[1].replace('!', '')
 
         init_dict['COST'][type_]['values'] += [float(value)]
         init_dict['COST'][type_]['free'] += [is_free]
 
     # Finishing.
     return init_dict
+
 
 def _process_rho(init_dict, current_line):
     """ Process RHO block.
@@ -466,10 +473,9 @@ def _process_rho(init_dict, current_line):
     name = current_line[0]
 
     is_free = (current_line[1][0] != '!')
-    value = current_line[1].replace('!','')
+    value = current_line[1].replace('!', '')
 
     if name not in init_dict['RHO'].keys():
-
         init_dict['RHO'][name] = {}
 
     init_dict['RHO'][name]['value'] = float(value)
@@ -477,6 +483,7 @@ def _process_rho(init_dict, current_line):
 
     # Finishing.
     return init_dict
+
 
 def _process_estimation(init_dict, current_line):
     """ Process ESTIMATION block.
@@ -520,6 +527,7 @@ def _process_estimation(init_dict, current_line):
     # Finishing.
     return init_dict
 
+
 def _process_simulation(init_dict, current_line):
     """ Process SIMULATION block.
     """
@@ -541,6 +549,7 @@ def _process_simulation(init_dict, current_line):
 
     # Finishing.
     return init_dict
+
 
 def _process_data(init_dict, current_line):
     """ Process DATA block.
@@ -569,4 +578,3 @@ def _process_data(init_dict, current_line):
 
     # Finishing.
     return init_dict
-

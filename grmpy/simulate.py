@@ -2,9 +2,12 @@
 """
 
 # standard library
-import numpy as np
 import random
 import os
+
+import numpy as np
+
+
 
 # project library
 import grmpy.tools.msc as msc
@@ -13,6 +16,8 @@ import grmpy.tools.optimization as opt
 
 ''' Main functions
 '''
+
+
 def simulate(init='init.ini', update=False):
     """ Simulate dataset for grmToolbox.
     """
@@ -69,6 +74,7 @@ def simulate(init='init.ini', update=False):
 
     _write_info(paras_obj, target, rslt, likl)
 
+
 ''' Auxiliary functions.
 '''
 
@@ -101,6 +107,7 @@ def _get_likelihood(init):
     # Finishing.
     return likl
 
+
 def _create_mock(init):
     """ Create a mock dataset which allows for use of existing routines
         in the case of a missing source dataset.
@@ -128,6 +135,7 @@ def _create_mock(init):
     # Finishing
     return is_mock
 
+
 def _simulate_endogenous(sim_dat, paras_obj, init_dict):
     """ Simulate the endogenous characteristics such as choices and outcomes.
     """
@@ -146,19 +154,19 @@ def _simulate_endogenous(sim_dat, paras_obj, init_dict):
     all_ = init_dict['DERIV']['pos']['all']
 
     # Sampling of unobservables
-    var_v = paras_obj.get_parameters('var',  'V')
+    var_v = paras_obj.get_parameters('var', 'V')
 
-    var_u1 = paras_obj.get_parameters('var',  'U1')
+    var_u1 = paras_obj.get_parameters('var', 'U1')
 
-    var_u0 = paras_obj.get_parameters('var',  'U0')
+    var_u0 = paras_obj.get_parameters('var', 'U0')
 
     mean = np.tile(0.0, 3)
 
     cov_mat = np.diag([var_u1, var_u0, var_v])
 
-    cov_mat[2,0] = cov_mat[0,2] = paras_obj.get_parameters('cov', 'U1,V')
+    cov_mat[2, 0] = cov_mat[0, 2] = paras_obj.get_parameters('cov', 'U1,V')
 
-    cov_mat[2,1] = cov_mat[1,2] = paras_obj.get_parameters('cov', 'U0,V')
+    cov_mat[2, 1] = cov_mat[1, 2] = paras_obj.get_parameters('cov', 'U0,V')
 
     u1, u0, v = np.random.multivariate_normal(mean, cov_mat, sim_agents).T
 
@@ -181,7 +189,7 @@ def _simulate_endogenous(sim_dat, paras_obj, init_dict):
     y1 = np.dot(outc_treated, x.T) + u1
     y0 = np.dot(outc_untreated, x.T) + u0
 
-    y = d*y1 + (1 - d)*y0
+    y = d * y1 + (1 - d) * y0
 
     sim_dat[:, outcome] = y
     sim_dat[:, treatment] = d
@@ -193,6 +201,7 @@ def _simulate_endogenous(sim_dat, paras_obj, init_dict):
 
     # Finishing.
     return sim_dat
+
 
 def _simulate_exogenous(sim_dat, init_dict):
     """ Simulate the exogenous characteristics by filling up the data frame
@@ -233,16 +242,14 @@ def _simulate_exogenous(sim_dat, init_dict):
 
         else:
 
-            idx_ = np.random.randint(0, obs_agents, size = sim_agents)
+            idx_ = np.random.randint(0, obs_agents, size=sim_agents)
 
         for pos in all_:
-
             sim_dat[:, pos] = obs_dat[idx_, pos]
 
     else:
 
         for pos in all_:
-
             sim_dat[:, pos] = np.random.randn(sim_agents)
 
     # Quality checks.
@@ -252,6 +259,7 @@ def _simulate_exogenous(sim_dat, init_dict):
 
     # Finishing.
     return sim_dat
+
 
 def _write_info(paras_obj, target, rslt, likl):
     """ Write out some additional info about the simulated dataset.
@@ -271,7 +279,6 @@ def _write_info(paras_obj, target, rslt, likl):
 
     # Write out information on agent experiences
     with open(file_name + '.infos.grmpy.out', 'w') as file_:
-
         file_.write('\n SIMULATED DATASET\n\n')
 
         file_.write('   Number of Observations  ' + num_agents + '\n')
@@ -292,9 +299,11 @@ def _write_info(paras_obj, target, rslt, likl):
 
         file_.write('   Average Outcomes by Treatment Status:  \n\n')
 
-        file_.write(string.format(['     Treated  ', np.mean(rslt['Y'][rslt['D'] == 1])]))
+        file_.write(string.format(
+            ['     Treated  ', np.mean(rslt['Y'][rslt['D'] == 1])]))
 
-        file_.write(string.format(['     Untreated', np.mean(rslt['Y'][rslt['D'] == 0])]))
+        file_.write(string.format(
+            ['     Untreated', np.mean(rslt['Y'][rslt['D'] == 0])]))
 
         file_.write('\n\n')
 
@@ -302,5 +311,4 @@ def _write_info(paras_obj, target, rslt, likl):
         file_.write('''\n  TRUE PARAMETERS \n\n''')
 
         for para in paras:
-
             file_.write('  {:25.18f}'.format(para) + '\n')

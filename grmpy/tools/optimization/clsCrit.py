@@ -9,8 +9,8 @@ from grmpy.clsMeta import MetaCls
 from grmpy.clsModel import ModelCls
 from grmpy.clsParas import ParasCls
 
+
 class CritCls(MetaCls):
-    
     def __init__(self, model_obj, paras_obj):
 
         # Antibugging
@@ -26,7 +26,7 @@ class CritCls(MetaCls):
 
         # Status
         self.is_locked = False
-    
+
     def update(self, x):
         """ Update parameter object.
         """
@@ -36,13 +36,13 @@ class CritCls(MetaCls):
         assert (np.all(np.isfinite(x)))
         assert (x.dtype == 'float')
         assert (x.ndim == 1)
-            
+
         # Distribute class attributes
         paras_obj = self.get_attr('paras_obj')
 
         # Update parameter object
         paras_obj.update(x, 'external', 'free')
-    
+
     def evaluate(self, x, type_):
         """ Wrapper for function evaluate.
         """
@@ -56,6 +56,7 @@ class CritCls(MetaCls):
 
     ''' Private methods for the calculation of the gradient and function.
     '''
+
     def _evaluate_gradient(self, x):
         """ Numerical approximation of gradient.
         """
@@ -65,7 +66,7 @@ class CritCls(MetaCls):
         assert (np.all(np.isfinite(x)))
         assert (x.dtype == 'float')
         assert (x.ndim == 1)
-        
+
         # Distribute class attributes
         model_obj = self.get_attr('model_obj')
         paras_obj = self.get_attr('paras_obj')
@@ -73,47 +74,47 @@ class CritCls(MetaCls):
         epsilon = model_obj.get_attr('epsilon')
         differences = model_obj.get_attr('differences')
         num_free = paras_obj.get_attr('num_free')
-        
+
         # Antibugging.
-        assert (x.shape == (num_free, ))
-        
+        assert (x.shape == (num_free,))
+
         # Calculate baseline
         f0 = self.evaluate(x, 'function')
-        
+
         # Initialization
         grad = np.zeros(num_free, dtype='float')
         ei = np.zeros(num_free, dtype='float')
-    
+
         # Gradient loop
         for k in range(num_free):
-            
+
             # Calculate step size
             ei[k] = 1.0
-            d = epsilon*ei
-    
+            d = epsilon * ei
+
             # Gradient approximations
             if differences == 'one-sided':
                 upper = self._evaluate_function(x + d, False)
                 lower = f0
-                grad[k] = (upper - lower)/d[k]
-            
+                grad[k] = (upper - lower) / d[k]
+
             if differences == 'two-sided':
                 upper = self._evaluate_function(x + d, False)
                 lower = self._evaluate_function(x - d, False)
-                grad[k] = (upper - lower)/(2.0*d[k])
-            
+                grad[k] = (upper - lower) / (2.0 * d[k])
+
             # Reset step size
             ei[k] = 0.0
-        
+
         # Check quality
         assert (isinstance(grad, np.ndarray))
         assert (np.all(np.isfinite(grad)))
-        assert (grad.shape == (num_free, ))
+        assert (grad.shape == (num_free,))
         assert (grad.dtype == 'float')
-                
+
         # Finishing
         return grad
-    
+
     def _evaluate_function(self, x, logging=True):
         """ Negative log-likelihood function.
         """
@@ -123,7 +124,7 @@ class CritCls(MetaCls):
         assert (np.all(np.isfinite(x)))
         assert (x.dtype == 'float')
         assert (x.ndim == 1)
-        
+
         # Distribute class attributes
         paras_obj = self.get_attr('paras_obj')
         model_obj = self.get_attr('model_obj')
@@ -146,14 +147,15 @@ class CritCls(MetaCls):
         likl = -np.mean(np.log(np.clip(likl, 1e-20, np.inf)))
 
         # Quality checks
-        assert (isinstance(likl, float))    
+        assert (isinstance(likl, float))
         assert (np.isfinite(likl))
-         
+
         # Finishing
-        return likl    
+        return likl
 
     ''' Private class attributes.
     '''
+
     @staticmethod
     def _evaluate_function_fast(paras_obj, model_obj):
         """ Evaluate the criterion function in a fast fashion.
@@ -169,10 +171,10 @@ class CritCls(MetaCls):
         outc_untreated = paras_obj.get_parameters('outc', 'untreated')
         coeffs_choc = paras_obj.get_parameters('choice', None)
 
-        sd_u1 = paras_obj.get_parameters('sd',  'U1')
-        sd_u0 = paras_obj.get_parameters('sd',  'U0')
-        sd_v = paras_obj.get_parameters('sd',  'V')
-        var_v = paras_obj.get_parameters('var',  'V')
+        sd_u1 = paras_obj.get_parameters('sd', 'U1')
+        sd_u0 = paras_obj.get_parameters('sd', 'U0')
+        sd_v = paras_obj.get_parameters('sd', 'V')
+        var_v = paras_obj.get_parameters('var', 'V')
 
         rho_u1_v = paras_obj.get_parameters('rho', 'U1,V')
         rho_u0_v = paras_obj.get_parameters('rho', 'U0,V')
@@ -181,18 +183,20 @@ class CritCls(MetaCls):
         choice_indices = np.dot(coeffs_choc, z.T)
 
         # Calculate densities
-        arg_one = d*(y - np.dot(outc_treated, x_ex_post.T))/sd_u1 + \
-            (1 - d)*(y - np.dot(outc_untreated, x_ex_post.T))/sd_u0
-        arg_two = d*(choice_indices - sd_v*rho_u1_v*arg_one)/np.sqrt((1.0 -
-            rho_u1_v**2)*var_v) + (1 - d)*(choice_indices - \
-            sd_v*rho_u0_v*arg_one)/np.sqrt((1.0 - rho_u0_v**2)*var_v)
+        arg_one = d * (y - np.dot(outc_treated, x_ex_post.T)) / sd_u1 + \
+                  (1 - d) * (y - np.dot(outc_untreated, x_ex_post.T)) / sd_u0
+        arg_two = d * (choice_indices - sd_v * rho_u1_v * arg_one) / np.sqrt(
+            (1.0 -
+             rho_u1_v ** 2) * var_v) + (1 - d) * (choice_indices - \
+                                                  sd_v * rho_u0_v * arg_one) / np.sqrt(
+            (1.0 - rho_u0_v ** 2) * var_v)
 
         # Evaluate densities
         cdf_evals, pdf_evals = norm.cdf(arg_two), norm.pdf(arg_one)
 
         # Calculate individual likelihoods
-        likl = d*(1.0/sd_u1) * pdf_evals * cdf_evals + \
-            (1 - d) * (1.0/sd_u0) * pdf_evals * (1.0 - cdf_evals)
+        likl = d * (1.0 / sd_u1) * pdf_evals * cdf_evals + \
+               (1 - d) * (1.0 / sd_u0) * pdf_evals * (1.0 - cdf_evals)
 
         # Finishing
         return likl
@@ -227,7 +231,7 @@ class CritCls(MetaCls):
         for i in range(num_agents):
 
             # Construct choice index
-            choice_idx[i] = np.dot(coeffs_choc, z[i,:])
+            choice_idx[i] = np.dot(coeffs_choc, z[i, :])
 
             # Select outcome information
             if d[i] == 1.00:
@@ -238,7 +242,7 @@ class CritCls(MetaCls):
             # Calculate densities
             arg_one = (y[i] - np.dot(coeffs, x_ex_post[i, :])) / sd
             arg_two = (choice_idx[i] - rho * sd_v * arg_one) / \
-                np.sqrt((1.0 - rho ** 2) * sd_v**2)
+                      np.sqrt((1.0 - rho ** 2) * sd_v ** 2)
 
             pdf_evals, cdf_evals = norm.pdf(arg_one), norm.cdf(arg_two)
 

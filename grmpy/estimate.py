@@ -2,11 +2,14 @@
 """
 
 # standard library
-import numdifftools as nd
-import numpy as np
 import glob
 import sys
 import os
+
+import numdifftools as nd
+import numpy as np
+
+
 
 # project library
 import grmpy.tools.msc as msc
@@ -14,7 +17,6 @@ import grmpy.tools.user as user
 import grmpy.tools.optimization as opt
 
 from grmpy.clsRslt import RsltCls
-
 
 ''' Main function
 '''
@@ -85,6 +87,7 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
     # Finishing
     return rslt
 
+
 ''' Auxiliary function
 '''
 
@@ -115,7 +118,6 @@ def _write_starting_values(paras):
     """ Write starting values to file.
     """
     with open('info.grmpy.out', 'w') as file_:
-
         file_.write('''\n  START \n\n''')
 
         for para in paras:
@@ -146,7 +148,6 @@ def _write_optimization_results(max_rslt, paras_obj):
         file_.write('''\n  STOP \n\n''')
 
         for para in paras:
-
             file_.write('  {:25.18f}'.format(para) + '\n')
 
     # Write optimization report file
@@ -189,4 +190,3 @@ def _cleanup(resume):
             continue
 
         os.remove(file_)
-

@@ -2,9 +2,10 @@
 """
 
 # standard library
-import numpy as np
 import shlex
 import os
+
+import numpy as np
 
 
 def update_parameters(paras_obj):
@@ -57,7 +58,7 @@ def create_matrices(dataset, init_dict):
     assert (isinstance(dataset, np.ndarray))
     assert (dataset.dtype == 'float')
     assert (dataset.ndim == 2)
-    
+
     # Distribute information
     outcome = init_dict['DATA']['outcome']
     treatment = init_dict['DATA']['treatment']
@@ -68,7 +69,7 @@ def create_matrices(dataset, init_dict):
 
     # Construct auxiliary information 
     num_agents = dataset.shape[0]
-    
+
     # Create matrices 
     y = dataset[:, outcome]
     d = dataset[:, treatment]
@@ -78,13 +79,13 @@ def create_matrices(dataset, init_dict):
     x_ex_post = np.concatenate((dataset[:, excl_bene_ex_post], m), axis=1)
     g = np.concatenate((m, dataset[:, excl_cost]), axis=1)
     z = np.concatenate((x_ex_ante, dataset[:, excl_cost]), axis=1)
-    
+
     # Quality checks 
     for mat in [x_ex_ante, x_ex_post, g, z]:
         assert (isinstance(mat, np.ndarray))
         assert (mat.dtype == 'float')
         assert (mat.ndim == 2)
-    
+
     for mat in [d, y]:
         assert (isinstance(mat, np.ndarray))
         assert (mat.dtype == 'float')
@@ -98,9 +99,3 @@ def create_matrices(dataset, init_dict):
 
     # Finishing.
     return rslt
-
-
-
-
-
-

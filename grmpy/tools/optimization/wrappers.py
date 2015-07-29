@@ -44,5 +44,3 @@ def scipy_wrapper_function(x, crit_func):
 
     # Finishing
     return likl
-
-

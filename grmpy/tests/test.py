@@ -22,12 +22,14 @@ sys.path.insert(0, dir_)
 # project library
 import grmpy.tools.user as user
 
-
 ''' Test class.
 '''
+
+
 class TestParasCls(object):
     """ Test class.
     """
+
     @staticmethod
     def setup():
         os.chdir(FILE_PATH)
@@ -83,13 +85,12 @@ class TestParasCls(object):
         paras_obj = user.construct_paras(init_dict, model_obj, False)
 
         para_objs = paras_obj.get_attr('para_objs')
-        
+
         for para_obj in para_objs:
-            
             value = para_obj.get_attr('value')
-            
+
             ext = paras_obj._transform_to_external(para_obj, value)
-            
+
             int_ = paras_obj._transform_to_internal(para_obj, ext)
 
             assert_almost_equal(value, int_)
@@ -98,7 +99,5 @@ class TestParasCls(object):
         self.cleanup()
 
 
-
 if __name__ == '__main__':
-    
-    runmodule()   
+    runmodule()
