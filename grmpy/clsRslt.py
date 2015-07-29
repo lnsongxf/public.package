@@ -302,7 +302,7 @@ class RsltCls(MetaCls):
 
             for i in range(99):
                 lower, upper = scipy.stats.mstats.mquantiles(
-                    rslt[parameter][:, i], \
+                    rslt[parameter][:, i],
                     prob=[(alpha * 0.5), (1.0 - alpha * 0.5)], axis=0)
 
                 self.attr[parameter]['confi']['upper'].append(upper)

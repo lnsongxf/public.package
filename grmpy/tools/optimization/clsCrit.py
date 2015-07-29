@@ -188,7 +188,7 @@ class CritCls(MetaCls):
                   (1 - d) * (y - np.dot(outc_untreated, x_ex_post.T)) / sd_u0
         arg_two = d * (choice_indices - sd_v * rho_u1_v * arg_one) / np.sqrt(
             (1.0 -
-             rho_u1_v ** 2) * var_v) + (1 - d) * (choice_indices - \
+             rho_u1_v ** 2) * var_v) + (1 - d) * (choice_indices -
                                                   sd_v * rho_u0_v * arg_one) / np.sqrt(
             (1.0 - rho_u0_v ** 2) * var_v)
 
