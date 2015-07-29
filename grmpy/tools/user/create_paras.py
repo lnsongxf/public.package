@@ -101,6 +101,8 @@ def _initialize_parameters(init_dict, model_obj):
         dict_ = dict()
 
         # Benefits
+        positions = None
+
         if group == 'BENE':
 
             # Coefficients.
@@ -287,7 +289,8 @@ def _auto_start(paras_obj, model_obj):
             y = y[d == 0]
             x = x[(d == 0), :]
 
-        # Model selection 
+        # Model selection
+        coeffs, sd = None, None
         if which in ['treated', 'untreated']:
             ols_rslt = sm.OLS(y, x).fit()
             coeffs = ols_rslt.params

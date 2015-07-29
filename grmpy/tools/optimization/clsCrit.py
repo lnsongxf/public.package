@@ -46,6 +46,7 @@ class CritCls(MetaCls):
     def evaluate(self, x, type_):
         """ Wrapper for function evaluate.
         """
+        rslt = None
         if type_ == 'function':
             rslt = self._evaluate_function(x)
         elif type_ == 'gradient':

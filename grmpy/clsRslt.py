@@ -188,9 +188,10 @@ class RsltCls(MetaCls):
 
             parameter_list = ['bmte_ex_post']
 
-            if surp_estimation: parameter_list += ['cmte_ex_ante',
-                                                   'smte_ex_ante']
+            if surp_estimation:
+                parameter_list += ['cmte_ex_ante', 'smte_ex_ante']
 
+            upper_bound, lower_bound = None, None
             for parameter in parameter_list:
 
                 points = self.attr[parameter]['estimate']
@@ -200,6 +201,7 @@ class RsltCls(MetaCls):
 
                     lower_bound = self.attr[parameter]['confi']['lower']
 
+                title = None
                 if parameter == 'bmte_ex_post':
                     title = ' MARGINAL BENEFIT OF TREATMENT (EX POST)'
 
@@ -366,6 +368,7 @@ class RsltCls(MetaCls):
         for i in range(99):
             cmte_ex_post[i] = cmte_level + cmte_slopes[i]
 
+        rslt = None
         if args['which'] == 'bmte_ex_post':
 
             rslt = bmte_ex_post
