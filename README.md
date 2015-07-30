@@ -27,3 +27,7 @@ http://grmToolbox.github.io
 [![Code Issues](http://www.quantifiedcode.com/api/v1/project/1e8ca992fa8c41ddaa4fa2b0b430b9d1/badge.svg)](http://www.quantifiedcode.com/app/project/1e8ca992fa8c41ddaa4fa2b0b430b9d1)
 [![Coverage Status](https://coveralls.io/repos/grmToolbox/package/badge.svg?branch=master&service=github)](https://coveralls.io/github/grmToolbox/package?branch=master)
 
+
+### Social
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/grmToolbox/package/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
