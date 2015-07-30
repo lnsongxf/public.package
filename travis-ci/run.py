@@ -6,4 +6,4 @@
 import os
 
 #Tests
-os.system('nosetests --with-coverage --exe')
+os.system('nosetests --with-coverage --cover-package=grmpy --exe')

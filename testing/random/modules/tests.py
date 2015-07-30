@@ -29,7 +29,8 @@ SMALL = 10e-10
 
 
 def test_1():
-    """ Testing if a ten random initialization files can be used to simulate a model.
+    """ Testing if a ten random initialization files can be used to simulate a
+    model.
     """
 
     for _ in range(10):
@@ -45,7 +46,8 @@ def test_1():
 
 
 def test_2():
-    """ Testing if a random estimation task can be handled without complaints for five seconds.
+    """ Testing if a random estimation task can be handled without complaints
+    for five seconds.
     """
     # Generate a random initialization file.
     aux.generate_init_file()
@@ -71,7 +73,8 @@ def test_2():
     return True
 
 def test_3():
-    """ Testing if a random estimation task can be handled without complaints from beginning till end.
+    """ Testing if a random estimation task can be handled without complaints
+    from beginning till end.
     """
     # Generate a random initialization file.
     aux.generate_init_file()
