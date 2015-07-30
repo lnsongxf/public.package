@@ -47,14 +47,14 @@ class Tests(object):
     """ Test class.
     """
 
-    @classmethod
-    def setup_class(cls):
+    @staticmethod
+    def setup_class():
         """ Setup before any methods in this class.
         """
         os.chdir(FILE_PATH)
 
-    @classmethod
-    def teardown_class(cls):
+    @staticmethod
+    def teardown_class():
         """ Teardown after any methods in this class.
         """
         os.chdir(TEST_PATH)
