@@ -7,3 +7,5 @@ import os
 
 #Tests
 os.system('nosetests --with-coverage --cover-package=grmpy --exe')
+
+os.system('coveralls')
