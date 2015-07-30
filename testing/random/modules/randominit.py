@@ -79,7 +79,7 @@ def random_dict(dict_=None):
     if 'AGENTS' in dict_.keys():
         agents = dict_['AGENTS']
     else:
-        agents = np.random.random_integers(100, 10000)
+        agents = np.random.random_integers(MIN_AGENTS, MAX_AGENTS)
 
     ''' Overall
     '''    
