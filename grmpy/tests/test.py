@@ -110,7 +110,15 @@ class Tests(object):
     def test_1():
         """ Test parameter transformations.
         """
-        init_dict = user.process_input('../data/test.ini')
+        aux.generate_init_file()
+
+        grmpy.simulate('test.grmpy.ini')
+
+        init_dict = user.process_input('test.grmpy.ini')
+
+        # Make sure to use simulation
+        init_dict['DATA']['source'] = init_dict['SIMULATION']['target']
+        init_dict['DATA']['agents'] = init_dict['SIMULATION']['agents']
 
         model_obj = user.construct_model(init_dict)
 

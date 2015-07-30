@@ -19,7 +19,7 @@ import os
 
 # testing library
 import modules.auxiliary as aux
-import modules.tests as development_tests
+import modules.battery as development_tests
 
 # GRMPY import
 sys.path.insert(0, os.environ['GRMPY'])

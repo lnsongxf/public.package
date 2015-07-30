@@ -17,10 +17,16 @@ from grmpy.tests.test import Tests as package_tests
 
 ''' Request
 '''
-label, seed = '5', 750880
+label, seed = '1', 888135
 
 ''' Error Reproduction
 '''
+# Define list of admissible tests
+test_labels = ['0']
+package_labels = ['1', '2', '3', '4', '5']
+labels = test_labels + package_labels
+
+
 if label in test_labels:
     test = getattr(development_tests, 'test_' + label)
 elif label in package_labels:
