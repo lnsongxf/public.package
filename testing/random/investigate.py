@@ -7,7 +7,7 @@ import sys
 import os
 
 # project library
-import modules.tests as development_tests
+import modules.battery as development_tests
 
 # GRMPY import
 sys.path.insert(0, os.environ['GRMPY'])
@@ -17,7 +17,7 @@ from grmpy.tests.test import Tests as package_tests
 
 ''' Request
 '''
-label, seed = '1', 888135
+label, seed = '2', 221144
 
 ''' Error Reproduction
 '''
