@@ -7,24 +7,31 @@ import sys
 import os
 
 # project library
-import modules.tests as lib
+import modules.tests as development_tests
 
 # GRMPY import
-#sys.path.insert(0, os.environ['GRMPY'])
+sys.path.insert(0, os.environ['GRMPY'])
 #import grmpy
+from grmpy.tests.test import Tests as package_tests
+
 
 ''' Request
 '''
-label, seed = '3', 247388
+label, seed = '5', 750880
 
 ''' Error Reproduction
 '''
-test = getattr(lib, 'test_' + label)
+if label in test_labels:
+    test = getattr(development_tests, 'test_' + label)
+elif label in package_labels:
+    test = getattr(package_tests, 'test_' + label)
+else:
+    raise AssertionError
 
 np.random.seed(seed)
 
 # This is required to set the seeds identical to the
 # case in the run.py script.
-label = np.random.choice(['1', '2', '3', '4', '5'])
+label = np.random.choice(['0', '1', '2', '3', '4', '5'])
 
 test()

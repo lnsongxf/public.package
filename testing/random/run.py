@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 """ Script to start development test battery for the grmpy package. We draw
-random test cases for a fixed amount of time. The tests are defined in tests.py
-, which if found in the modules subdirectory.
+random test cases for a fixed amount of time. Most tests itself are
+distributed as part of the grmpy package in grmpy/tests. However, additional
+tests are found in the modules subdirectory.
 """
 
 # standard library
@@ -14,15 +15,21 @@ import argparse
 import logging
 import random
 import sys
+import os
 
-# project library
+# testing library
 import modules.auxiliary as aux
-import modules.tests as lib
+import modules.tests as development_tests
+
+# GRMPY import
+sys.path.insert(0, os.environ['GRMPY'])
+from grmpy.tests.test import Tests as package_tests
 
 # virtual environment
 if not hasattr(sys, 'real_prefix'):
-   raise AssertionError('Please use a virtual environment for testing')
+    raise AssertionError('Please use a virtual environment for testing')
 
+# module-wide variables
 PYTHON_VERSION = sys.version_info[0]
 
 ''' Main Function.
@@ -35,7 +42,9 @@ def run(hours):
     start, timeout = datetime.now(), timedelta(hours=hours)
 
     # Define list of admissible tests
-    labels = ['1', '2', '3', '4', '5']
+    test_labels = ['0']
+    package_labels = ['1', '2', '3', '4', '5']
+    labels = test_labels + package_labels
 
     # Initialize counter
     dict_ = dict()
@@ -51,7 +60,9 @@ def run(hours):
     # Logging.
     logger = logging.getLogger('DEV-TEST')
 
-    msg = 'Initialization of a ' + str(hours) + ' hours testing run with Python ' + str(PYTHON_VERSION) + '.'
+    msg = 'Initialization of a ' + str(hours) + \
+          ' hours testing run with Python ' + \
+          str(PYTHON_VERSION) + '.'
 
     logger.info(msg)
 
@@ -66,8 +77,14 @@ def run(hours):
         # Setup of test case
         label = np.random.choice(labels)
 
-        test = getattr(lib,'test_' + label)
+        if label in test_labels:
+            test = getattr(development_tests, 'test_' + label)
+        elif label in package_labels:
+            test = getattr(package_tests, 'test_' + label)
+        else:
+            raise AssertionError
 
+        # Execute test
         try:
 
             test()
