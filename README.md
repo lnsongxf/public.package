@@ -28,6 +28,6 @@ http://grmToolbox.github.io
 [![Coverage Status](https://coveralls.io/repos/grmToolbox/package/badge.svg?branch=master&service=github)](https://coveralls.io/github/grmToolbox/package?branch=master)
 
 
-### Social
+#### Social
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/grmToolbox/package/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
