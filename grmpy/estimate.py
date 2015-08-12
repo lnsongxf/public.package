@@ -74,7 +74,7 @@ def estimate(init='init.ini', resume=False, use_simulation=False):
         cov_mat = _add_asymptotics(max_rslt, max_obj, hessian)
 
     # Construct result class
-    rslt = RsltCls(model_obj, paras_obj)
+    rslt = RsltCls(paras_obj)
 
     rslt.set_attr('max_rslt', max_rslt)
 

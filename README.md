@@ -26,7 +26,7 @@ http://grmToolbox.github.io
 [![Build Status](https://travis-ci.org/grmToolbox/package.svg?branch=master)](https://travis-ci.org/grmToolbox/grmToolbox)
 [![Coverage Status](https://coveralls.io/repos/grmToolbox/package/badge.svg?branch=master&service=github)](https://coveralls.io/github/grmToolbox/package?branch=master)
 [![Code Issues](http://www.quantifiedcode.com/api/v1/project/1e8ca992fa8c41ddaa4fa2b0b430b9d1/badge.svg)](http://www.quantifiedcode.com/app/project/1e8ca992fa8c41ddaa4fa2b0b430b9d1)
-[![Codacy Badge](https://www.codacy.com/project/badge/926e8916847c433590ee5295d8144c76)](https://www.codacy.com/app/eisenhauer/package)
+[![Codacy Badge](https://www.codacy.com/project/badge/926e8916847c433590ee5295d8144c76)](https://www.codacy.com/app/eisenhauer/grmToolbox_package)
 
 #### Social
 

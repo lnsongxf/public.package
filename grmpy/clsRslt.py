@@ -22,22 +22,22 @@ class RsltCls(MetaCls):
         maximization setup.
     """
 
-    def __init__(self, model_obj, paras_obj):
+    def __init__(self, paras_obj):
 
         # Antibugging
-        assert (isinstance(model_obj, ModelCls))
         assert (isinstance(paras_obj, ParasCls))
 
-        assert (model_obj.get_status() is True)
         assert (paras_obj.get_status() is True)
 
         # Attributes.
         self.attr = dict()
-        self.attr['model_obj'] = model_obj
         self.attr['paras_obj'] = paras_obj
 
         self.attr['max_rslt'] = None
         self.attr['cov_mat'] = None
+
+        # Auxiliary objects
+        self.attr['model_obj'] = paras_obj.get_attr('model_obj')
 
         # Constructed objects.
         self.attr['bmte_ex_post'] = None
@@ -78,7 +78,7 @@ class RsltCls(MetaCls):
         num_agents = model_obj.get_attr('num_agents')
 
         alpha = model_obj.get_attr('alpha')
-        num_draws = model_obj.get_attr('numDraws')
+        num_draws = model_obj.get_attr('num_draws')
         with_asymptotics = model_obj.get_attr('with_asymptotics')
 
         # Auxiliary objects.

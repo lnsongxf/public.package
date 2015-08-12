@@ -46,7 +46,7 @@ class ModelCls(MetaCls):
         self.attr['gtol'] = None
         self.attr['maxiter'] = None
         self.attr['with_asymptotics'] = None
-        self.attr['numDraws'] = None
+        self.attr['num_draws'] = None
         self.attr['version'] = None
         self.attr['hessian'] = None
         self.attr['alpha'] = None

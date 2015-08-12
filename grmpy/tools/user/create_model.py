@@ -70,7 +70,7 @@ def construct_model(init_dict):
     model_obj.set_attr('with_asymptotics',
                        init_dict['ESTIMATION']['asymptotics'])
 
-    model_obj.set_attr('numDraws', init_dict['ESTIMATION']['draws'])
+    model_obj.set_attr('num_draws', init_dict['ESTIMATION']['draws'])
 
     model_obj.set_attr('version', init_dict['ESTIMATION']['version'])
 

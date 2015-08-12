@@ -44,8 +44,6 @@ class ParasCls(MetaCls):
         # Initialization
         self.attr['model_obj'] = model_obj
 
-        self.isFirst = True
-
         # Status
         self.is_locked = False
 
