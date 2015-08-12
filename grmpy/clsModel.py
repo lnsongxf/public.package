@@ -46,7 +46,7 @@ class ModelCls(MetaCls):
         self.attr['gtol'] = None
         self.attr['maxiter'] = None
         self.attr['with_asymptotics'] = None
-        self.attr['numDraws'] = None
+        self.attr['num_draws'] = None
         self.attr['version'] = None
         self.attr['hessian'] = None
         self.attr['alpha'] = None
@@ -137,7 +137,7 @@ class ModelCls(MetaCls):
                 assert (np.all(np.isfinite(self.attr[type_])))
                 assert (self.attr[type_].ndim == 2)
 
-        # Propensity score 
+        # Propensity score
         assert (isinstance(self.attr['P'], np.ndarray))
         assert (np.all(np.isfinite(self.attr['P'])))
         assert (self.attr['P'].ndim == 1)

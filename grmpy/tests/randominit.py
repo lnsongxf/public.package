@@ -84,19 +84,19 @@ def random_dict(dict_=None):
 
     ''' Overall
     '''
-    nun_bene = np.random.random_integers(1, MAX_COEFFS)
+    num_bene = np.random.random_integers(1, MAX_COEFFS)
 
     num_cost = np.random.random_integers(1, MAX_COEFFS)
 
-    num_coeffs = nun_bene + num_cost
+    num_coeffs = 2*num_bene + num_cost + 6 + 2
 
-    positions = list(range(1, num_coeffs + 4 + 3 + 2 + 1))
+    positions = list(range(1, num_coeffs + 5))
 
     num_sim = np.random.random_integers(MIN_AGENTS, MAX_AGENTS)
 
-    constraints = np.random.choice(['!', ' '],
-                                   size=num_coeffs + 4 + 3 + 2 + 2).tolist()
+    constraints = np.random.choice(['!', ' '], size=num_coeffs).tolist()
 
+    # Making sure at least one parameter is up for estimation.s
     if constraints.count(' ') == 0:
         constraints[-1] = ' '
 
@@ -110,64 +110,60 @@ def random_dict(dict_=None):
     dict_['DATA']['outcome'] = 0
     dict_['DATA']['treatment'] = 1
 
-    ''' BENEFITS and COSTS
+    ''' BENEFITS
     '''
-    for flag in ['BENE', 'COST']:
+    dict_['BENE'] = dict()
 
-        dict_[flag] = dict()
+    # Intercept
+    val_bene_1 = round(np.random.ranf(), 2)
+    val_bene_2 = round(np.random.ranf(), 2)
 
-        constr = constraints.pop()
+    constr_1, constr_2 = constraints.pop(), constraints.pop()
+    dict_['BENE']['int'] = [constr_1, val_bene_1, constr_2, val_bene_2]
+
+    # Standard deviation
+    val_bene_1 = round(np.random.ranf() + 0.05, 2)
+    val_bene_2 = round(np.random.ranf() + 0.05, 2)
+
+    constr_1, constr_2 = constraints.pop(), constraints.pop()
+    dict_['BENE']['sd'] = [constr_1, val_bene_1, constr_2, val_bene_2]
+
+    dict_['BENE']['coeff'] = []
+
+    for i in range(num_bene):
+
+        pos, constr_1, constr_2 = positions.pop(), constraints.pop(), \
+                                  constraints.pop()
+        truth = np.random.choice(['true', 'false'])
+
+        # There needs to be at least one covariate known to the agent at
+        # the time of the treatment evaluation.
+        if i == 0:
+            truth = 'true'
 
         val_bene_1 = round(np.random.ranf(), 2)
         val_bene_2 = round(np.random.ranf(), 2)
 
-        # The values for the standard deviations require special treatment as
-        # they need to be positive and larger than 0.01.
-        val_bene_3, val_bene_4 = round(np.random.ranf() + 0.05, 2), round(
-            np.random.ranf() + 0.05, 2)
+        dict_['BENE']['coeff'] += [[pos, constr_1, val_bene_1, constr_2,
+                                  val_bene_2, truth]]
 
-        val_cost_1 = round(np.random.ranf(), 2)
-        val_cost_2 = round(np.random.ranf()*10 + 0.5, 2)
+    ''' COSTS
+    '''
+    dict_['COST'] = dict()
 
-        if flag == 'BENE':
-            dict_[flag]['int'] = [constr, val_bene_1, val_bene_2]
+    # Intercept and standard deviation
+    constr, val = constraints.pop(), round(np.random.ranf(), 2)
+    dict_['COST']['int'] = [constr, val]
 
-        if flag == 'COST':
-            dict_[flag]['int'] = [constr, val_cost_1]
+    constr, val = constraints.pop(), round(np.random.ranf()*10 + 0.5, 2)
+    dict_['COST']['sd'] = [constr, val]
 
-        if flag == 'BENE':
-            dict_[flag]['sd'] = [constr, val_bene_3, val_bene_4]
-
-        if flag == 'COST':
-            dict_[flag]['sd'] = [constr, val_cost_2]
-
-        count = nun_bene
-
-        if flag == 'COST':
-            count = num_cost
-
-        dict_[flag]['coeff'] = []
-
-        for i in range(count):
-
-            pos, constr = positions.pop(), constraints.pop()
-            truth = np.random.choice(['true', 'false'])
-
-            # There needs to be at least one covariate known to the agent at
-            # the time of the treatment evaluation.
-            if i == 0:
-                truth = 'true'
-
-            val_bene_1 = round(np.random.ranf(), 2)
-            val_bene_2 = round(np.random.ranf(), 2)
-            val_cost = round(np.random.ranf(), 2)
-
-            if flag == 'BENE':
-                dict_[flag]['coeff'] += [[pos, constr, val_bene_1, val_bene_2,
-                                          truth]]
-
-            if flag == 'COST':
-                dict_[flag]['coeff'] += [[pos, constr, val_cost]]
+    # Coefficients
+    dict_['COST']['coeff'] = []
+    for i in range(num_cost):
+        pos, constr = positions.pop(), constraints.pop()
+        val = round(np.random.ranf(), 2)
+        dict_['COST']['coeff'] += [[pos, constr, val]]
 
     ''' RHO
     '''
@@ -176,6 +172,9 @@ def random_dict(dict_=None):
                                  np.random.uniform(-0.98, 0.98)]
     dict_['RHO']['treated'] = [constraints.pop(),
                                np.random.uniform(-0.98, 0.98)]
+
+    # Check that that constraint list is empty
+    assert (len(constraints) == 0)
 
     ''' ESTIMATION
     '''
@@ -256,10 +255,12 @@ def print_dict(dict_):
         num_coeffs = len(dict_['BENE']['coeff'])
 
         for i in range(num_coeffs):
-            pos, constr, val1, val2, true = dict_['BENE']['coeff'][i]
+            pos, constr_1, val1, constr_2, val2, true = dict_['BENE'][
+                'coeff'][i]
 
             file_.write(
-                str_.format('   ' + 'coeff', pos, constr, val2, constr, val2,
+                str_.format('   ' + 'coeff', pos, constr_1, val1, constr_2,
+                            val2,
                             true))
 
         file_.write('\n')
@@ -269,9 +270,9 @@ def print_dict(dict_):
         str_ = ' {0:<8} {1:<5} {2}{3:<5} {4}{5:<5} \n'
 
         for key_ in ['int', 'sd']:
-            constr, val1, val2 = dict_['BENE'][key_]
+            constr_1, val1, constr_2, val2 = dict_['BENE'][key_]
             file_.write(
-                str_.format('   ' + key_, ' ', constr, val1, constr, val2))
+                str_.format('   ' + key_, ' ', constr_1, val1, constr_2, val2))
 
         file_.write('\n')
 

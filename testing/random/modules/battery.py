@@ -8,12 +8,13 @@ import signal
 import sys
 import os
 
-# project library
-import modules.randominit as aux
 
 # GRMPY import
 sys.path.insert(0, os.environ['GRMPY'])
 import grmpy
+
+# project library
+import grmpy.tests.randominit as aux
 
 ''' Main
 '''
