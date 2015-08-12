@@ -17,9 +17,9 @@ sign up for our mailing list [here](http://eepurl.com/RStEH). Please feel free t
 
 The last command runs several tests to check the integrity of the package. You can look at the tests [here](https://github.com/grmToolbox/package/blob/master/grmpy/tests/test.py). We have set up an additional testing infrastructure [here](https://github.com/grmToolbox/package/tree/master/testing).
 
-#### Online Documentation
+#### Example Usage
 
-http://grmToolbox.github.io
+We prepared a notebook to illustrate the typical workflow. It is available [online](http://nbviewer.ipython.org/github/grmToolbox/package/blob/peisenha/example/example.ipynb).
 
 #### Quality Assurance
 
