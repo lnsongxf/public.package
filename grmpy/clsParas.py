@@ -395,13 +395,11 @@ class ParasCls(MetaCls):
         has_upper_bound = (upper_bound is not None)
 
         # Check bounds
-        if has_lower_bound:
-            if internal_value == lower_bound:
-                internal_value += 0.01
+        if has_lower_bound and (internal_value == lower_bound):
+            internal_value += 0.01
 
-        if has_upper_bound:
-            if internal_value == upper_bound:
-                internal_value -= 0.01
+        if has_upper_bound and (internal_value == upper_bound):
+            internal_value -= 0.01
 
         # Quality Check
         assert (isinstance(internal_value, float))
