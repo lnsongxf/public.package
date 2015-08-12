@@ -17,7 +17,7 @@ from grmpy.tests.test import Tests as package_tests
 
 ''' Request
 '''
-label, seed = '4', 879003
+label, seed = '0', 484788
 
 ''' Error Reproduction
 '''
