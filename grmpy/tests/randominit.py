@@ -84,11 +84,11 @@ def random_dict(dict_=None):
 
     ''' Overall
     '''
-    nun_bene = np.random.random_integers(1, MAX_COEFFS)
+    num_bene = np.random.random_integers(1, MAX_COEFFS)
 
     num_cost = np.random.random_integers(1, MAX_COEFFS)
 
-    num_coeffs = nun_bene + num_cost
+    num_coeffs = num_bene + num_cost
 
     positions = list(range(1, num_coeffs + 4 + 3 + 2 + 1))
 
@@ -141,7 +141,7 @@ def random_dict(dict_=None):
         if flag == 'COST':
             dict_[flag]['sd'] = [constr, val_cost_2]
 
-        count = nun_bene
+        count = num_bene
 
         if flag == 'COST':
             count = num_cost
@@ -176,6 +176,9 @@ def random_dict(dict_=None):
                                  np.random.uniform(-0.98, 0.98)]
     dict_['RHO']['treated'] = [constraints.pop(),
                                np.random.uniform(-0.98, 0.98)]
+
+    # Check that that constraint list is empty
+#    assert (len(constraints) == 0)
 
     ''' ESTIMATION
     '''
