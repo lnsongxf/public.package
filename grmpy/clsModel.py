@@ -138,7 +138,6 @@ class ModelCls(MetaCls):
                 assert (self.attr[type_].ndim == 2)
 
         # Propensity score
-        print(self.attr['P'])
         assert (isinstance(self.attr['P'], np.ndarray))
         assert (np.all(np.isfinite(self.attr['P'])))
         assert (self.attr['P'].ndim == 1)
