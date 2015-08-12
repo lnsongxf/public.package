@@ -155,7 +155,7 @@ def random_dict(dict_=None):
     constr, val = constraints.pop(), round(np.random.ranf(), 2)
     dict_['COST']['int'] = [constr, val]
 
-    constr, val = constraints.pop(), round(np.random.ranf() + 0.05, 2)
+    constr, val = constraints.pop(), round(np.random.ranf()*10 + 0.5, 2)
     dict_['COST']['sd'] = [constr, val]
 
     # Coefficients
