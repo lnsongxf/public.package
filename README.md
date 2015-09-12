@@ -19,7 +19,7 @@ The last command runs several tests to check the integrity of the package. You c
 
 #### Example Usage
 
-We prepared a notebook to illustrate the typical workflow. It is available [online](http://nbviewer.ipython.org/github/grmToolbox/package/blob/master/example/example.ipynb).
+We prepared a notebook to illustrate the typical workflow. It is available [online](http://nbviewer.ipython.org/github/grmToolbox/public.package/blob/master/lecture/package.ipynb).
 
 #### Quality Assurance
 
